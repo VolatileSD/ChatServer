@@ -1,0 +1,209 @@
+\documentclass[runningheads]{llncs}
+
+%%%%%%%%%%%%%%%%%%%% Non standard in llncs %%%%%%%%%%%%%
+
+%\usepackage{appendix}
+\usepackage{chngpage}
+% Allows Diagram Sketching
+%
+\usepackage[all]{xy}
+\usepackage{tikz}
+%
+% Comments
+%
+\usepackage{comment}
+
+%
+% Math symbols
+%
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+%\newtheorem{theorem}{Theorem}
+%
+% Figures
+%
+\usepackage{wrapfig}
+\usepackage{float}
+\floatstyle{boxed}
+\restylefloat{figure}
+\usepackage{graphicx}
+\usepackage{indentfirst}
+%
+% Algorithmic code
+%
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{listings}
+\lstset{
+captionpos=b, 
+frame=bt,
+basicstyle=\footnotesize,
+tabsize=4,
+morekeywords={split,join, drop,Bit,random}, 
+keywordstyle=\color{blue},
+breaklines=true}
+
+
+%
+% Colours to the revision process
+%
+\usepackage{color}
+\definecolor{blue}{rgb}{0,0,1}
+\definecolor{red}{rgb}{1,0,0}
+\definecolor{black}{rgb}{0,0,0}
+
+
+
+%Hyperlinks
+%
+\usepackage{hyperref}
+
+%
+% Local macros
+%
+\def\equiv{\Leftrightarrow}
+\def\conv#1{#1^\circ}
+\def\comp{\mathbin{\cdot}}
+\def\just#1#2{\\ &#1& \rule{2em}{0pt} \{ \mbox{\rule[-.7em]{0pt}{1.8em} \small #2 \/} \} \nonumber\\ && }
+\def\quotes#1{``#1''}
+% -- to dos
+\newcount\td \td=0 %  to-do counter
+\long\def\Todo#1{\vskip 1ex\noindent\fbox{
+\global\advance\td by 1
+\textbf{To-do (\number\td):}\\~
+\begin{minipage}{.75\textwidth}
+#1
+\end{minipage}
+}\vskip 1ex}
+% ----- shorthands ----
+\def\eqref#1{(\ref{#1})}
+
+%Revised
+%
+ 
+\long\def\revised#1{
+\noindent\fcolorbox{green!20}{green!20}{
+\begin{minipage}{\textwidth}
+\textbf{\textcolor{red}{Revised}}\\~
+#1
+\end{minipage}
+
+}}
+
+% Demanded
+
+\pagestyle{headings}
+
+
+
+\graphicspath{{texinputs/}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Title
+%
+
+\title{Using Cryptol to explore elliptic curve-based random-number generators}
+\subtitle{PSD --- Paradigms... \\
+        }
+
+%
+% Authors
+%
+
+\authorrunning{Ana Carvalho \and Vítor Duarte}
+\author{Ana Paula Carvalho\inst{1}
+       \and
+        Vítor Enes Duarte\inst{2}
+}
+% Affiliation and Email 
+\institute{Minho University, Portugal\\
+           \email{pg25335@alunos.uminho.pt}
+		   \and
+		   Minho University, Portugal\\
+		   \email{pg19643@alunos.uminho.pt}}
+
+
+
+\begin{document}
+
+\maketitle
+%
+% Abstract
+%
+
+\begin{abstract}
+Awesome abstract
+
+
+\end{abstract}
+
+%
+%  Introduction
+%
+
+\section{Introduction}
+
+intro
+
+%
+% Dropwizard
+%
+
+\section{Dropwizard}
+\label{sec:dropwizard}
+
+
+
+
+%
+%  Implementation
+%
+
+\section{Implementation}
+\label{sec:impl}
+
+
+%
+% Conclusions and Future Work
+%
+
+
+
+\section{Conclusions and Future Work}
+\label{sec:concl}
+
+
+
+%
+% Acknowledgements
+%
+
+\subsubsection*{Acknowledgements.}
+
+
+%
+% Bibliography
+%
+
+\bibliographystyle{splncs}
+
+\bibliography{./texinputs/bib}
+
+
+%\appendix
+
+%\section{Curve over $\mathbb{F}_{23}$}
+%\input{anexops.tex}
+%\label{table}
+
+%\section{Tests}
+%\input{tests.tex}
+%\label{tests}
+
+
+
+
+\end{document}
+
