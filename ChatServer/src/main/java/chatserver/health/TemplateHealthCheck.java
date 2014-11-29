@@ -1,4 +1,4 @@
-package hello.health;
+package chatserver.health;
 
 import com.codahale.metrics.health.HealthCheck;
 

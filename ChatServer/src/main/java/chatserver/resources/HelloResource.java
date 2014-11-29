@@ -1,6 +1,6 @@
-package hello.resources;
+package chatserver.resources;
 
-import hello.representations.Saying;
+import chatserver.representations.Saying;
 
 import com.google.common.base.Optional;
 

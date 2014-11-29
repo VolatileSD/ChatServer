@@ -1,4 +1,4 @@
-package hello;
+package chatserver;
 
 import io.dropwizard.Configuration;
 import com.fasterxml.jackson.annotation.JsonProperty;

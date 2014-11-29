@@ -1,0 +1,5 @@
+chatserver/resources/HelloResource.class
+chatserver/health/TemplateHealthCheck.class
+chatserver/representations/Saying.class
+chatserver/HelloConfiguration.class
+chatserver/HelloApplication.class

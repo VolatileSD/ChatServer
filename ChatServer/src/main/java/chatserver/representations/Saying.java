@@ -1,4 +1,4 @@
-package hello.representations;
+package chatserver.representations;
 
 import com.fasterxml.jackson.annotation.*;
 

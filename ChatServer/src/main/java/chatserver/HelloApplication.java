@@ -1,11 +1,11 @@
-package hello;
+package chatserver;
 
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
-import hello.resources.HelloResource;
-import hello.health.TemplateHealthCheck;
+import chatserver.resources.HelloResource;
+import chatserver.health.TemplateHealthCheck;
 
 
 public class HelloApplication extends Application<HelloConfiguration> {
