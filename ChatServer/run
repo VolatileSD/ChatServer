@@ -1,0 +1,2 @@
+mvn package
+java -jar target/chatserver-1.0-capsule-fat.jar server
