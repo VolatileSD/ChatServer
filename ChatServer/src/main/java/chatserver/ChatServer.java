@@ -35,7 +35,7 @@ public class ChatServer {
           in.flip();
           while(in.hasRemaining()) {
             b = in.get();
-            out.put(b);
+            out.put(b+"0");
             if (b == '\n') break;
           }
           if (eof || b == '\n') { // send line
