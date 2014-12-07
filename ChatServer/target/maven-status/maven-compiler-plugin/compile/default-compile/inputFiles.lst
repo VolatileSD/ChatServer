@@ -1,0 +1,9 @@
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/data/Command.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/data/Msg.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/rest/resources/RoomResource.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/rest/ChatServerConfiguration.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/data/CommandType.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/data/MsgType.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/rest/ChatServerApplication.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/rest/health/ChatServerHealthCheck.java
+/home/ubuntu/workspace/ChatServer/src/main/java/chatserver/ChatServer.java

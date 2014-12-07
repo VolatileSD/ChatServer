@@ -1,0 +1,16 @@
+chatserver/data/Command.class
+chatserver/data/MsgType.class
+chatserver/rest/ChatServerApplication.class
+chatserver/rest/ChatServerConfiguration.class
+chatserver/ChatServer$Room.class
+chatserver/ChatServer.class
+chatserver/ChatServer$LoginManager.class
+chatserver/ChatServer$User.class
+chatserver/data/Msg.class
+chatserver/ChatServer$Acceptor.class
+chatserver/ChatServer$1.class
+chatserver/rest/health/ChatServerHealthCheck.class
+chatserver/rest/resources/RoomResource.class
+chatserver/ChatServer$LineReader.class
+chatserver/ChatServer$RoomManager.class
+chatserver/data/CommandType.class
