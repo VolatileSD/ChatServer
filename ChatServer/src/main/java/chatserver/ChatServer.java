@@ -10,6 +10,8 @@ import java.util.*;
 
 import chatserver.data.Msg;
 import chatserver.data.MsgType;
+import chatserver.data.Command;
+import chatserver.data.CommandType;
 import chatserver.rest.ChatServerApplication;
 
 
@@ -33,9 +35,13 @@ public class ChatServer {
         for(;;) {
           if (socket.read(in) <= 0) eof = true;
           in.flip();
+          MsgType mtype= MsgType.DATA;
+          b=in.get();
+          if (b==':') mtype=MsgType.COMMAND;
+          out.put(b);
           while(in.hasRemaining()) {
             b = in.get();
-            out.put(b+"0");
+            out.put(b);
             if (b == '\n') break;
           }
           if (eof || b == '\n') { // send line
@@ -44,7 +50,7 @@ public class ChatServer {
               byte[] ba = new byte[out.remaining()];
               out.get(ba);
               out.clear();
-              dest.send(new Msg(MsgType.DATA, ba));
+              dest.send(new Msg(mtype, ba));
             }
           }
           if (eof && !in.hasRemaining()) break;
@@ -65,7 +71,7 @@ public class ChatServer {
     final FiberSocketChannel socket;
     User(ActorRef room, FiberSocketChannel socket) { this.room = room; this.socket = socket; }
 
-    protected Void doRun() throws InterruptedException, SuspendExecution {
+    protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
       new LineReader(self(), socket).spawn();
       room.send(new Msg(MsgType.ENTER, self()));
       while (receive(msg -> {
@@ -73,6 +79,32 @@ public class ChatServer {
         switch (msg.getType()) {
           case DATA:
             room.send(new Msg(MsgType.LINE, msg.getO()));
+            return true;
+          case COMMAND:
+            String parts = msg.getO().toString();
+            String tmp=parts;
+            if (parts.contains(" ")){
+              tmp = parts.split(" ")[0];
+            }
+            Command cmd = new Command(tmp);
+            switch (cmd.getType()){
+              case CHANGE_ROOM:
+                room.send(new Msg(MsgType.LEAVE, self()));
+                /* Log to new room
+              ActorRef nroom= new Room().spawn();
+              Acceptor lin = new Acceptor(12345, nroom);
+              lin.spawn();
+              lin.join();
+              */
+              case HELP:
+                //Help command: returns a list of all available commands
+                return true;
+                
+                
+            }
+ 
+              
+            room.send(new Msg(MsgType.LINE, cmd));
             return true;
           case EOF:
           case IOE:
@@ -91,6 +123,14 @@ public class ChatServer {
       return null;
     }
   }
+  
+ static class RoomManager extends BasicActor<Msg, Void> {
+   private Set<ActorRef> rooms = new HashSet();
+   protected Void doRun() throws InterruptedException, SuspendExecution {
+     return null;
+   }
+   
+ }
 
   static class Room extends BasicActor<Msg, Void> {
     private Set<ActorRef> users = new HashSet();
@@ -134,11 +174,30 @@ public class ChatServer {
       return null;
     }
   }
+  
+  static class LoginManager extends BasicActor {
+    final int port;
+    final ActorRef room;
+    LoginManager(int port, ActorRef room) { this.port = port; this.room = room; }
+
+    protected Void doRun() throws InterruptedException, SuspendExecution {
+      try {
+        FiberServerSocketChannel ss = FiberServerSocketChannel.open();
+        ss.bind(new InetSocketAddress(port));
+        while (true) {
+          FiberSocketChannel socket = ss.accept();
+          ActorRef user = new User(room, socket).spawn();
+          room.send(new Msg(MsgType.ENTER, user)); 
+        }
+      } catch (IOException e) { }
+      return null;
+    }
+  }
 
   public static void main(String[] args) throws Exception {
     int port = 12345; //Integer.parseInt(args[0]);
-    ActorRef room = new Room().spawn();
-    Acceptor acceptor = new Acceptor(port, room);
+    ActorRef main_room = new Room().spawn();
+    Acceptor acceptor = new Acceptor(port, main_room);
     new ChatServerApplication().run(args); // starts rest
     acceptor.spawn();
     acceptor.join();
