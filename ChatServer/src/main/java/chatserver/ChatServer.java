@@ -87,9 +87,14 @@ public class ChatServer {
               tmp = parts.split(" ")[0];
             }
             Command cmd = new Command(tmp);
+            //
             switch (cmd.getType()){
+              //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
+              case LIST_ROOMS:
+              case LIST_USERS:
+              case LOGIN:
               case CHANGE_ROOM:
-                room.send(new Msg(MsgType.LEAVE, self()));
+                //room.send(new Msg(MsgType.LEAVE, self()));
                 /* Log to new room
               ActorRef nroom= new Room().spawn();
               Acceptor lin = new Acceptor(12345, nroom);
@@ -98,13 +103,14 @@ public class ChatServer {
               */
               case HELP:
                 //Help command: returns a list of all available commands
-                return true;
-                
+              case UNKNOWN:
+              room.send(new Msg(MsgType.LINE, msg.getO()));
+              return true;
                 
             }
  
               
-            room.send(new Msg(MsgType.LINE, cmd));
+            
             return true;
           case EOF:
           case IOE:
