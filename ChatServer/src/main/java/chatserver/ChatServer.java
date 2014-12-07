@@ -17,6 +17,8 @@ import chatserver.rest.ChatServerApplication;
 
 public class ChatServer {
   static int MAXLEN = 1024;
+  
+  static Map<String,ActorRef> ROOMS;
 
   static class LineReader extends BasicActor<Msg, Void> {
     final ActorRef<Msg> dest;
@@ -203,6 +205,11 @@ public class ChatServer {
   public static void main(String[] args) throws Exception {
     int port = 12345; //Integer.parseInt(args[0]);
     ActorRef main_room = new Room().spawn();
+    ROOMS.put("Main", main_room);
+    ActorRef roomA = new Room().spawn();
+    ROOMS.put("RoomA", roomA);
+    ActorRef roomB = new Room().spawn();
+    ROOMS.put("RoomB", roomB);
     Acceptor acceptor = new Acceptor(port, main_room);
     new ChatServerApplication().run(args); // starts rest
     acceptor.spawn();
