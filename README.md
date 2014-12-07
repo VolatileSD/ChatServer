@@ -11,7 +11,7 @@ of notable events, and provide a REST interface for management and description.
 
 ### How to connect
 
-### Command line client (e.g. telnet)
+#### Command line client (e.g. telnet)
 
 All commands start with the ":" character for an easiest parsing.
 
