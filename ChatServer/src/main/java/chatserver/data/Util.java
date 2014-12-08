@@ -6,10 +6,10 @@ public class Util {
     /*
     * Filters commands for the simple client
     */
-    CommandType type = UNKNOWN;
+    CommandType type = CommandType.CHAUNKNOWN;
 
-    if (cmd ==":cr") type = CHANGE_ROOM;
-    else if (cmd==":h" || cmd==":help") type = HELP;
+    if (cmd ==":cr") type = CommandType.CHANGE_ROOM;
+    else if (cmd==":h" || cmd==":help") type = CommandType.HELP;
 
     return type;
   }
