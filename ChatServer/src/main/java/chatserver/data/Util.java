@@ -3,7 +3,7 @@ package chatserver.data;
 import java.util.*;
 
 public class Util {
-    public Map<String,String> CommandMap = new HashMap;
+    public Map<String,String> CommandMap = new HashMap();
 
  
     public CommandType getCommandType(String cmd){
@@ -14,7 +14,7 @@ public class Util {
         if (cmd ==":cr") {
             return CommandType.CHANGE_ROOM;
         }
-    	else if (cmd==":h" || cmd==":help"){
+    	else if (cmd==":h\n" || cmd==":help\n"){
     	    return CommandType.HELP;
     	}
     	else{
