@@ -25,18 +25,18 @@ public class Acceptor extends BasicActor {
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
-    ActorRef mainRoom = new Room().spawn();
-    ActorRef roomA = new Room().spawn();
-    ActorRef roomB = new Room().spawn();
-    map.put("main", mainRoom);
-    map.put("a", roomA);
-    map.put("b", roomB);
+    ActorRef mainRoom = new Room("Main").spawn();
+    ActorRef roomA = new Room("Expa").spawn();
+    ActorRef roomB = new Room("Expb").spawn();
+    map.put("Main", mainRoom);
+    map.put("Expa", roomA);
+    map.put("Expb", roomB);
     try {
       FiberServerSocketChannel ss = FiberServerSocketChannel.open();
       ss.bind(new InetSocketAddress(port));
       while (true) {
         FiberSocketChannel socket = ss.accept();
-        ActorRef user = new User(mainRoom, socket).spawn();
+        ActorRef user = new User(mainRoom, socket,"userx").spawn();
       }
     } catch (IOException e) { System.out.println(e.getMessage()); }
     return null;
