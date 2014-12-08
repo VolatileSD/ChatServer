@@ -10,8 +10,6 @@ import co.paralleluniverse.fibers.io.*;
 import chatserver.data.Msg;
 import chatserver.data.MsgType;
 
-package chatserver.quasar;
-
 import co.paralleluniverse.actors.ActorRef;
 import java.util.Map;
 import java.util.HashMap;
