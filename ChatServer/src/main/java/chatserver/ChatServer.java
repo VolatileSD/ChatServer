@@ -18,7 +18,9 @@ import chatserver.rest.ChatServerApplication;
 public class ChatServer {
   static int MAXLEN = 1024;
   
+  //Replace this with rest requests
   static Map<String,ActorRef> ROOMS;
+  static String[] ROOMS_LIST;
 
   static class LineReader extends BasicActor<Msg, Void> {
     final ActorRef<Msg> dest;
@@ -69,24 +71,28 @@ public class ChatServer {
   }
 
   static class User extends BasicActor<Msg, Void> {
-    final ActorRef room;
+    static ActorRef room;
     final FiberSocketChannel socket;
     User(ActorRef room, FiberSocketChannel socket) { this.room = room; this.socket = socket; }
 
     protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
       new LineReader(self(), socket).spawn();
       room.send(new Msg(MsgType.ENTER, self()));
+      byte[] w = "Welcome\n".getBytes();
+      room.send(new Msg(MsgType.LINE,w ));
+     
       while (receive(msg -> {
         try {
         switch (msg.getType()) {
           case DATA:
-            room.send(new Msg(MsgType.LINE, msg.getO()));
+           room.send(new Msg(MsgType.LINE, msg.getO()));
             return true;
           case COMMAND:
             String parts = msg.getO().toString();
             String tmp=parts;
             if (parts.contains(" ")){
               tmp = parts.split(" ")[0];
+              room.send(new Msg(MsgType.LINE, tmp.getBytes()));
             }
             Command cmd = new Command(tmp);
             //
@@ -96,16 +102,17 @@ public class ChatServer {
               case LIST_USERS:
               case LOGIN:
               case CHANGE_ROOM:
-                //room.send(new Msg(MsgType.LEAVE, self()));
-                /* Log to new room
-              ActorRef nroom= new Room().spawn();
-              Acceptor lin = new Acceptor(12345, nroom);
-              lin.spawn();
-              lin.join();
-              */
+                byte[] b ="Changing rooms\n".getBytes();
+                room.send(new Msg(MsgType.LINE,b ));
+                room.send(new Msg(MsgType.LEAVE, self()));
+                ActorRef newroom = new Room("Another").spawn();
+                room=newroom;
+                room.send(new Msg(MsgType.ENTER, self()));
               case HELP:
                 //Help command: returns a list of all available commands
               case UNKNOWN:
+              byte[] uc = "Unknown command\t".getBytes();
+              room.send(new Msg(MsgType.LINE, uc));
               room.send(new Msg(MsgType.LINE, msg.getO()));
               return true;
                 
@@ -142,7 +149,8 @@ public class ChatServer {
 
   static class Room extends BasicActor<Msg, Void> {
     private Set<ActorRef> users = new HashSet();
-
+    static String name;
+    Room(String name) { this.name=name;}
     protected Void doRun() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
         switch (msg.getType()) {
@@ -167,7 +175,7 @@ public class ChatServer {
   static class Acceptor extends BasicActor {
     final int port;
     final ActorRef room;
-    Acceptor(int port, ActorRef room) { this.port = port; this.room = room; }
+    Acceptor(int port, ActorRef room) { this.port = port; this.room = room;}
 
     protected Void doRun() throws InterruptedException, SuspendExecution {
       try {
@@ -183,33 +191,13 @@ public class ChatServer {
     }
   }
   
-  static class LoginManager extends BasicActor {
-    final int port;
-    final ActorRef room;
-    LoginManager(int port, ActorRef room) { this.port = port; this.room = room; }
 
-    protected Void doRun() throws InterruptedException, SuspendExecution {
-      try {
-        FiberServerSocketChannel ss = FiberServerSocketChannel.open();
-        ss.bind(new InetSocketAddress(port));
-        while (true) {
-          FiberSocketChannel socket = ss.accept();
-          ActorRef user = new User(room, socket).spawn();
-          room.send(new Msg(MsgType.ENTER, user)); 
-        }
-      } catch (IOException e) { }
-      return null;
-    }
-  }
 
   public static void main(String[] args) throws Exception {
     int port = 12345; //Integer.parseInt(args[0]);
-    ActorRef main_room = new Room().spawn();
-    ROOMS.put("Main", main_room);
-    ActorRef roomA = new Room().spawn();
-    ROOMS.put("RoomA", roomA);
-    ActorRef roomB = new Room().spawn();
-    ROOMS.put("RoomB", roomB);
+    ActorRef main_room = new Room("Main").spawn();
+    ActorRef roomA = new Room("RoomA").spawn();
+    ActorRef roomB = new Room("RoomB").spawn();
     Acceptor acceptor = new Acceptor(port, main_room);
     new ChatServerApplication().run(args); // starts rest
     acceptor.spawn();
