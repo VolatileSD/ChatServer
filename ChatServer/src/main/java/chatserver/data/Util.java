@@ -3,6 +3,7 @@ package chatserver.data;
 import java.util.*;
 
 public class Util {
+    public Map<String,String> CommandMap = new HashMap;
 
  
     public CommandType getCommandType(String cmd){
@@ -21,4 +22,6 @@ public class Util {
     	}
     
     }
+    
+ 
 }
