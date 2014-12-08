@@ -17,10 +17,10 @@ public class Room extends BasicActor<Msg, Void> {
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:
-          users.add((ActorRef) msg.getO());
+          users.add(msg.getFrom());
           return true;
         case LEAVE:
-          users.remove((ActorRef) msg.getO());
+          users.remove(msg.getFrom());
           return true;
         case LINE:
           for (ActorRef u : users) u.send(msg); // danger!?!?
