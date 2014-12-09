@@ -1,27 +1,15 @@
 package chatserver.data;
 
-import java.util.*;
-
 public class Util {
-    public Map<String,String> CommandMap = new HashMap();
-
- 
+    /**
+    * Filters commands for the simple client
+    **/
     public CommandType getCommandType(String cmd){
-        /*
-        * Filters commands for the simple client
-        */
-       
-        if (cmd ==":cr") {
-            return CommandType.CHANGE_ROOM;
-        }
-    	else if (cmd==":h\n" || cmd==":help\n"){
-    	    return CommandType.HELP;
-    	}
-    	else{
-    	    return CommandType.UNKNOWN;
-    	}
-    
+        CommandType type = CommandType.UNKNOWN;
+
+        if (cmd.equals(":cr")) type = CommandType.CHANGE_ROOM;
+    	else if (cmd.equals(":h") || cmd.equals(":help")) type = CommandType.HELP;
+
+        return type;
     }
-    
- 
 }

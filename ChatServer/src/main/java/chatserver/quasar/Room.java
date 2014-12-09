@@ -16,17 +16,18 @@ public class Room extends BasicActor<Msg, Void> {
   public Room(String topic){this.topic=topic;}
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
+    byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
+
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:
-          byte[] WELCOME_MESSAGE= ("------ Welcome to Room "+topic+"! ------\n").getBytes();
           users.add(msg.getFrom());
-          msg.getFrom().send(new Msg(MsgType.LINE,null,WELCOME_MESSAGE));
-          for (ActorRef u : users) u.send(new Msg(MsgType.LINE,null,("#User "+msg.getContent()+" just got in!\n").getBytes()));
+          msg.getFrom().send(new Msg(MsgType.LINE, null, welcomeMessage));
+          for (ActorRef u : users) u.send(new Msg(MsgType.LINE, null, ("#User " + msg.getContent() + " just got in!\n").getBytes()));
           return true;
         case LEAVE:
           users.remove(msg.getFrom());
-          for (ActorRef u : users) u.send(new Msg(MsgType.LINE,null,("#User "+msg.getContent()+" just left!\n").getBytes()));
+          for (ActorRef u : users) u.send(new Msg(MsgType.LINE, null, ("#User " + msg.getContent() + " just left!\n").getBytes()));
           return true;
         case LINE:
           for (ActorRef u : users) u.send(msg); // danger!?!?

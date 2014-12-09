@@ -23,7 +23,7 @@ public class User extends BasicActor<Msg, Void> {
   public User(ActorRef room, FiberSocketChannel socket, String uname) { 
     this.room = room; 
     this.socket = socket; 
-    this.uname=uname;
+    this.uname = uname;
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
@@ -38,7 +38,6 @@ public class User extends BasicActor<Msg, Void> {
           String line = new String((byte[]) msg.getContent());
           if(line.startsWith(":")){
             String[] parts = (line.substring(0, line.length()-2)).split(" ");
-            CommandType cmdt=util.getCommandType(parts[0]);
             switch (util.getCommandType(parts[0])){
               //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
               case LIST_ROOMS:
