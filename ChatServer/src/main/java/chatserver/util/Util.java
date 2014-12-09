@@ -1,4 +1,4 @@
-package chatserver.data;
+package chatserver.util;
 
 public class Util {
     /**
