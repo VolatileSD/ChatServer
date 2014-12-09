@@ -7,10 +7,9 @@ import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
 
-import chatserver.data.Msg;
-import chatserver.data.MsgType;
+import chatserver.util.Msg;
+import chatserver.util.MsgType;
 
-import co.paralleluniverse.actors.ActorRef;
 import java.util.Map;
 import java.util.HashMap;
 

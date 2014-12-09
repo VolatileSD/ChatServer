@@ -7,10 +7,10 @@ import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
 
-import chatserver.data.Msg;
-import chatserver.data.MsgType;
-import chatserver.data.Util;
-import chatserver.data.CommandType;
+import chatserver.util.Msg;
+import chatserver.util.MsgType;
+import chatserver.util.Util;
+import chatserver.util.CommandType;
 
 
 public class User extends BasicActor<Msg, Void> {

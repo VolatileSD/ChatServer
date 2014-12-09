@@ -6,8 +6,8 @@ import co.paralleluniverse.fibers.io.*;
 import java.util.Set;
 import java.util.HashSet;
 
-import chatserver.data.Msg;
-import chatserver.data.MsgType;
+import chatserver.util.Msg;
+import chatserver.util.MsgType;
 
 
 public class Room extends BasicActor<Msg, Void> {

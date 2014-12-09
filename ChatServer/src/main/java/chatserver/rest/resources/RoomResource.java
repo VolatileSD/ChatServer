@@ -12,8 +12,8 @@ import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
 
-import chatserver.data.Msg;
-import chatserver.data.MsgType;
+import chatserver.util.Msg;
+import chatserver.util.MsgType;
 
 
 @Path("/room")
