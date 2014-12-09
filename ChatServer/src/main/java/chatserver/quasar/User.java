@@ -2,6 +2,7 @@ package chatserver.quasar;
 
 import java.nio.ByteBuffer;
 import java.io.IOException;
+import java.util.Iterator;
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
@@ -27,6 +28,7 @@ public class User extends BasicActor<Msg, Void> {
 
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
     Util util = new Util();
+    Acceptor ac = new Acceptor(12345);
     new LineReader(self(), socket).spawn();
     room.send(new Msg(MsgType.ENTER, self(), uname));
     while (receive(msg -> {
@@ -35,7 +37,8 @@ public class User extends BasicActor<Msg, Void> {
         case DATA:
           String line = new String((byte[]) msg.getContent());
           if(line.startsWith(":")){
-            String[] parts = line.split(" ");
+            String[] parts = (line.substring(0, line.length()-2)).split(" ");
+            CommandType cmdt=util.getCommandType(parts[0]);
             switch (util.getCommandType(parts[0])){
               //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
               case LIST_ROOMS:
@@ -45,24 +48,35 @@ public class User extends BasicActor<Msg, Void> {
               case LOGIN:
                 break;
               case CHANGE_ROOM:
-                room.send(new Msg(MsgType.LEAVE, self(),uname));
-                ActorRef newroom = new Room("Expc").spawn();
-                this.room=newroom;
-                room.send(new Msg(MsgType.ENTER, self(),uname));
-                break;
+                Iterator<String> it = ac.map.keySet().iterator();
+                while(it.hasNext()){
+                  System.out.print((String)it.next());
+                }
+                byte[] er1= parts[1].getBytes();
+                  socket.write(ByteBuffer.wrap(er1));
+                  
+                  
+                if (ac.map.containsKey(parts[1])){ 
+                  room.send(new Msg(MsgType.LEAVE, self(),uname));
+                  room=ac.map.get(parts[1]);
+                  room.send(new Msg(MsgType.ENTER, self(),uname));
+                }
+                else{
+                  byte[] er= "Room does not exist. Try again.\n".getBytes();
+                  socket.write(ByteBuffer.wrap(er));
+                }
+              break;
               case HELP:
-                byte[] uc1 = "Available commands\t".getBytes();
+                byte[] uc1 = "Available commands\n".getBytes();
                 socket.write(ByteBuffer.wrap(uc1));
                 break;
                 //Help command: returns a list of all available commands
               case UNKNOWN:
-              byte[] uc = "Unknown command\t".getBytes();
-              socket.write(ByteBuffer.wrap(uc));
-              socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
-              break;
-                
+                byte[] uc = "Unknown command\t".getBytes();
+                socket.write(ByteBuffer.wrap(uc));
+                socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
+                break;
             }
-        
           } else{
             String mess = new String((byte[]) msg.getContent());
             byte[] messcont= ("@"+uname+": "+mess).getBytes();
