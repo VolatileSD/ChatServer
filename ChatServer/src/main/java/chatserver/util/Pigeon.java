@@ -5,7 +5,7 @@ import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
 
 public class Pigeon{
-	ActorRef to;
+	final ActorRef to;
 
 	public Pigeon(ActorRef to){
 		this.to = to;
@@ -15,16 +15,16 @@ public class Pigeon{
 		return carry(type, null);
 	}
 
-	public Object carry(MsgType type, Object o){
+	public Object carry(MsgType type, Object content){
 		Object res = null;
 		try{
 			Actor<Msg, Object> actor = new BasicActor<Msg, Object>() {
 	            @Override
 	            protected Object doRun() throws InterruptedException, SuspendExecution {
-	                to.send(new Msg(type, self(), o));
+	                to.send(new Msg(type, self(), content));
 	                Msg reply = receive();
 	                while(reply.getType() != type) reply = receive(); 
-	                return reply.getO();
+	                return reply.getContent();
 	            }
 	        };
 	        actor.spawn();

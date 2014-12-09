@@ -8,8 +8,8 @@ import chatserver.util.Msg;
 import chatserver.util.MsgType;
 
 public class RoomManager extends BasicActor<Msg, Void> {
-	
-	protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
+
+  protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
     while (receive(msg -> {
       switch (msg.getType()) {
         case DATA:

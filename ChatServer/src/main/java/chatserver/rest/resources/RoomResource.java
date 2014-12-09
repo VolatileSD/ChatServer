@@ -19,23 +19,22 @@ import chatserver.util.MsgType;
 @Path("/room")
 @Produces(MediaType.APPLICATION_JSON)
 public class RoomResource {
-    //private final ActorRef room;
+  //private final ActorRef room;
 
-    public RoomResource() {
-        //this.room = room;
-    }
+  public RoomResource() {
+    //this.room = room;
+  }
 
-    @GET
-    @Path("/users")
-    public Response getUsers() {
-        //room.send(new Msg(MsgType.USERS, self()));
-        return Response.ok().build();
-    }
+  @GET
+  @Path("/users")
+  public Response getUsers() {
+    //room.send(new Msg(MsgType.USERS, self()));
+    return Response.ok().build();
+  }
 
-    @GET
-    @Path("/test")
-    public Response test() {
-        return Response.status(403).build();
-    }
+  @GET
+  @Path("/test")
+  public Response test() {
+    return Response.status(403).build();
+  }
 }
-

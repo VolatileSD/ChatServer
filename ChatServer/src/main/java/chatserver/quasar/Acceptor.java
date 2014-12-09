@@ -19,8 +19,8 @@ public class Acceptor extends BasicActor {
   final int port;
 
   public Acceptor(int port) { 
-  	this.port = port; 
-  	this.map = new HashMap();
+    this.port = port; 
+    this.map = new HashMap();
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
