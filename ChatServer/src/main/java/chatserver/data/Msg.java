@@ -7,7 +7,11 @@ public class Msg {
 	private final MsgType type;
 	private final ActorRef from;
     private final Object content;  // careful with mutable objects, such as the byte array
-    public Msg(MsgType type, ActorRef from, Object content) { this.type = type; this.from = from; this.content = content; }
+    public Msg(MsgType type, ActorRef from, Object content) { 
+        this.type = type; 
+        this.from = from; 
+        this.content = content; 
+    }
 
     public MsgType getType(){
     	return type;
