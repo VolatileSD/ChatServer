@@ -2,6 +2,7 @@ package chatserver.quasar;
 
 import java.nio.ByteBuffer;
 import java.io.IOException;
+import java.util.Iterator;
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
@@ -16,24 +17,27 @@ public class User extends BasicActor<Msg, Void> {
   static int MAXLEN = 1024;
   
   private ActorRef room;
+  private String uname;
   final FiberSocketChannel socket;
 
-  public User(ActorRef room, FiberSocketChannel socket) { 
+  public User(ActorRef room, FiberSocketChannel socket, String uname) { 
     this.room = room; 
     this.socket = socket; 
+    this.uname = uname;
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
     Util util = new Util();
+    Acceptor ac = new Acceptor(12345);
     new LineReader(self(), socket).spawn();
-    room.send(new Msg(MsgType.ENTER, self(), "userx"));
+    room.send(new Msg(MsgType.ENTER, self(), uname));
     while (receive(msg -> {
       try {
       switch (msg.getType()) {
         case DATA:
-          String line = msg.getContent().toString();
+          String line = new String((byte[]) msg.getContent());
           if(line.startsWith(":")){
-            String[] parts = line.split(" ");
+            String[] parts = (line.substring(0, line.length()-2)).split(" ");
             switch (util.getCommandType(parts[0])){
               //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
               case LIST_ROOMS:
@@ -43,30 +47,44 @@ public class User extends BasicActor<Msg, Void> {
               case LOGIN:
                 break;
               case CHANGE_ROOM:
-                byte[] b ="Changing rooms\n".getBytes();
-                room.send(new Msg(MsgType.LINE,null,b ));
-                room.send(new Msg(MsgType.LEAVE, self(),null));
-                ActorRef newroom = new Room().spawn();
-                this.room=newroom;
-                room.send(new Msg(MsgType.ENTER, self(),null));
-                break;
+                Iterator<String> it = ac.map.keySet().iterator();
+                while(it.hasNext()){
+                  System.out.print((String)it.next());
+                }
+                byte[] er1= parts[1].getBytes();
+                  socket.write(ByteBuffer.wrap(er1));
+                  
+                  
+                if (ac.map.containsKey(parts[1])){ 
+                  room.send(new Msg(MsgType.LEAVE, self(),uname));
+                  room=ac.map.get(parts[1]);
+                  room.send(new Msg(MsgType.ENTER, self(),uname));
+                }
+                else{
+                  byte[] er= "Room does not exist. Try again.\n".getBytes();
+                  socket.write(ByteBuffer.wrap(er));
+                }
+              break;
               case HELP:
+                byte[] uc1 = "Available commands\n".getBytes();
+                socket.write(ByteBuffer.wrap(uc1));
                 break;
                 //Help command: returns a list of all available commands
               case UNKNOWN:
-              byte[] uc = "Unknown command\t".getBytes();
-              socket.write(ByteBuffer.wrap(uc));
-              socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
-              break;
-                
+                byte[] uc = "Unknown command\t".getBytes();
+                socket.write(ByteBuffer.wrap(uc));
+                socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
+                break;
             }
           } else{
-            room.send(new Msg(MsgType.LINE,null, msg.getContent()));            
+            String mess = new String((byte[]) msg.getContent());
+            byte[] messcont= ("@"+uname+": "+mess).getBytes();
+            room.send(new Msg(MsgType.LINE,null, messcont));            
           }
           return true;
         case EOF:
         case IOE:
-          room.send(new Msg(MsgType.LEAVE, self(),null));
+          room.send(new Msg(MsgType.LEAVE, self(),uname));
           socket.close();
           return false;
         case LINE:
@@ -74,7 +92,7 @@ public class User extends BasicActor<Msg, Void> {
           return true;
       }
       } catch (IOException e) {
-        room.send(new Msg(MsgType.LEAVE, self(),"userx"));
+        room.send(new Msg(MsgType.LEAVE, self(),uname));
       }
       return false;  // stops the actor if some unexpected message is received
     }));
@@ -109,7 +127,7 @@ public class User extends BasicActor<Msg, Void> {
               byte[] ba = new byte[out.remaining()];
               out.get(ba);
               out.clear();
-              dest.send(new Msg(MsgType.DATA, null,ba));
+              dest.send(new Msg(MsgType.DATA,null, ba));
             }
           }
           if (eof && !in.hasRemaining()) break;
