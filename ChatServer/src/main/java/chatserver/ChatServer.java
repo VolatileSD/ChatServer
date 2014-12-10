@@ -12,7 +12,7 @@ public class ChatServer {
     int port = 1111; //Integer.parseInt(args[0]);
     ActorRef roomManager = new RoomManager().spawn();
     new ChatServerApplication(roomManager).run(args); // starts rest
-    Acceptor acceptor = new Acceptor(port);
+    Acceptor acceptor = new Acceptor(port, roomManager);
     acceptor.spawn();
     acceptor.join();
   }

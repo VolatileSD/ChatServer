@@ -2,7 +2,9 @@ package chatserver.util;
 
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
+import co.paralleluniverse.fibers.Suspendable;
 import co.paralleluniverse.fibers.io.*;
+import java.util.concurrent.ExecutionException;
 
 public class Pigeon{
   final ActorRef to;
@@ -11,13 +13,14 @@ public class Pigeon{
     this.to = to;
   }
 
-  public Msg carry(MsgType type){
+  public Msg carry(MsgType type) throws InterruptedException, SuspendExecution, ExecutionException{
     return carry(type, null);
   }
 
-  public Msg carry(MsgType type, Object content){
+  //@Suspendable
+  public Msg carry(MsgType type, Object content) throws InterruptedException, SuspendExecution, ExecutionException{
     Msg res = null;
-    try{
+    //try{
       Actor<Msg, Msg> pigeon = new BasicActor<Msg, Msg>() {
         @Override
         protected Msg doRun() throws InterruptedException, SuspendExecution {
@@ -28,7 +31,7 @@ public class Pigeon{
       };
       pigeon.spawn();
       res = pigeon.get();
-    } catch (Exception e){ System.out.println(e.getMessage()); }
+    //} catch (Exception e){ System.out.println("_EX_: " + e.getMessage()); }
 
     return res;      
   }

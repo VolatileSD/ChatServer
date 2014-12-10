@@ -3,32 +3,37 @@ package chatserver.quasar;
 import java.nio.ByteBuffer;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
 
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
-import chatserver.util.Util;
 import chatserver.util.CommandType;
-
+import chatserver.util.Util;
+import chatserver.util.Pigeon;
 
 public class User extends BasicActor<Msg, Void> {
   static int MAXLEN = 1024;
   
   private ActorRef room;
+  private ActorRef roomManager;
+  private ActorRef loginManager;
   private String uname;
   final FiberSocketChannel socket;
 
-  public User(ActorRef room, FiberSocketChannel socket, String uname) { 
+  public User(ActorRef room, ActorRef roomManager, ActorRef loginManager, FiberSocketChannel socket) { 
     this.room = room; 
+    this.roomManager = roomManager;
+    this.loginManager = loginManager;
     this.socket = socket; 
-    this.uname = uname;
+    // this.uname = uname; this variable will be set after login
   }
 
+  // where the user logs in
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
     Util util = new Util();
-    Acceptor ac = new Acceptor(12345);
     new LineReader(self(), socket).spawn();
     room.send(new Msg(MsgType.ENTER, self(), uname));
     while (receive(msg -> {
@@ -45,6 +50,76 @@ public class User extends BasicActor<Msg, Void> {
               case LIST_USERS:
                 break;
               case LOGIN:
+                if(parts.length != 3) socket.write(ByteBuffer.wrap("Uknown command\n".getBytes()));
+                else{
+                  Msg reply = new Pigeon(loginManager).carry(MsgType.LOGIN, parts);
+                  switch(reply.getType()){
+                    case OK:
+                      socket.write(ByteBuffer.wrap("OK\n".getBytes()));
+                      uname = parts[1];
+                      // dont know if this ok is create ok or login ok
+                      running();
+                    case INVALID:
+                      socket.write(ByteBuffer.wrap("INVALID\n".getBytes()));
+                      break;
+                  }
+                }
+                break;
+              case CHANGE_ROOM:
+                // some message: log in first
+                break;
+              case HELP:
+                byte[] uc1 = "Available commands\n".getBytes();
+                socket.write(ByteBuffer.wrap(uc1));
+                break;
+                //Help command: returns a list of all available commands
+              case UNKNOWN:
+                byte[] uc = "Unknown command\t".getBytes();
+                socket.write(ByteBuffer.wrap(uc));
+                socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
+                break;
+            }
+          } else{
+            String mess = new String((byte[]) msg.getContent());
+            byte[] messcont= ("@"+uname+": "+mess).getBytes();
+            room.send(new Msg(MsgType.LINE,null, messcont));            
+          }
+          return true;
+        case EOF:
+        case IOE:
+          room.send(new Msg(MsgType.LEAVE, self(),uname));
+          socket.close();
+          return false;
+        case LINE:
+            socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
+          return true;
+      }
+      } catch (IOException ioe) { room.send(new Msg(MsgType.LEAVE, self(),uname)); }
+      catch (ExecutionException ee) { System.out.println("PIGEON: " + ee.getMessage()); }
+      return false;  // stops the actor if some unexpected message is received
+    }));
+    return null;
+  }
+
+
+  // after login
+  protected Void running() throws InterruptedException, SuspendExecution { //Exceptions
+    Util util = new Util();
+    while (receive(msg -> {
+      try {
+      switch (msg.getType()) {
+        case DATA:
+          String line = new String((byte[]) msg.getContent());
+          if(line.startsWith(":")){
+            String[] parts = (line.substring(0, line.length()-2)).split(" ");
+            switch (util.getCommandType(parts[0])){
+              //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
+              case LIST_ROOMS:
+                break;
+              case LIST_USERS:
+                break;
+              case LOGIN:
+                // some message: you're already logged in
                 break;
               case CHANGE_ROOM:
                 // instead of this the user should talk to the roomManager

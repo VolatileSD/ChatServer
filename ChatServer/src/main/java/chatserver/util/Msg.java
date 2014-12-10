@@ -25,4 +25,19 @@ public class Msg {
   public Object getContent(){
     return content;
   }
+
+  public String toString(){
+    StringBuilder sb = new StringBuilder();
+    sb.append("Type: ");
+    sb.append(type);
+    if(from != null){
+      sb.append("\nFrom: ");
+      sb.append(from); 
+    }
+    if(content != null){
+      sb.append("\nContent: ");
+      sb.append(content.toString());
+    }
+    return sb.toString();
+  }
 }

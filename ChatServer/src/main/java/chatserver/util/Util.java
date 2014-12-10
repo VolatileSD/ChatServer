@@ -8,6 +8,8 @@ public class Util {
     CommandType type = CommandType.UNKNOWN;
 
     if (cmd.equals(":cr")) type = CommandType.CHANGE_ROOM;
+    //else if(cmd.equals(":create")) type = CommandType.CREATE;
+    else if(cmd.equals(":login")) type = CommandType.LOGIN;
     else if (cmd.equals(":h") || cmd.equals(":help")) type = CommandType.HELP;
 
     return type;
