@@ -21,7 +21,6 @@ public class LoginManager extends BasicActor<Msg, Void> {
             users.put(parts[1], parts[2]);
             msg.getFrom().send(new Msg(MsgType.OK, null, null));
           } else{
-            msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
             if(users.get(parts[1]).equals(parts[2])) msg.getFrom().send(new Msg(MsgType.OK, null, null));
             else msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
           }

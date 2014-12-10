@@ -9,6 +9,9 @@ import java.util.concurrent.ExecutionException;
 public class Pigeon{
   final ActorRef to;
 
+  /**
+   * Pigeon constructor. 
+  **/
   public Pigeon(ActorRef to){
     this.to = to;
   }
@@ -17,7 +20,6 @@ public class Pigeon{
     return carry(type, null);
   }
 
-  //@Suspendable
   public Msg carry(MsgType type, Object content) throws InterruptedException, SuspendExecution, ExecutionException{
     Msg res = null;
     //try{

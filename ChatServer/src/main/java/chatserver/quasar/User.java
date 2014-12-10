@@ -28,7 +28,6 @@ public class User extends BasicActor<Msg, Void> {
     this.roomManager = roomManager;
     this.loginManager = loginManager;
     this.socket = socket; 
-    // this.uname = uname; this variable will be set after login
   }
 
   // where the user logs in
