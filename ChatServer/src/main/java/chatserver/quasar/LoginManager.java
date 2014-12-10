@@ -14,11 +14,6 @@ public class LoginManager extends BasicActor<Msg, Void> {
       switch (msg.getType()) {
         case DATA:
           return true;
-        case EOF:
-        case IOE:
-          return false;
-        case LINE:
-          return true;
       }
       return false;  // stops the actor if some unexpected message is received
     }));

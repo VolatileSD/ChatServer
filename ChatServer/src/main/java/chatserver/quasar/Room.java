@@ -12,7 +12,7 @@ import chatserver.util.MsgType;
 
 public class Room extends BasicActor<Msg, Void> {
   private Set<ActorRef> users = new HashSet();
-  private String topic;
+  private String topic; // name?
   public Room(String topic){this.topic=topic;}
 
   protected Void doRun() throws InterruptedException, SuspendExecution {

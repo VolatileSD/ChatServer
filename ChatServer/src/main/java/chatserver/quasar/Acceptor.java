@@ -10,26 +10,17 @@ import co.paralleluniverse.fibers.io.*;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 
-import java.util.Map;
-import java.util.HashMap;
-
 
 public class Acceptor extends BasicActor {
-  public Map<String, ActorRef> map;
   final int port;
 
   public Acceptor(int port) { 
     this.port = port; 
-    this.map = new HashMap();
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
     ActorRef mainRoom = new Room("Main").spawn();
-    ActorRef roomA = new Room("Expa").spawn();
-    ActorRef roomB = new Room("Expb").spawn();
-    map.put("Main", mainRoom);
-    map.put("Expa", roomA);
-    map.put("Expb", roomB);
+    // the mainRoom shall be returned when someone asks for the list of rooms?
     try {
       FiberServerSocketChannel ss = FiberServerSocketChannel.open();
       ss.bind(new InetSocketAddress(port));

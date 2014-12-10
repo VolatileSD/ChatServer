@@ -47,6 +47,8 @@ public class User extends BasicActor<Msg, Void> {
               case LOGIN:
                 break;
               case CHANGE_ROOM:
+                // instead of this the user should talk to the roomManager
+                /*
                 Iterator<String> it = ac.map.keySet().iterator();
                 while(it.hasNext()){
                   System.out.print((String)it.next());
@@ -64,6 +66,7 @@ public class User extends BasicActor<Msg, Void> {
                   byte[] er= "Room does not exist. Try again.\n".getBytes();
                   socket.write(ByteBuffer.wrap(er));
                 }
+                */
               break;
               case HELP:
                 byte[] uc1 = "Available commands\n".getBytes();

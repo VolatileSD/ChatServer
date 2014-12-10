@@ -3,14 +3,20 @@ package chatserver.rest;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
+import co.paralleluniverse.actors.ActorRef;
+import java.util.ArrayList;
 
 import chatserver.rest.resources.RoomResource;
+import chatserver.rest.resources.RoomsResource;
 import chatserver.rest.health.ChatServerHealthCheck;
+import chatserver.rest.entities.Rooms;
 
 
 public class ChatServerApplication extends Application<ChatServerConfiguration> {
-  public static void main(String[] args) throws Exception {
-    new ChatServerApplication().run(args);
+  private final ActorRef roomManager;
+
+  public ChatServerApplication(ActorRef roomManager){
+    this.roomManager = roomManager;
   }
 
   @Override
@@ -21,7 +27,9 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
 
   @Override
   public void run(ChatServerConfiguration configuration, Environment environment) {
-    environment.jersey().register(new RoomResource());
+    Rooms rooms = new Rooms();
+    environment.jersey().register(new RoomsResource(rooms));
+    environment.jersey().register(new RoomResource(rooms, roomManager));
     environment.healthChecks().register("ChatServer", new ChatServerHealthCheck());
   }
 }
