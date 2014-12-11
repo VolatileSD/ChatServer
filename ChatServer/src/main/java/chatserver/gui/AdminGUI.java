@@ -1,76 +1,41 @@
 package chatserver.gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.googlecode.lanterna.gui.*;
+import com.googlecode.lanterna.terminal.Terminal;
+import com.googlecode.lanterna.gui.component.Panel;
+import com.googlecode.lanterna.gui.component.Button;
+import com.googlecode.lanterna.gui.Component.Alignment;
+import com.googlecode.lanterna.gui.component.Label;
+import com.googlecode.lanterna.gui.dialog.MessageBox;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.UIManager;
 
-public class AdminGUI implements ActionListener {
 
-    public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        AdminGUI gui = new AdminGUI();
-        gui.display();
-    }
 
-    JButton sendMessage;
-    JTextField messageBox;
-    JTextArea chatBox;
+public class AdminGUI extends Window
+{
+    public AdminGUI()
+    {
+        super("My Window!");
+        Panel horisontalPanel = new Panel(new Border.Invisible(), Panel.Orientation.HORISONTAL);
+        Panel leftPanel = new Panel(new Border.Bevel(true), Panel.Orientation.VERTICAL);
+        Panel middlePanel = new Panel(new Border.Bevel(true), Panel.Orientation.VERTICAL);
+        Panel rightPanel = new Panel(new Border.Bevel(true), Panel.Orientation.VERTICAL);
 
-    public void display() {
+        horisontalPanel.addComponent(leftPanel);
+        horisontalPanel.addComponent(middlePanel);
+        horisontalPanel.addComponent(rightPanel);
 
-        JFrame frame = new JFrame("Colt Chat");
-        JPanel southPanel = new JPanel();
-
-        frame.getContentPane().add(BorderLayout.SOUTH, southPanel);
-        southPanel.setBackground(Color.BLUE);
-        southPanel.setLayout(new GridBagLayout());
-
-        messageBox = new JTextField(30);
-        sendMessage = new JButton("Send Message");
-        chatBox = new JTextArea();
-        chatBox.setEditable(false);
-        frame.getContentPane().add(BorderLayout.CENTER, chatBox);
-
-        chatBox.setLineWrap(true);
-
-        GridBagConstraints left = new GridBagConstraints();
-        left.anchor = GridBagConstraints.WEST;
-        GridBagConstraints right = new GridBagConstraints();
-        right.anchor = GridBagConstraints.EAST;
-        right.weightx = 2.0;
-
-        southPanel.add(messageBox, left);
-        southPanel.add(sendMessage, right);
-
-        sendMessage.addActionListener(this);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
-        frame.setSize(470, 300);
-    }
-
-    public void actionPerformed(ActionEvent event) {
-        if (messageBox.getText().length() < 1) {
-            // do nothing 
-        } else {
-            chatBox.append(messageBox.getText() + "\n");
-            messageBox.setText("");
-        }
+        addComponent(horisontalPanel);
+        addComponent(new Label("This is the second label, red", Terminal.Color.RED));
+        addComponent(new Label("This is the third label, fixed 50 columns", 50));
+        addComponent(new Label("This is the last label\nSpanning\nMultiple\nRows"));
+        addComponent(new Button("Button with action", new Action() {
+                @Override
+                public void doAction() {
+                   MessageBox.showMessageBox(getOwner(), "Hello", "You selected the button with an action attached to it!");
+                }
+            }));
     }
 }
+
