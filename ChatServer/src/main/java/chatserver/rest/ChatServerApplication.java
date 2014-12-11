@@ -10,6 +10,7 @@ import chatserver.rest.resources.RoomResource;
 import chatserver.rest.resources.RoomsResource;
 import chatserver.rest.health.ChatServerHealthCheck;
 import chatserver.rest.entities.Rooms;
+import chatserver.rest.entities.Admin;
 
 
 public class ChatServerApplication extends Application<ChatServerConfiguration> {
@@ -31,5 +32,10 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
     environment.jersey().register(new RoomsResource(rooms));
     environment.jersey().register(new RoomResource(rooms, roomManager));
     environment.healthChecks().register("ChatServer", new ChatServerHealthCheck());
+    /*
+    final HttpClient httpClient = new HttpClientBuilder(environment).using(config.getHttpClientConfiguration())
+                                                                    .build();
+    environment.addResource(new ExternalServiceResource(httpClient));
+    */
   }
 }

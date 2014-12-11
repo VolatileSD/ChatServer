@@ -14,6 +14,7 @@ import chatserver.util.CommandType;
 import chatserver.util.Util;
 import chatserver.util.State;
 import chatserver.util.Pigeon;
+import chatserver.gui.AdminGUI;
 
 public class User extends BasicActor<Msg, Void> {
   static int MAXLEN = 1024;

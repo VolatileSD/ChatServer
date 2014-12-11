@@ -23,6 +23,7 @@ public class Acceptor extends BasicActor {
   protected Void doRun() throws InterruptedException, SuspendExecution {
     ActorRef mainRoom = new Room("Main").spawn();
     ActorRef loginManager = new LoginManager().spawn();
+    
     // the mainRoom shall be returned when someone asks for the list of rooms?
     try {
       FiberServerSocketChannel ss = FiberServerSocketChannel.open();
