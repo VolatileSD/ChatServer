@@ -55,6 +55,6 @@ public class RoomResource {
 
   @DELETE
   public Response deleteRoom(@PathParam("name") String roomName) {
-    return Response.status(403).build();
+    return Response.status(500).build();
   }  
 }

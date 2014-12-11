@@ -28,6 +28,8 @@ public class RoomManager extends BasicActor<Msg, Void> {
           return true;
         case DELETE_ROOM:
           return true;
+        case CHANGE_ROOM:
+          return true;
       }
       return false;  // stops the actor if some unexpected message is received
     }));

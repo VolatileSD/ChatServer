@@ -22,18 +22,16 @@ public class Pigeon{
 
   public Msg carry(MsgType type, Object content) throws InterruptedException, SuspendExecution, ExecutionException{
     Msg res = null;
-    //try{
-      Actor<Msg, Msg> pigeon = new BasicActor<Msg, Msg>() {
-        @Override
-        protected Msg doRun() throws InterruptedException, SuspendExecution {
-          to.send(new Msg(type, self(), content));
-          Msg reply = receive();
-          return reply;
-        }
-      };
-      pigeon.spawn();
-      res = pigeon.get();
-    //} catch (Exception e){ System.out.println("_EX_: " + e.getMessage()); }
+    Actor<Msg, Msg> pigeon = new BasicActor<Msg, Msg>() {
+      @Override
+      protected Msg doRun() throws InterruptedException, SuspendExecution {
+        to.send(new Msg(type, self(), content));
+        Msg reply = receive();
+        return reply;
+      }
+    };
+    pigeon.spawn();
+    res = pigeon.get(); // study timeout
 
     return res;      
   }

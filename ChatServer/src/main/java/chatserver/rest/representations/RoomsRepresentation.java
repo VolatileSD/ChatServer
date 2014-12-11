@@ -7,7 +7,7 @@ import java.util.List;
 public class RoomsRepresentation {
   public List<String> rooms = new ArrayList<String>();
 
-	@JsonCreator
+  @JsonCreator
   public RoomsRepresentation(){
   }
  

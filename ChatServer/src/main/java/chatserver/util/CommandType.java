@@ -1,5 +1,8 @@
 package chatserver.util;
 
 public enum CommandType{
-  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN, LOGOUT, UNKNOWN
+  HELP, CHANGE_ROOM, 
+  CREATE, REMOVE, LOGIN, LOGOUT, 
+  LIST_ROOMS, LIST_USERS,
+  UNKNOWN
 }

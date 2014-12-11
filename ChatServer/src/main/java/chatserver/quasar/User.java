@@ -12,6 +12,7 @@ import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.CommandType;
 import chatserver.util.Util;
+import chatserver.util.State;
 import chatserver.util.Pigeon;
 
 public class User extends BasicActor<Msg, Void> {
@@ -21,6 +22,7 @@ public class User extends BasicActor<Msg, Void> {
   private ActorRef roomManager;
   private ActorRef loginManager;
   private String uname;
+  private State state;
   final FiberSocketChannel socket;
 
   public User(ActorRef room, ActorRef roomManager, ActorRef loginManager, FiberSocketChannel socket) { 
@@ -28,13 +30,14 @@ public class User extends BasicActor<Msg, Void> {
     this.roomManager = roomManager;
     this.loginManager = loginManager;
     this.socket = socket; 
+    state = State.LOGGED_OUT;
   }
 
-  // where the user logs in
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
     Util util = new Util();
     new LineReader(self(), socket).spawn();
     room.send(new Msg(MsgType.ENTER, self(), uname));
+
     while (receive(msg -> {
       try {
       switch (msg.getType()) {
@@ -48,34 +51,23 @@ public class User extends BasicActor<Msg, Void> {
                 break;
               case LIST_USERS:
                 break;
+              case CREATE:
+                create(parts);
+                break;
               case LOGIN:
-                if(parts.length != 3) socket.write(ByteBuffer.wrap("Uknown command\n".getBytes()));
-                else{
-                  Msg reply = new Pigeon(loginManager).carry(MsgType.LOGIN, parts);
-                  switch(reply.getType()){
-                    case OK:
-                      socket.write(ByteBuffer.wrap("OK\n".getBytes()));
-                      uname = parts[1];
-                      // dont know if this ok is create ok or login ok
-                      running();
-                    case INVALID:
-                      socket.write(ByteBuffer.wrap("INVALID\n".getBytes()));
-                      break;
-                  }
-                }
+                // check if is already logged in
+                boolean b = login(parts);
+                if(b) state = State.LOGGED_IN;
                 break;
               case CHANGE_ROOM:
-                // some message: log in first
+                // check if is already logged in
                 break;
               case HELP:
-                byte[] uc1 = "Available commands\n".getBytes();
-                socket.write(ByteBuffer.wrap(uc1));
-                break;
+                say("Available commands\n");
                 //Help command: returns a list of all available commands
+                break;
               case UNKNOWN:
-                byte[] uc = "Unknown command\t".getBytes();
-                socket.write(ByteBuffer.wrap(uc));
-                socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
+                say("Unknown Command\n");
                 break;
             }
           } else{
@@ -90,90 +82,63 @@ public class User extends BasicActor<Msg, Void> {
           socket.close();
           return false;
         case LINE:
-            socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
+          say((byte[]) msg.getContent());
           return true;
       }
-      } catch (IOException ioe) { room.send(new Msg(MsgType.LEAVE, self(),uname)); }
+      } 
+      catch (IOException ioe) { room.send(new Msg(MsgType.LEAVE, self(),uname)); }
       catch (ExecutionException ee) { System.out.println("PIGEON: " + ee.getMessage()); }
+      
       return false;  // stops the actor if some unexpected message is received
     }));
     return null;
   }
 
+  void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution{
+    if(parts.length != 3) say("Unknown Command\n");
+    else{
+      Msg reply = new Pigeon(loginManager).carry(MsgType.CREATE, parts);
+      switch(reply.getType()){
+        case OK:
+          say("OK\n");
+          break;
+        case INVALID:
+          say("INVALID\n");
+          break;
+      }
+    }
+  }
 
-  // after login
-  protected Void running() throws InterruptedException, SuspendExecution { //Exceptions
-    Util util = new Util();
-    while (receive(msg -> {
-      try {
-      switch (msg.getType()) {
-        case DATA:
-          String line = new String((byte[]) msg.getContent());
-          if(line.startsWith(":")){
-            String[] parts = (line.substring(0, line.length()-2)).split(" ");
-            switch (util.getCommandType(parts[0])){
-              //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
-              case LIST_ROOMS:
-                break;
-              case LIST_USERS:
-                break;
-              case LOGIN:
-                // some message: you're already logged in
-                break;
-              case CHANGE_ROOM:
-                // instead of this the user should talk to the roomManager
-                /*
-                Iterator<String> it = ac.map.keySet().iterator();
-                while(it.hasNext()){
-                  System.out.print((String)it.next());
-                }
-                byte[] er1= parts[1].getBytes();
-                  socket.write(ByteBuffer.wrap(er1));
-                  
-                  
-                if (ac.map.containsKey(parts[1])){ 
-                  room.send(new Msg(MsgType.LEAVE, self(),uname));
-                  room=ac.map.get(parts[1]);
-                  room.send(new Msg(MsgType.ENTER, self(),uname));
-                }
-                else{
-                  byte[] er= "Room does not exist. Try again.\n".getBytes();
-                  socket.write(ByteBuffer.wrap(er));
-                }
-                */
-              break;
-              case HELP:
-                byte[] uc1 = "Available commands\n".getBytes();
-                socket.write(ByteBuffer.wrap(uc1));
-                break;
-                //Help command: returns a list of all available commands
-              case UNKNOWN:
-                byte[] uc = "Unknown command\t".getBytes();
-                socket.write(ByteBuffer.wrap(uc));
-                socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
-                break;
-            }
-          } else{
-            String mess = new String((byte[]) msg.getContent());
-            byte[] messcont= ("@"+uname+": "+mess).getBytes();
-            room.send(new Msg(MsgType.LINE,null, messcont));            
-          }
-          return true;
-        case EOF:
-        case IOE:
-          room.send(new Msg(MsgType.LEAVE, self(),uname));
-          socket.close();
-          return false;
-        case LINE:
-            socket.write(ByteBuffer.wrap((byte[]) msg.getContent()));
-          return true;
+  boolean login(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution{
+    boolean b = false;
+    if(parts.length != 3) say("Unknown Command\n");
+    else{
+      Msg reply = new Pigeon(loginManager).carry(MsgType.LOGIN, parts);
+      switch(reply.getType()){
+        case OK:
+          say("OK\n");
+          setUsername(parts[1]);
+          b = true;
+          break;
+        case INVALID:
+          say("INVALID\n");
+          break;
       }
-      } catch (IOException e) {
-        room.send(new Msg(MsgType.LEAVE, self(),uname));
-      }
-      return false;  // stops the actor if some unexpected message is received
-    }));
-    return null;
+    }
+
+    return b;
+  }
+
+  void say(byte[] whatToSay) throws IOException, SuspendExecution{
+    socket.write(ByteBuffer.wrap(whatToSay));
+  }
+
+  void say(String whatToSay) throws IOException, SuspendExecution{
+    say(whatToSay.getBytes());
+  }
+
+  void setUsername(String uname){
+    this.uname = uname;
   }
 
   static class LineReader extends BasicActor<Msg, Void> {
