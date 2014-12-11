@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import co.paralleluniverse.actors.ActorRef;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Collection;
 
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
@@ -32,11 +33,19 @@ public class RoomResource {
 
   @GET
   public Response getRoomInfo(@PathParam("name") String roomName) throws Exception{
-    Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, roomName);
-    switch(msg.getType()){
-
+    if(rooms.has(roomName)){
+      Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, roomName);
+      switch(msg.getType()){
+        case OK:
+          RoomRepresentation rr = new RoomRepresentation();
+          rr.setName(roomName);
+          rr.setUsers((Collection<String>) msg.getContent());
+          return Response.ok(new ObjectMapper().writeValueAsString(rr)).build();
+        default:
+          return Response.status(500).build();
+      }
     }
-    return Response.ok().build();
+    else return Response.status(409).build();  
   }
 
   @PUT

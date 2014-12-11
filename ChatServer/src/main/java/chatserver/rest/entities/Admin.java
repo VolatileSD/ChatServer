@@ -75,7 +75,7 @@ import org.apache.http.util.CharArrayBuffer;
 
 public class Admin extends Configuration { 
     
-    public final void lisrRoomRequest() throws Exception {
+    public final void listRoomsRequest() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
             HttpGet httpget = new HttpGet("http://localhost:8080/rooms");

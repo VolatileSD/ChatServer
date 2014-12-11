@@ -12,8 +12,23 @@ import com.googlecode.lanterna.gui.dialog.MessageBox;
 
 
 
-public class AdminGUI extends Window
-{
+public class AdminGUI extends Window {
+    /* CODIGO QUE ESTAVA NA MAIN
+    GUIScreen guiScreen = TerminalFacade.createGUIScreen();
+    if(guiScreen == null) {
+        System.err.println("Couldn't allocate a terminal!");
+        return;
+    }
+    guiScreen.getScreen().startScreen();
+    guiScreen.setTitle("GUI Test");
+    
+    AdminGUI myWindow = new AdminGUI();
+    guiScreen.showWindow(myWindow, GUIScreen.Position.CENTER);
+
+    //Do GUI logic here
+
+    guiScreen.getScreen().stopScreen();
+    */
     public AdminGUI()
     {
         super("My Window!");
