@@ -19,11 +19,10 @@ public class Room extends BasicActor<Msg, Void> {
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
-
+    byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:
-        byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
           // in case of the main room everyone will have null as name s
           String username = (String) msg.getContent();
           users.put(msg.getFrom(), username);
