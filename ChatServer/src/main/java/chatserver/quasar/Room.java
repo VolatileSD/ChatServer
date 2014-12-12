@@ -3,17 +3,20 @@ package chatserver.quasar;
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.*;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
 
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 
 
 public class Room extends BasicActor<Msg, Void> {
-  private Set<ActorRef> users = new HashSet();
+  private Map<ActorRef, String> users = new HashMap();
   private String topic; // name?
-  public Room(String topic){this.topic=topic;}
+  
+  public Room(String topic){ 
+    this.topic = topic; 
+  }
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
     byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
@@ -21,18 +24,27 @@ public class Room extends BasicActor<Msg, Void> {
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:
-          users.add(msg.getFrom());
+          // in case of the main room everyone will have null as name s
+          String username = (String) msg.getContent();
+          users.put(msg.getFrom(), username);
           msg.getFrom().send(new Msg(MsgType.LINE, null, welcomeMessage));
-          for (ActorRef u : users) u.send(new Msg(MsgType.LINE, null, ("#User " + msg.getContent() + " just got in!\n").getBytes()));
+          byte[] forAllUserEnter = ("#User " + username + " just got in!\n").getBytes(); 
+          for (ActorRef u : users.keySet()) 
+            u.send(new Msg(MsgType.LINE, null, forAllUserEnter));
           return true;
-        case LEAVE:
+        case LEAVE:ra
           users.remove(msg.getFrom());
-          for (ActorRef u : users) u.send(new Msg(MsgType.LINE, null, ("#User " + msg.getContent() + " just left!\n").getBytes()));
+          byte[] forAllUserLeave  = ("#User " + msg.getContent() + " just left!\n").getBytes();
+          for (ActorRef u : users.keySet()) 
+            u.send(new Msg(MsgType.LINE, null, forAllUserLeave));
           return true;
         case LINE:
-          for (ActorRef u : users) u.send(msg); // danger!?!?
+          for (ActorRef u : users.keySet()) u.send(msg); // danger!?!?
           // concurrent exception can be thrown here right?
           // clone might solve it
+          return true;
+        case ROOM_INFO:
+          msg.getFrom().send(new Msg(MsgType.OK, null, users.values()));
           return true;
       }
       return false;

@@ -1,16 +1,23 @@
 package chatserver.rest.entities;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.ArrayList;
 
 public class Rooms{
-  private List<String> rooms = new ArrayList();
+  private Collection<String> rooms = new ArrayList();
 
   public synchronized void addRoom(String roomName){
     rooms.add(roomName);
   }
 
-  public synchronized List<String> getRooms() {
+  /*
+	 * Tests if there is a room with this name;
+  */
+  public synchronized boolean has(String roomName){
+  	return rooms.contains(roomName);
+  }
+
+  public synchronized Collection<String> getRooms() {
     // is this necessary?
     // or still dangerous?
     return new ArrayList<String>(rooms);

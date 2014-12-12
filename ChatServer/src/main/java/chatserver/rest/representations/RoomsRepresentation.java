@@ -2,16 +2,16 @@ package chatserver.rest.representations;
 
 import com.fasterxml.jackson.annotation.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class RoomsRepresentation {
-  public List<String> rooms = new ArrayList<String>();
+  public Collection<String> rooms = new ArrayList<String>();
 
   @JsonCreator
   public RoomsRepresentation(){
   }
  
-  public void setRooms(List<String> rooms) {
+  public void setRooms(Collection<String> rooms) {
     this.rooms = rooms;
   }
 }
