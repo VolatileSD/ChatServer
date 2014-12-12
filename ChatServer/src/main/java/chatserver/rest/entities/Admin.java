@@ -73,9 +73,9 @@ import org.apache.http.util.CharArrayBuffer;
 * Admin client : resquests to the REST API
 */
 
-public class Admin extends Configuration { 
+public class Admin { 
     
-    public final void lisrRoomRequest() throws Exception {
+    public final void listRoomsRequest() throws Exception {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         try {
             HttpGet httpget = new HttpGet("http://localhost:8080/rooms");
