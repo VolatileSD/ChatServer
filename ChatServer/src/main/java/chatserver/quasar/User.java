@@ -57,11 +57,12 @@ public class User extends BasicActor<Msg, Void> {
                 case LIST_USERS:
                   break;
                 case CREATE:
-                  create(parts);
+                  say("Invalid command: You are already registered in.");
+                  break;
                   break;
                 case LOGIN:
                   // check if is already logged in
-                  say("you are already logged in.");
+                  say("Invalid command: You are already logged in.");
                   break;
                 case LOGOUT:
                   // check if is already logged out
