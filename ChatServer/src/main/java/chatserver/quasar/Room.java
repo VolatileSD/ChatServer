@@ -19,11 +19,11 @@ public class Room extends BasicActor<Msg, Void> {
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
-    byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
 
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:
+        byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
           // in case of the main room everyone will have null as name s
           String username = (String) msg.getContent();
           users.put(msg.getFrom(), username);
@@ -32,7 +32,7 @@ public class Room extends BasicActor<Msg, Void> {
           for (ActorRef u : users.keySet()) 
             u.send(new Msg(MsgType.LINE, null, forAllUserEnter));
           return true;
-        case LEAVE:ra
+        case LEAVE:
           users.remove(msg.getFrom());
           byte[] forAllUserLeave  = ("#User " + msg.getContent() + " just left!\n").getBytes();
           for (ActorRef u : users.keySet()) 
