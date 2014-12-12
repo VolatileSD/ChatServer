@@ -24,7 +24,7 @@ public class Room extends BasicActor<Msg, Void> {
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:
-          // in case of the main room everyone will have null as name
+          // in case of the main room everyone will have null as name s
           String username = (String) msg.getContent();
           users.put(msg.getFrom(), username);
           msg.getFrom().send(new Msg(MsgType.LINE, null, welcomeMessage));
@@ -32,7 +32,7 @@ public class Room extends BasicActor<Msg, Void> {
           for (ActorRef u : users.keySet()) 
             u.send(new Msg(MsgType.LINE, null, forAllUserEnter));
           return true;
-        case LEAVE:
+        case LEAVE:ra
           users.remove(msg.getFrom());
           byte[] forAllUserLeave  = ("#User " + msg.getContent() + " just left!\n").getBytes();
           for (ActorRef u : users.keySet()) 
