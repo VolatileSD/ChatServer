@@ -27,11 +27,11 @@ public class Pigeon{
       protected Msg doRun() throws InterruptedException, SuspendExecution {
         to.send(new Msg(type, self(), content));
         Msg reply = receive();
-        return reply;
+        return reply; // study timeout
       }
     };
     pigeon.spawn();
-    res = pigeon.get(); // study timeout
+    res = pigeon.get(); 
 
     return res;      
   }
