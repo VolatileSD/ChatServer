@@ -40,6 +40,7 @@ public class User extends BasicActor<Msg, Void> {
     say(welcomeMessage);
     }
     catch (IOException ee) {System.out.println("error" + ee.getMessage());}
+    Util util = new Util();
     new LineReader(self(), socket).spawn();
     while (receive(msg -> {
       try {
@@ -48,7 +49,6 @@ public class User extends BasicActor<Msg, Void> {
           String line = new String((byte[]) msg.getContent());
           String[] parts = (line.substring(0, line.length()-2)).split(" ");
           if(state==State.LOGGED_IN){
-            Util util = new Util();
             if(line.startsWith(":")){
               switch (util.getCommandType(parts[0])){
                 //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
