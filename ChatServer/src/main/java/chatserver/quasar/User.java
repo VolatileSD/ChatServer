@@ -35,53 +35,63 @@ public class User extends BasicActor<Msg, Void> {
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
-    Util util = new Util();
+    String welcomeMessage = ("------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n");
+    try{
+    say(welcomeMessage);
+    }
+    catch (IOException ee) {System.out.println("error" + ee.getMessage());}
     new LineReader(self(), socket).spawn();
-    room.send(new Msg(MsgType.ENTER, self(), username));
-
     while (receive(msg -> {
       try {
       switch (msg.getType()) {
         case DATA:
           String line = new String((byte[]) msg.getContent());
-          if(line.startsWith(":")){
-            String[] parts = (line.substring(0, line.length()-2)).split(" ");
-            switch (util.getCommandType(parts[0])){
-              //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
-              case LIST_ROOMS:
-                break;
-              case LIST_USERS:
-                break;
-              case CREATE:
-                create(parts);
-                break;
-              case LOGIN:
-                // check if is already logged in
-                login(parts);
-                break;
-              case LOGOUT:
-                // check if is already logged out
-                // if is logged in, send a LEAVE message to his room
-                logout(parts);
-                break;
-              case CHANGE_ROOM:
-                // check if is already logged in
-                changeRoom(parts);
-                break;
-              case HELP:
-                say("Available commands\n");
-                //Help command: returns a list of all available commands
-                break;
-              case UNKNOWN:
-                say("Unknown Command\n");
-                break;
-            }
+          String[] parts = (line.substring(0, line.length()-2)).split(" ");
+          if(state==State.LOGGED_IN){
+            Util util = new Util();
+            if(line.startsWith(":")){
+              switch (util.getCommandType(parts[0])){
+                //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
+                case LIST_ROOMS:
+                  break;
+                case LIST_USERS:
+                  break;
+                case CREATE:
+                  create(parts);
+                  break;
+                case LOGIN:
+                  // check if is already logged in
+                  say("you are already logged in.");
+                  break;
+                case LOGOUT:
+                  // check if is already logged out
+                  // if is logged in, send a LEAVE message to his room
+                  logout(parts);
+                  break;
+                case CHANGE_ROOM:
+                  // check if is already logged in
+                  changeRoom(parts);
+                  break;
+                case HELP:
+                  say("Available commands\n");
+                  //Help command: returns a list of all available commands
+                  break;
+                case UNKNOWN:
+                  say("Unknown Command\n");
+                  break;
+              }
           } else{
-            String mess = new String((byte[]) msg.getContent());
-            byte[] messcont= ("@"+username+": "+mess).getBytes();
-            room.send(new Msg(MsgType.LINE,null, messcont));            
+            byte[] messcont= ("@"+username+": "+line).getBytes();
+            room.send(new Msg(MsgType.LINE,null, messcont));
           }
-          return true;
+          }
+          else{
+            if(line.startsWith(":login")){login(parts);}
+            else if(line.startsWith(":create")){create(parts);}
+            else if (line.startsWith(":h")){say("Available commands\n :create user pass - if you already registered \n :login user pass\n");}
+            else{say("You have to login to chat. Type :h for help.\n");}
+          }
+        return true;
         case EOF:
         case IOE:
           room.send(new Msg(MsgType.LEAVE, self(),username));
@@ -90,8 +100,7 @@ public class User extends BasicActor<Msg, Void> {
         case LINE:
           say((byte[]) msg.getContent());
           return true;
-      }
-      } 
+      } }
       catch (IOException ioe) { room.send(new Msg(MsgType.LEAVE, self(),username)); }
       catch (ExecutionException ee) { System.out.println("PIGEON: " + ee.getMessage()); }
       
@@ -99,17 +108,19 @@ public class User extends BasicActor<Msg, Void> {
     }));
     return null;
   }
+  
+  
 
   private void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution{
-    if(parts.length != 3) say("Unknown Command\n");
+    if(parts.length != 3) say("Unknown Command "+ parts[0]+"\n");
     else{
       Msg reply = new Pigeon(loginManager).carry(MsgType.CREATE, parts);
       switch(reply.getType()){
         case OK:
-          say("OK\n");
+          say("New user "+parts[1]+" created successfully\n");
           break;
         case INVALID:
-          say("INVALID\n");
+          say("Something went wrong\n");
           break;
       }
     }
@@ -117,17 +128,18 @@ public class User extends BasicActor<Msg, Void> {
 
   private void login(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution{
     boolean b = false;
-    if(parts.length != 3) say("Unknown Command\n");
+    if(parts.length != 3) say("Unknown Command "+ parts[0]+"\n");
     else{
       Msg reply = new Pigeon(loginManager).carry(MsgType.LOGIN, parts);
       switch(reply.getType()){
         case OK:
-          say("OK\n");
+          say("User "+parts[1]+", you are logged in.\n" );
           setUsername(parts[1]);
           state = State.LOGGED_IN;
+          room.send(new Msg(MsgType.ENTER, self(), username));
           break;
         case INVALID:
-          say("INVALID\n");
+          say("Login invalid. Check valid username or password.\n");
           break;
       }
     }
@@ -148,7 +160,7 @@ public class User extends BasicActor<Msg, Void> {
       Msg reply = new Pigeon(roomManager).carry(MsgType.CHANGE_ROOM, roomAndUsername);
       switch(reply.getType()){
         case OK:
-          say("OK\n");
+          say("Room changed successfully.\n");
           room = reply.getFrom();
           break;
         case INVALID:
