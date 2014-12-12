@@ -39,9 +39,16 @@ public class RoomManager extends BasicActor<Msg, Void> {
         case DELETE_ROOM:
           return true;
         case CHANGE_ROOM:
-          return true;
-        case SPECIAL: //FOR TESTS
-          rooms.put("Main", msg.getFrom());
+          //Falta dizer as salas que o user mudou
+          String[] roomAndUser = (String[]) msg.getContent();
+          System.out.print(roomAndUser);
+          String roomName2=roomAndUser[0];
+          if(rooms.containsKey(roomName2)){ 
+            Msg reply = new Pigeon(rooms.get(roomName2)).carry(MsgType.OK);
+            msg.getFrom().send(reply);
+          } else {
+            msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
+          }
           return true;
       }
       } catch (ExecutionException ee) { System.out.println("PIGEON: " + ee.getMessage()); }

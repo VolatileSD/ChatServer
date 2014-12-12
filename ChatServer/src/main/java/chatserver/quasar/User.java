@@ -158,10 +158,13 @@ public class User extends BasicActor<Msg, Void> {
       roomAndUsername[0] = parts[1];
       roomAndUsername[1] = username;
       Msg reply = new Pigeon(roomManager).carry(MsgType.CHANGE_ROOM, roomAndUsername);
+      System.out.print("Changing room");
       switch(reply.getType()){
         case OK:
-          say("Room changed successfully.\n");
+          room.send(new Msg(MsgType.LEAVE, self(),username));
           room = reply.getFrom();
+          room.send(new Msg(MsgType.ENTER, self(), username));
+          say("Room changed successfully.\n");
           break;
         case INVALID:
           say("Room " + parts[1] + " does not exists\n");
