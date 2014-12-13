@@ -9,8 +9,7 @@ public class Pigeon {
    final ActorRef to;
 
    /**
-    * Pigeon constructor.
-    *
+    * 
     * @param to To whom the message goes
     */
    public Pigeon(ActorRef to) {

@@ -22,7 +22,7 @@ public class Acceptor extends BasicActor {
    @Override
    protected Void doRun() throws InterruptedException, SuspendExecution {
       ActorRef mainRoom = new Room("Main").spawn();
-      ActorRef loginManager = new LoginManager().spawn();
+      ActorRef manager = new Manager().spawn();
 
       byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
 
@@ -32,7 +32,7 @@ public class Acceptor extends BasicActor {
          ss.bind(new InetSocketAddress(port));
          while (true) {
             FiberSocketChannel socket = ss.accept();
-            ActorRef user = new User(mainRoom, roomManager, loginManager, socket).spawn();
+            ActorRef user = new User(mainRoom, roomManager, manager, socket).spawn();
             user.send(new Msg(MsgType.LINE, null, welcomeMessage));
          }
       } catch (IOException e) {

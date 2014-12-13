@@ -8,6 +8,12 @@ public class Msg {
    private final ActorRef from;
    private final Object content;  // careful with mutable objects, such as the byte array
 
+   /**
+    *
+    * @param type Type of the message
+    * @param from From whom the message is
+    * @param content Content of the message
+    */
    public Msg(MsgType type, ActorRef from, Object content) {
       this.type = type;
       this.from = from;

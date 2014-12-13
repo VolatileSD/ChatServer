@@ -16,7 +16,7 @@ import chatserver.db.User;
  *
  *
  */
-public class LoginManager extends BasicActor<Msg, Void> {
+public class Manager extends BasicActor<Msg, Void> {
 
    private final Map<String, User> users = new HashMap();
 

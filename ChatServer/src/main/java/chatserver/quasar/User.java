@@ -18,15 +18,15 @@ public class User extends BasicActor<Msg, Void> {
 
    private ActorRef room;
    private final ActorRef roomManager;
-   private final ActorRef loginManager;
+   private final ActorRef manager;
    private String username;
    private final FiberSocketChannel socket;
    private final Util util;
 
-   public User(ActorRef room, ActorRef roomManager, ActorRef loginManager, FiberSocketChannel socket) {
+   public User(ActorRef room, ActorRef roomManager, ActorRef manager, FiberSocketChannel socket) {
       this.room = room;
       this.roomManager = roomManager;
-      this.loginManager = loginManager;
+      this.manager = manager;
       this.socket = socket;
       this.util = new Util();
    }
@@ -148,7 +148,7 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
-         Msg reply = new Pigeon(loginManager).carry(MsgType.CREATE, parts);
+         Msg reply = new Pigeon(manager).carry(MsgType.CREATE, parts);
          switch (reply.getType()) {
             case OK:
                say("New user " + parts[1] + " created successfully\n");
@@ -165,13 +165,13 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
-         Msg reply = new Pigeon(loginManager).carry(MsgType.LOGIN, parts);
+         Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, parts);
          switch (reply.getType()) {
             case OK:
                say(parts[1] + ", you are logged in.\n");
                setUsername(parts[1]);
                room.send(new Msg(MsgType.ENTER, self(), username));
-               loginManager.send(new Msg(MsgType.LOGIN_OK, self(), parts)); // sends itself to room manager
+               manager.send(new Msg(MsgType.LOGIN_OK, self(), parts)); // sends itself to room manager
                runChat();
                break;
             case INVALID:
@@ -216,7 +216,7 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
-         Msg reply = new Pigeon(loginManager).carry(MsgType.PRIVATE, parts);
+         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, parts);
          switch (reply.getType()) {
             case OK:
                say("Message successfully sent to " + parts[1] + ".\n");
