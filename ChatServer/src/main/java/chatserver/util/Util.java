@@ -29,7 +29,7 @@ public class Util {
             type = CommandType.CHANGE_ROOM;
             break;
          case ":private":
-            type=CommandType.PRIVATE;
+            type = CommandType.PRIVATE;
             break;
          case ":h":
          case ":help":

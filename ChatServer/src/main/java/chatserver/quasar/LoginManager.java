@@ -9,18 +9,16 @@ import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.db.User;
 
-
-   /**
-    *  Manager deals with the creation, removal and login of users.
-    * It also handles private messaging, giving users access to a map that 
-    * 
-    * 
-    * */
-
+/**
+ * Manager deals with the creation, removal and login of users. It also handles
+ * private messaging, giving users access to a map that
+ *
+ *
+ *
+ */
 public class LoginManager extends BasicActor<Msg, Void> {
 
    private final Map<String, User> users = new HashMap();
-   
 
    @Override
    @SuppressWarnings("empty-statement")
@@ -30,7 +28,7 @@ public class LoginManager extends BasicActor<Msg, Void> {
          switch (msg.getType()) {
             case CREATE:
                if (!users.containsKey(parts[1])) { // If the username does not exists, creates a new user
-                  users.put(parts[1], new User(parts[1],parts[2]));
+                  users.put(parts[1], new User(parts[1], parts[2]));
                   msg.getFrom().send(new Msg(MsgType.OK, null, null));
                } else { // if the username is in use, emit a warning
                   msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
@@ -47,18 +45,17 @@ public class LoginManager extends BasicActor<Msg, Void> {
                users.get(parts[1]).setActorRef(msg.getFrom());
                return true;
             case PRIVATE:
-               ActorRef actref=getUsersRef(parts[1]);
-               if (actref!=null) {
-               //actref.send(MsgType.PRIVATE,)
-               msg.getFrom().send(new Msg(MsgType.OK, null, null));
-               }
-               else{
-               msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
+               ActorRef actref = getUsersRef(parts[1]);
+               if (actref != null) {
+                  //actref.send(MsgType.PRIVATE,)
+                  msg.getFrom().send(new Msg(MsgType.OK, null, null));
+               } else {
+                  msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
                }
                return true;
             case REMOVE:
           // in this case, parts has only 2 elements
-         // in this case, could be a only a String instead of String[]
+               // in this case, could be a only a String instead of String[]
                if (users.containsKey(parts[1])) {
                   users.remove(parts[1]);
                   msg.getFrom().send(new Msg(MsgType.OK, null, null));
@@ -71,15 +68,19 @@ public class LoginManager extends BasicActor<Msg, Void> {
       }));
       return null;
    }
-   
-/**
- * Returns an user ActorRef given the username.
- * 
- * */
-   
-   public ActorRef getUsersRef(String user){
-      if(users.containsKey(user)) return (users.get(user)).getActorRef();
-      else return null;
-}
+
+   /**
+    * Returns an user ActorRef given the username.
+    *
+    * @param user username of the user
+    * @return user's ActorRef
+    */
+   public ActorRef getUsersRef(String user) {
+      if (users.containsKey(user)) {
+         return (users.get(user)).getActorRef();
+      } else {
+         return null;
+      }
+   }
 
 }

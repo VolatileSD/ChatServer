@@ -30,7 +30,7 @@ public class Acceptor extends BasicActor {
       try {
          FiberServerSocketChannel ss = FiberServerSocketChannel.open();
          ss.bind(new InetSocketAddress(port));
-         while (true){
+         while (true) {
             FiberSocketChannel socket = ss.accept();
             ActorRef user = new User(mainRoom, roomManager, loginManager, socket).spawn();
             user.send(new Msg(MsgType.LINE, null, welcomeMessage));

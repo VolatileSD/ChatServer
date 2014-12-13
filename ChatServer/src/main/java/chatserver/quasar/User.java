@@ -171,7 +171,7 @@ public class User extends BasicActor<Msg, Void> {
                say(parts[1] + ", you are logged in.\n");
                setUsername(parts[1]);
                room.send(new Msg(MsgType.ENTER, self(), username));
-               loginManager.send(new Msg(MsgType.LOGIN_OK,self(),parts)); // sends itself to room manager
+               loginManager.send(new Msg(MsgType.LOGIN_OK, self(), parts)); // sends itself to room manager
                runChat();
                break;
             case INVALID:
@@ -211,18 +211,18 @@ public class User extends BasicActor<Msg, Void> {
          }
       }
    }
-   
-   private void private_message(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution{
-       if (parts.length != 3) {
+
+   private void private_message(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
          Msg reply = new Pigeon(loginManager).carry(MsgType.PRIVATE, parts);
          switch (reply.getType()) {
             case OK:
-               say("Message successfully sent to "+ parts[1]+".\n");
+               say("Message successfully sent to " + parts[1] + ".\n");
                break;
             case INVALID:
-               say("Unknown user "+ parts[1]+".\n");
+               say("Unknown user " + parts[1] + ".\n");
                break;
          }
       }
