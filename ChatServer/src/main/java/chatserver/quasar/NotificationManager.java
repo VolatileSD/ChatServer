@@ -3,13 +3,18 @@ package chatserver.quasar;
 import chatserver.util.Msg;
 import co.paralleluniverse.actors.BasicActor;
 import co.paralleluniverse.fibers.SuspendExecution;
+import org.zeromq.ZMQ;
 
 public class NotificationManager extends BasicActor<Msg, Void> {
-
-    private final int port;
-
+    private final int internalPort = 3333;
+    
     public NotificationManager(int port) {
-        this.port = port;
+        ZMQ.Context context = ZMQ.context(1);
+        ZMQ.Socket xpub = context.socket(ZMQ.XPUB);
+        ZMQ.Socket xsub = context.socket(ZMQ.XSUB);
+        xpub.bind("tcp://*:" + port);
+        xsub.bind("tcp://*:" + internalPort);
+        ZMQ.proxy(xpub, xsub, null);
     }
 
     @Override
