@@ -14,14 +14,14 @@ import chatserver.util.State;
 import chatserver.util.Pigeon;
 
 public class User extends BasicActor<Msg, Void> {
-  static int MAXLEN = 1024;
+  private static int MAXLEN = 1024;
   
   private ActorRef room;
   private final ActorRef roomManager;
   private final ActorRef loginManager;
   private String username;
   private State state;
-  final FiberSocketChannel socket;
+  private final FiberSocketChannel socket;
 
   public User(ActorRef room, ActorRef roomManager, ActorRef loginManager, FiberSocketChannel socket) { 
     this.room = room; 
