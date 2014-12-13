@@ -2,7 +2,6 @@ package chatserver.quasar;
 
 import java.nio.ByteBuffer;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
@@ -10,18 +9,16 @@ import co.paralleluniverse.fibers.io.*;
 
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
-import chatserver.util.CommandType;
 import chatserver.util.Util;
 import chatserver.util.State;
 import chatserver.util.Pigeon;
-import chatserver.gui.AdminGUI;
 
 public class User extends BasicActor<Msg, Void> {
   static int MAXLEN = 1024;
   
   private ActorRef room;
-  private ActorRef roomManager;
-  private ActorRef loginManager;
+  private final ActorRef roomManager;
+  private final ActorRef loginManager;
   private String username;
   private State state;
   final FiberSocketChannel socket;
@@ -34,6 +31,8 @@ public class User extends BasicActor<Msg, Void> {
     state = State.LOGGED_OUT;
   }
 
+  @Override
+  @SuppressWarnings("empty-statement")
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
     Util util = new Util();
     new LineReader(self(), socket).spawn();
@@ -189,6 +188,7 @@ public class User extends BasicActor<Msg, Void> {
       this.dest = dest; this.socket = socket;
     }
 
+    @Override
     protected Void doRun() throws InterruptedException, SuspendExecution {
       boolean eof = false;
       byte b = 0;

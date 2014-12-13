@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class RoomsRepresentation {
-  public Collection<String> rooms = new ArrayList<String>();
+  public Collection<String> rooms = new ArrayList();
 
   @JsonCreator
   public RoomsRepresentation(){

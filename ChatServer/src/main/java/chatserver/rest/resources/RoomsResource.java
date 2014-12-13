@@ -14,7 +14,7 @@ import chatserver.rest.entities.Rooms;
 @Path("/rooms")
 @Produces(MediaType.APPLICATION_JSON)
 public class RoomsResource {
-  private Rooms rooms;
+  private final Rooms rooms;
 
   public RoomsResource(Rooms rooms) {
     this.rooms = rooms;

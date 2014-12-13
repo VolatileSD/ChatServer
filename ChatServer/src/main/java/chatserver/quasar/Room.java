@@ -2,7 +2,6 @@ package chatserver.quasar;
 
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
-import co.paralleluniverse.fibers.io.*;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -11,18 +10,18 @@ import chatserver.util.MsgType;
 
 
 public class Room extends BasicActor<Msg, Void> {
-  private Map<ActorRef, String> users = new HashMap();
-  private String topic; // name?
+  private final Map<ActorRef, String> users = new HashMap();
+  private final String topic; // name?
   private boolean cannotDelete = false;
-  
+
   public Room(String topic){ 
     this.topic = topic;
   }
 
+  @Override
+  @SuppressWarnings("empty-statement")
   protected Void doRun() throws InterruptedException, SuspendExecution {
     byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
-    boolean cannotDelete = false;
-
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:

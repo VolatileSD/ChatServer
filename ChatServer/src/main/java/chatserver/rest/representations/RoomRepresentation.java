@@ -6,7 +6,7 @@ import java.util.Collection;
 
 public class RoomRepresentation {
   public String name; 
-  public Collection<String> users = new ArrayList<String>();
+  public Collection<String> users = new ArrayList();
 
   @JsonCreator
   public RoomRepresentation(){

@@ -20,6 +20,7 @@ public class Acceptor extends BasicActor {
     this.roomManager = roomManager;
   }
 
+  @Override
   protected Void doRun() throws InterruptedException, SuspendExecution {
     ActorRef mainRoom = new Room("Main").spawn();
     ActorRef loginManager = new LoginManager().spawn();

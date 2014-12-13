@@ -2,7 +2,6 @@ package chatserver.quasar;
 
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
-import co.paralleluniverse.fibers.io.*;
 import java.util.concurrent.ExecutionException;
 import java.util.Map;
 import java.util.HashMap;
@@ -12,8 +11,10 @@ import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
 
 public class RoomManager extends BasicActor<Msg, Void> {
-  private Map<String, ActorRef> rooms = new HashMap();
+  private final Map<String, ActorRef> rooms = new HashMap();
 
+  @Override
+  @SuppressWarnings("empty-statement")
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
 
     while (receive(msg -> {

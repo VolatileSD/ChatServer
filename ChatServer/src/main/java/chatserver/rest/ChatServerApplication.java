@@ -4,13 +4,11 @@ import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import co.paralleluniverse.actors.ActorRef;
-import java.util.ArrayList;
 
 import chatserver.rest.resources.RoomResource;
 import chatserver.rest.resources.RoomsResource;
 import chatserver.rest.health.ChatServerHealthCheck;
 import chatserver.rest.entities.Rooms;
-import chatserver.rest.entities.Admin;
 
 
 public class ChatServerApplication extends Application<ChatServerConfiguration> {
