@@ -32,12 +32,17 @@ public class NotificationManager extends BasicActor<Msg, Void> {
    protected Void doRun() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
          switch (msg.getType()) {
-            case CREATE:
+            case CREATE_ROOM:
+               pub.send("rooms");
+               pub.send("Room " + msg.getContent() + " was created!");
                return true;
-            case LOGIN:
+            case DELETE_ROOM:
                return true;
-            case REMOVE:
+            case ENTER:
                return true;
+            case LEAVE:
+               return true;
+            // these two would be easier to implement if instead of change_room we had connect and disconnect
          }
          return false;
       }));
