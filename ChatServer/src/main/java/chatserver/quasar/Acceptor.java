@@ -12,7 +12,7 @@ import chatserver.util.MsgType;
 
 
 public class Acceptor extends BasicActor {
-  final int port;
+  private final int port;
   private final ActorRef roomManager;
 
   public Acceptor(int port, ActorRef roomManager) { 
