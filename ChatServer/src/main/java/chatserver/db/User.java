@@ -3,9 +3,6 @@ package chatserver.db;
 import co.paralleluniverse.actors.*;
 
 
-
-
-
 public class User {
     private ActorRef ref;
     private final String name;
