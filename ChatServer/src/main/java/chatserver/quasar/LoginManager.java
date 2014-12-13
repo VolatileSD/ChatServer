@@ -43,6 +43,19 @@ public class LoginManager extends BasicActor<Msg, Void> {
                   msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
                }
                return true;
+            case LOGIN_OK:
+               users.get(parts[1]).setActorRef(msg.getFrom());
+               return true;
+            case PRIVATE:
+               ActorRef actref=getUsersRef(parts[1]);
+               if (actref!=null) {
+               //actref.send(MsgType.PRIVATE,)
+               msg.getFrom().send(new Msg(MsgType.OK, null, null));
+               }
+               else{
+               msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
+               }
+               return true;
             case REMOVE:
           // in this case, parts has only 2 elements
          // in this case, could be a only a String instead of String[]
@@ -64,10 +77,9 @@ public class LoginManager extends BasicActor<Msg, Void> {
  * 
  * */
    
-   public ActorRef getUsersRef (String user){
-      
-      return users.get(user).getActorRef();
-      
-      
-   }
+   public ActorRef getUsersRef(String user){
+      if(users.containsKey(user)) return (users.get(user)).getActorRef();
+      else return null;
+}
+
 }
