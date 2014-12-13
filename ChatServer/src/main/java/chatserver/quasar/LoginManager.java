@@ -13,7 +13,7 @@ public class LoginManager extends BasicActor<Msg, Void> {
 
   @Override
   @SuppressWarnings("empty-statement")
-  protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
+  protected Void doRun() throws InterruptedException, SuspendExecution {
     while (receive(msg -> {
       String[] parts = (String []) msg.getContent();
       switch (msg.getType()) {
@@ -37,7 +37,7 @@ public class LoginManager extends BasicActor<Msg, Void> {
           } else msg.getFrom().send(new Msg(MsgType.INVALID, null, null)); 
           return true;
       }
-      return false;  // stops the actor if some unexpected message is received
+      return false;  
     }));
     return null;
   }
