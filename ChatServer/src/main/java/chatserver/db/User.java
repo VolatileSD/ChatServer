@@ -7,6 +7,7 @@ public class User {
    private ActorRef ref;
    private final String name;
    private final String pass;
+   private boolean loggedIn;
 
    public User(String pass, String name) {
       this.name = name;
