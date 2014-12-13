@@ -19,11 +19,6 @@
 
   <dependencies>
     <dependency>
-            <groupId>com.googlecode.lanterna</groupId>
-            <artifactId>lanterna</artifactId>
-            <version>2.1.7</version>
-        </dependency>
-    <dependency>
       <groupId>co.paralleluniverse</groupId>
       <artifactId>quasar-actors</artifactId>
       <version>0.6.1</version>
@@ -37,25 +32,33 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.10</version>
-      <scope>test</scope>
-    </dependency>
-    
-    <dependency>
       <groupId>co.paralleluniverse</groupId>
       <artifactId>capsule</artifactId>
       <version>0.10.0</version>
       <scope>compile</scope>
       <optional>true</optional>
     </dependency>
+    
     <dependency>
-  <groupId>org.apache.httpcomponents</groupId>
-  <artifactId>httpclient</artifactId>
-  <version>4.3.6</version>
-</dependency>
-
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>    
+    
+    <!-- Http and Lanterna -->
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpclient</artifactId>
+      <version>4.3.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.googlecode.lanterna</groupId>
+      <artifactId>lanterna</artifactId>
+      <version>2.1.7</version>
+    </dependency>
+    <!-- Http and Lanterna -->
+    
     <!-- Dropwizard -->
     <dependency>
       <groupId>io.dropwizard</groupId>
@@ -63,7 +66,15 @@
       <version>${dropwizard.version}</version>
     </dependency>
     <!-- Dropwizard -->
-
+    
+    <!-- 0MQ -->
+    <dependency>
+      <groupId>org.zeromq</groupId>
+      <artifactId>jzmq</artifactId>
+      <version>3.1.0</version>
+      <type>jar</type>
+    </dependency>
+    <!-- 0MQ -->
   </dependencies>
   <build>
     <plugins>
@@ -148,22 +159,20 @@
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <version>2.4</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-    Dropwizard -->
-
-
-
-    </plugins>
-  </build>
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                  <archive>
+                    <manifest>
+                      <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                    </manifest>
+                  </archive>
+                </configuration>
+              </plugin>
+            Dropwizard -->
+            
+        </plugins>
+    </build>
 </project>
