@@ -15,7 +15,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
 
   @Override
   @SuppressWarnings("empty-statement")
-  protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
+  protected Void doRun() throws InterruptedException, SuspendExecution { 
 
     while (receive(msg -> {
       try{
@@ -52,7 +52,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
           return true;
       }
       } catch (ExecutionException ee) { System.out.println("PIGEON: " + ee.getMessage()); }
-      return false;  // stops the actor if some unexpected message is received
+      return false; 
     }));
     return null;
   }
