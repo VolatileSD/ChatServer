@@ -5,92 +5,68 @@ import org.zeromq.ZMQ;
 public class NotificationClient {
 
     public static void main(String[] args) {
-        ZMQ.Context context = ZMQ.context(1);
-        ZMQ.Socket xpub = context.socket(ZMQ.XPUB);
-        ZMQ.Socket xsub = context.socket(ZMQ.XSUB);
-        xpub.bind("tcp://*:" + args[0]);
-        xsub.bind("tcp://*:" + args[1]);
-        ZMQ.proxy(xpub, xsub, null);
-    }
-}
-
-class Client {
-
-    public static void main(String[] args) throws Exception {
-        new CPub(args[1], args[0]).start();
+        new ConsoleReader(args[0]).start();
     }
 
-    static class CPub extends Thread {
-        String xsub;
+    static class ConsoleReader extends Thread {
         String xpub;
 
-        CPub(String xsub, String xpub) {
-            this.xsub = xsub;
+        ConsoleReader(String xpub) {
             this.xpub = xpub;
         }
 
         @Override
         public void run() {
-            String room = "";
             ZMQ.Context context = ZMQ.context(1);
-            ZMQ.Socket pub = context.socket(ZMQ.PUB);
             ZMQ.Socket cr = context.socket(ZMQ.PUB);
-            pub.connect("tcp://localhost:" + this.xsub);
             cr.bind("inproc://cpubsub");
-            new CSub(this.xpub, context).start();
-            System.out.println("use the follow to connect/change room:\n:cr room\n");
+            new Subscriber(this.xpub, context).start();
+            System.console().writer().println("To subscribe events type:\n:sub eventName");            
+            System.console().writer().println("To unsubscribe events type:\n:unsub eventName");
+
             while (true) {
-                String s = System.console().readLine();
+                String s = System.console().readLine(); // if it's not used in a console it's a problem
                 if (s == null) {
                     break;
-                } else if (s.startsWith(":cr ")) {
-                    room = ":msg " + s.substring(4);
-                    cr.sendMore(":cr");
-                    cr.send(room);
-                } else {
-                    pub.sendMore(room);
-                    pub.send(s);
+                } else if (s.startsWith(":sub ")) {
+                    cr.sendMore(":sub");
+                    cr.send(s.substring(5));
+                } else if (s.startsWith(":unsub ")) {
+                    cr.sendMore(":sub");
+                    cr.send(s.substring(5));
                 }
 
             }
             cr.close();
-            pub.close();
             context.term();
         }
     }
 
-    static class CSub extends Thread {
-
+    static class Subscriber extends Thread {
         String xpub;
         ZMQ.Context context;
 
-        CSub(String xpub, ZMQ.Context context) {
+        Subscriber(String xpub, ZMQ.Context context) {
             this.xpub = xpub;
             this.context = context;
         }
 
         @Override
         public void run() {
-            String room = "";
             ZMQ.Socket socket = this.context.socket(ZMQ.SUB);
             socket.connect("tcp://localhost:" + this.xpub);
             socket.connect("inproc://cpubsub");
-            socket.subscribe(":cr".getBytes());
+            socket.subscribe(":sub".getBytes());            
+            socket.subscribe(":unsub".getBytes());
 
             while (true) {
-                byte[] b = socket.recv();
-                String s = new String(b);
-                if (s.equals(":cr")) {
-                    if (!"".equals(room)) {
-                        socket.unsubscribe(room.getBytes());
-                    }
-                    byte[] bb = socket.recv();
-                    room = new String(bb);
-                    socket.subscribe(room.getBytes());
-                } else {
-                    byte[] bb = socket.recv();
-                    System.out.println(new String(bb));
-                }
+                byte[] first = socket.recv();
+                String firstS = new String(first);
+                byte[] second = socket.recv();
+                
+                if (firstS.equals(":sub")) socket.subscribe(second);
+                else if (firstS.equals(":unsub")) socket.unsubscribe(second);
+                else System.console().writer().println(new String(second));
             }
         }
     }
