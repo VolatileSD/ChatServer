@@ -5,18 +5,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class RoomRepresentation {
-  public String name; 
-  public Collection<String> users = new ArrayList();
 
-  @JsonCreator
-  public RoomRepresentation(){
-  }
- 
-  public void setName(String name){
-  	this.name = name;
-  }
+   public String name;
+   public Collection<String> users = new ArrayList();
 
-  public void setUsers(Collection<String> users) {
-    this.users = users;
-  }
+   @JsonCreator
+   public RoomRepresentation() {
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public void setUsers(Collection<String> users) {
+      this.users = users;
+   }
 }

@@ -1,5 +1,6 @@
 package chatserver.util;
 
 public enum State {
-  LOGGED_IN, LOGGED_OUT
+
+   LOGGED_IN, LOGGED_OUT
 }
