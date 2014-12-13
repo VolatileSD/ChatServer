@@ -28,6 +28,9 @@ public class Util {
          case ":changeroom":
             type = CommandType.CHANGE_ROOM;
             break;
+         case ":private":
+            type=CommandType.PRIVATE;
+            break;
          case ":h":
          case ":help":
             type = CommandType.HELP;
