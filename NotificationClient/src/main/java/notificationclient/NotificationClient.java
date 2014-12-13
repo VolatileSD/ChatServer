@@ -65,9 +65,17 @@ public class NotificationClient {
                 String firstS = new String(first);
                 byte[] second = socket.recv();
                 
-                if (firstS.equals(":sub")) socket.subscribe(second);
-                else if (firstS.equals(":unsub")) socket.unsubscribe(second);
-                else System.console().writer().println(new String(second));
+                switch (firstS) {
+                    case ":sub":
+                        socket.subscribe(second);
+                        break;
+                    case ":unsub":
+                        socket.unsubscribe(second);
+                        break;
+                    default:
+                        System.console().writer().println(new String(second));
+                        break;
+                }
             }
         }
     }
