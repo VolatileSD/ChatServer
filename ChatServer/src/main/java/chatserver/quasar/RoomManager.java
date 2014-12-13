@@ -14,12 +14,11 @@ import java.io.IOException;
 public class RoomManager extends BasicActor<Msg, Void> {
 
    private final Map<String, ActorRef> rooms;
-   //private final ActorRef notificationManager;
+   private final ActorRef notificationManager;
 
-   //public RoomManager(ActorRef notificationManager) {
-   public RoomManager() {
+   public RoomManager(ActorRef notificationManager) {
       this.rooms = new HashMap();
-   //   this.notificationManager = notificationManager;
+      this.notificationManager = notificationManager;
    }
 
    @Override
@@ -46,7 +45,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   } else {
                      rooms.put(roomName1, new Room(roomName1).spawn());
                      msg.getFrom().send(new Msg(MsgType.OK, null, null));
-                     //notificationManager.send(msg);
+                     notificationManager.send(msg);
                   }
                   return true;
                case DELETE_ROOM:
