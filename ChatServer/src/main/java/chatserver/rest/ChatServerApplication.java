@@ -29,7 +29,6 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
   @Override
   public void run(ChatServerConfiguration configuration, Environment environment) {
     Rooms rooms = new Rooms();
-    rooms.addRoom("Main"); // FOR TESTS
     environment.jersey().register(new RoomsResource(rooms));
     environment.jersey().register(new RoomResource(rooms, roomManager));
     environment.healthChecks().register("ChatServer", new ChatServerHealthCheck());

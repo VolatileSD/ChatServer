@@ -41,10 +41,9 @@ public class RoomManager extends BasicActor<Msg, Void> {
         case CHANGE_ROOM:
           //Falta dizer as salas que o user mudou
           String[] roomAndUser = (String[]) msg.getContent();
-          System.out.print(roomAndUser);
-          String roomName2=roomAndUser[0];
+          String roomName2 = roomAndUser[0];
           if(rooms.containsKey(roomName2)){ 
-            Msg reply = new Pigeon(rooms.get(roomName2)).carry(MsgType.OK);
+            Msg reply = new Pigeon(rooms.get(roomName2)).carry(MsgType.CHANGE_ROOM);
             msg.getFrom().send(reply);
           } else {
             msg.getFrom().send(new Msg(MsgType.INVALID, null, null));

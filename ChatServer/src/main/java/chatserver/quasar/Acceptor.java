@@ -23,7 +23,8 @@ public class Acceptor extends BasicActor {
   protected Void doRun() throws InterruptedException, SuspendExecution {
     ActorRef mainRoom = new Room("Main").spawn();
     ActorRef loginManager = new LoginManager().spawn();
-    roomManager.send(new Msg(MsgType.SPECIAL, mainRoom, null)); // FOR TESTS
+    
+    byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
     
     // the mainRoom shall be returned when someone asks for the list of rooms?
     try {
@@ -32,6 +33,7 @@ public class Acceptor extends BasicActor {
       while (true) {
         FiberSocketChannel socket = ss.accept();
         ActorRef user = new User(mainRoom, roomManager, loginManager, socket).spawn();
+        user.send(new Msg(MsgType.LINE, null, welcomeMessage));
       }
     } catch (IOException e) { System.out.println(e.getMessage()); }
     return null;

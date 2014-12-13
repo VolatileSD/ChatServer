@@ -13,13 +13,16 @@ import chatserver.util.MsgType;
 public class Room extends BasicActor<Msg, Void> {
   private Map<ActorRef, String> users = new HashMap();
   private String topic; // name?
+  private boolean cannotDelete = false;
   
   public Room(String topic){ 
-    this.topic = topic; 
+    this.topic = topic;
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution {
     byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
+    boolean cannotDelete = false;
+
     while (receive(msg -> {
       switch (msg.getType()) {
         case ENTER:
@@ -45,9 +48,19 @@ public class Room extends BasicActor<Msg, Void> {
         case ROOM_INFO:
           msg.getFrom().send(new Msg(MsgType.OK, null, users.values()));
           return true;
+        case DELETE_ROOM:
+          return true;
+        case CHANGE_ROOM:
+          msg.getFrom().send(new Msg(MsgType.OK, self(), null));
+          if(users.isEmpty()) setCannotDelete(true); // IMPORTANT
+          return true;
       }
       return false;
     }));
     return null;
+  }
+
+  private void setCannotDelete(boolean b){
+    this.cannotDelete = b;
   }
 }

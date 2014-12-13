@@ -35,11 +35,6 @@ public class User extends BasicActor<Msg, Void> {
   }
 
   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
-    String welcomeMessage = ("------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n");
-    try{
-    say(welcomeMessage);
-    }
-    catch (IOException ee) {System.out.println("error" + ee.getMessage());}
     Util util = new Util();
     new LineReader(self(), socket).spawn();
     while (receive(msg -> {
@@ -48,7 +43,7 @@ public class User extends BasicActor<Msg, Void> {
         case DATA:
           String line = new String((byte[]) msg.getContent());
           String[] parts = (line.substring(0, line.length()-2)).split(" ");
-          if(state==State.LOGGED_IN){
+          if(state == State.LOGGED_IN){
             if(line.startsWith(":")){
               switch (util.getCommandType(parts[0])){
                 //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
@@ -117,10 +112,11 @@ public class User extends BasicActor<Msg, Void> {
       Msg reply = new Pigeon(loginManager).carry(MsgType.CREATE, parts);
       switch(reply.getType()){
         case OK:
-          say("New user "+parts[1]+" created successfully\n");
+          say("New user " + parts[1] + " created successfully\n");
           break;
         case INVALID:
           say("Something went wrong\n");
+          // username already exists
           break;
       }
     }
@@ -143,9 +139,8 @@ public class User extends BasicActor<Msg, Void> {
           break;
       }
     }
-
   }
-  
+
   private void logout(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution{
     if(parts.length != 1) say("Unknown Command\n");
     else state = State.LOGGED_OUT;
@@ -158,7 +153,6 @@ public class User extends BasicActor<Msg, Void> {
       roomAndUsername[0] = parts[1];
       roomAndUsername[1] = username;
       Msg reply = new Pigeon(roomManager).carry(MsgType.CHANGE_ROOM, roomAndUsername);
-      System.out.print("Changing room");
       switch(reply.getType()){
         case OK:
           room.send(new Msg(MsgType.LEAVE, self(),username));
@@ -179,10 +173,6 @@ public class User extends BasicActor<Msg, Void> {
 
   private void say(String whatToSay) throws IOException, SuspendExecution{
     say(whatToSay.getBytes());
-  }
-
-  private String getUsername(){
-    return this.username;
   }
 
   private void setUsername(String username){
