@@ -14,7 +14,7 @@ public class ChatServer {
     int notificationPort = 2222;
     ActorRef roomManager = new RoomManager().spawn();
     new ChatServerApplication(roomManager).run(args); // starts rest
-    new NotificationManager(notificationPort).spawn(); // starts notifications
+    new NotificationManager(notificationPort).spawnThread(); // starts notifications
     Acceptor acceptor = new Acceptor(chatPort, roomManager);
     acceptor.spawn();
     acceptor.join();
