@@ -10,7 +10,6 @@ import co.paralleluniverse.fibers.io.*;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Util;
-import chatserver.util.State;
 import chatserver.util.Pigeon;
 
 public class User extends BasicActor<Msg, Void> {
@@ -21,74 +20,106 @@ public class User extends BasicActor<Msg, Void> {
    private final ActorRef roomManager;
    private final ActorRef loginManager;
    private String username;
-   private State state;
    private final FiberSocketChannel socket;
+   private final Util util;
 
    public User(ActorRef room, ActorRef roomManager, ActorRef loginManager, FiberSocketChannel socket) {
       this.room = room;
       this.roomManager = roomManager;
       this.loginManager = loginManager;
       this.socket = socket;
-      state = State.LOGGED_OUT;
+      this.util = new Util();
    }
 
    @Override
    @SuppressWarnings("empty-statement")
-   protected Void doRun() throws InterruptedException, SuspendExecution { //Exceptions
-      Util util = new Util();
+   protected Void doRun() throws InterruptedException, SuspendExecution {
       new LineReader(self(), socket).spawn();
+      runLogin();
+
+      return null;
+   }
+
+   @SuppressWarnings("empty-statement")
+   protected void runLogin() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
          try {
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
                   String[] parts = (line.substring(0, line.length() - 2)).split(" ");
-                  if (state == State.LOGGED_IN) {
-                     if (line.startsWith(":")) {
-                        switch (util.getCommandType(parts[0])) {
-                           //  HELP, LIST_ROOMS, LIST_USERS, CHANGE_ROOM, LOGIN,LOGOUT, UNKNOWN
-                           case LIST_ROOMS:
-                              break;
-                           case LIST_USERS:
-                              break;
-                           case CREATE:
-                              create(parts);
-                              break;
-                           case LOGIN:
-                              // check if is already logged in
-                              say("you are already logged in.");
-                              break;
-                           case LOGOUT:
-                  // check if is already logged out
-                              // if is logged in, send a LEAVE message to his room
-                              logout(parts);
-                              break;
-                           case CHANGE_ROOM:
-                              // check if is already logged in
-                              changeRoom(parts);
-                              break;
-                           case HELP:
-                              say("Available commands\n");
-                              //Help command: returns a list of all available commands
-                              break;
-                           case UNKNOWN:
-                              say("Unknown Command\n");
-                              break;
-                        }
-                     } else {
-                        byte[] messcont = ("@" + username + ": " + line).getBytes();
-                        room.send(new Msg(MsgType.LINE, null, messcont));
+                  if (line.startsWith(":")) {
+                     switch (util.getCommandType(parts[0])) {
+                        case LOGIN:
+                           login(parts);
+                           return true;
+                        case CREATE:
+                           create(parts);
+                           return true;
+                        case REMOVE:
+                           //remove(parts);
+                           return true;
+                        case HELP:
+                           say("Available commands\n:create user pass\n:login user pass - if you already registered\n");
+                           return true;
                      }
                   } else {
-                     if (line.startsWith(":login")) {
-                        login(parts);
-                     } else if (line.startsWith(":create")) {
-                        create(parts);
-                     } else if (line.startsWith(":h")) {
-                        say("Available commands\n :create user pass - if you already registered \n :login user pass\n");
-                     } else {
-                        say("You have to login to chat. Type :h for help.\n");
+                     say("You have to login to chat. Type :h for help.\n");
+                  }
+                  return true;
+               case EOF:
+               case IOE:
+                  return false;
+               case LINE:
+                  say((byte[]) msg.getContent());
+                  return true;
+            }
+         } catch (IOException ioe) { // do something?
+         } catch (ExecutionException ee) {
+            System.out.println("PIGEON: " + ee.getMessage());
+         }
+
+         return false;  // stops the actor if some unexpected message is received
+      }));
+   }
+
+   @SuppressWarnings("empty-statement")
+   protected void runChat() throws InterruptedException, SuspendExecution { //Exceptions
+      while (receive(msg -> {
+         try {
+            switch (msg.getType()) {
+               case DATA:
+                  String line = new String((byte[]) msg.getContent());
+                  String[] parts = (line.substring(0, line.length() - 2)).split(" ");
+                  if (line.startsWith(":")) {
+                     switch (util.getCommandType(parts[0])) {
+                        case CREATE:
+                           say("You are signed in. Logout first to create another account\n");
+                           break;
+                        case LOGIN:
+                           // check if is already logged in
+                           say("You are already logged in.");
+                           break;
+                        case LOGOUT:
+                           // check if is already logged out
+                           // if is logged in, send a LEAVE message to his room
+                           logout(parts);
+                           break;
+                        case CHANGE_ROOM:
+                           // check if is already logged in
+                           changeRoom(parts);
+                           break;
+                        case HELP:
+                           say("Available commands\n");
+                           //Help command: returns a list of all available commands
+                           break;
+                        case UNKNOWN:
+                           say("Unknown Command\n");
+                           break;
                      }
+                  } else {
+                     byte[] messcont = ("@" + username + ": " + line).getBytes();
+                     room.send(new Msg(MsgType.LINE, null, messcont));
                   }
                   return true;
                case EOF:
@@ -108,12 +139,11 @@ public class User extends BasicActor<Msg, Void> {
 
          return false;  // stops the actor if some unexpected message is received
       }));
-      return null;
    }
 
    private void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
-         say("Unknown Command " + parts[0] + "\n");
+         say("Unknown Command\n");
       } else {
          Msg reply = new Pigeon(loginManager).carry(MsgType.CREATE, parts);
          switch (reply.getType()) {
@@ -121,8 +151,7 @@ public class User extends BasicActor<Msg, Void> {
                say("New user " + parts[1] + " created successfully\n");
                break;
             case INVALID:
-               say("Something went wrong\n");
-               // username already exists
+               say("Username already exists\n");
                break;
          }
       }
@@ -131,15 +160,15 @@ public class User extends BasicActor<Msg, Void> {
    private void login(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       boolean b = false;
       if (parts.length != 3) {
-         say("Unknown Command " + parts[0] + "\n");
+         say("Unknown Command\n");
       } else {
          Msg reply = new Pigeon(loginManager).carry(MsgType.LOGIN, parts);
          switch (reply.getType()) {
             case OK:
-               say("User " + parts[1] + ", you are logged in.\n");
+               say(parts[1] + ", you are logged in.\n");
                setUsername(parts[1]);
-               state = State.LOGGED_IN;
                room.send(new Msg(MsgType.ENTER, self(), username));
+               runChat();
                break;
             case INVALID:
                say("Login invalid. Check valid username or password.\n");
@@ -152,7 +181,8 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 1) {
          say("Unknown Command\n");
       } else {
-         state = State.LOGGED_OUT;
+         runLogin();
+         // update Manager map : set loggedIn = false;
       }
    }
 
@@ -172,7 +202,7 @@ public class User extends BasicActor<Msg, Void> {
                say("Room changed successfully.\n");
                break;
             case INVALID:
-               say("Room " + parts[1] + " does not exists\n");
+               say("Room " + parts[1] + " does not exist\n");
                break;
          }
       }

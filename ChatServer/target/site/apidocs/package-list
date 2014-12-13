@@ -1,9 +1,0 @@
-chatserver
-chatserver.gui
-chatserver.quasar
-chatserver.rest
-chatserver.rest.entities
-chatserver.rest.health
-chatserver.rest.representations
-chatserver.rest.resources
-chatserver.util
