@@ -7,8 +7,10 @@ import org.zeromq.ZMQ;
 
 public class NotificationManager extends BasicActor<Msg, Void> {
 
-   private final int internalPort = 3333;
-   private final ZMQ.Socket pub;
+   private static final int internalPort = 3333;
+   private static int port = 3333;
+   private ZMQ.Socket pub;
+   private static ZMQ.Context context;
 
    /**
     * Constructor of NotificationManager
@@ -16,25 +18,22 @@ public class NotificationManager extends BasicActor<Msg, Void> {
     * @param port Port where Notification Client will connect
     */
    public NotificationManager(int port) {
-      ZMQ.Context context = ZMQ.context(1);
-      ZMQ.Socket xpub = context.socket(ZMQ.XPUB);
-      ZMQ.Socket xsub = context.socket(ZMQ.XSUB);
-      xpub.bind("tcp://*:" + port);
-      xsub.bind("tcp://*:" + internalPort);
-      ZMQ.proxy(xpub, xsub, null);
-
-      this.pub = context.socket(ZMQ.PUB);
-      this.pub.connect("tcp://localhost:" + xsub);
+      NotificationManager.context = ZMQ.context(1);
+      NotificationManager.port = port;
    }
 
    @Override
    @SuppressWarnings("empty-statement")
    protected Void doRun() throws InterruptedException, SuspendExecution {
+      new Proxy().start();
+      this.pub = context.socket(ZMQ.PUB);
+      this.pub.connect("tcp://localhost:" + internalPort); // sure?
+
       while (receive(msg -> {
          switch (msg.getType()) {
             case CREATE_ROOM:
-               pub.send("rooms");
-               pub.send("Room " + msg.getContent() + " was created!");
+               //pub.send("rooms");
+               //pub.send("Room " + msg.getContent() + " was created!");
                return true;
             case DELETE_ROOM:
                return true;
@@ -47,5 +46,17 @@ public class NotificationManager extends BasicActor<Msg, Void> {
          return false;
       }));
       return null;
+   }
+
+   static class Proxy extends Thread {
+
+      @Override
+      public void run() {
+         ZMQ.Socket xpub = context.socket(ZMQ.XPUB);
+         ZMQ.Socket xsub = context.socket(ZMQ.XSUB);
+         xpub.bind("tcp://*:" + port);
+         xsub.bind("tcp://*:" + internalPort);
+         ZMQ.proxy(xpub, xsub, null);
+      }
    }
 }
