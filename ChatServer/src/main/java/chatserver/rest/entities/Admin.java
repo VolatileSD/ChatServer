@@ -1,72 +1,16 @@
 package chatserver.rest.entities;
 
-import io.dropwizard.Configuration;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.CodingErrorAction;
-import java.util.Arrays;
 import java.io.IOException;
 
-import javax.net.ssl.SSLContext;
-import javax.validation.*;
-import javax.validation.constraints.*;
-
-import com.fasterxml.jackson.annotation.*;
-
-import org.apache.http.Consts;
-import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.ParseException;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.config.AuthSchemes;
-import org.apache.http.client.config.CookieSpecs;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.util.EntityUtils;
-import org.apache.http.config.ConnectionConfig;
-import org.apache.http.config.MessageConstraints;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.config.SocketConfig;
-import org.apache.http.conn.DnsResolver;
-import org.apache.http.conn.HttpConnectionFactory;
-import org.apache.http.conn.ManagedHttpClientConnection;
-import org.apache.http.conn.routing.HttpRoute;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.BrowserCompatHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContexts;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.impl.DefaultHttpResponseFactory;
-import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.impl.conn.ManagedHttpClientConnectionFactory;
-import org.apache.http.impl.conn.DefaultHttpResponseParser;
-import org.apache.http.impl.conn.DefaultHttpResponseParserFactory;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
-import org.apache.http.impl.conn.SystemDefaultDnsResolver;
-import org.apache.http.impl.io.DefaultHttpRequestWriterFactory;
-import org.apache.http.io.HttpMessageParser;
-import org.apache.http.io.HttpMessageParserFactory;
-import org.apache.http.io.HttpMessageWriterFactory;
-import org.apache.http.io.SessionInputBuffer;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.message.BasicLineParser;
-import org.apache.http.message.LineParser;
-import org.apache.http.util.CharArrayBuffer;
 
 
 /*

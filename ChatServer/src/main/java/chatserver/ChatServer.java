@@ -5,7 +5,6 @@ import co.paralleluniverse.actors.ActorRef;
 import chatserver.rest.ChatServerApplication;
 import chatserver.quasar.Acceptor;
 import chatserver.quasar.RoomManager;
-import chatserver.rest.entities.Admin;
 
 
 public class ChatServer {
