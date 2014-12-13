@@ -10,9 +10,6 @@ public class Util {
     CommandType type = CommandType.UNKNOWN;
 
       switch (cmd) {
-          case ":cr":
-              type = CommandType.CHANGE_ROOM;
-              break;
           case ":create":
               type = CommandType.CREATE;
               break;
@@ -24,6 +21,10 @@ public class Util {
               break;
           case ":logout":
               type = CommandType.LOGOUT; // TODO
+              break;
+          case ":cr":
+          case ":changeroom":
+              type = CommandType.CHANGE_ROOM;
               break;
           case ":h":
           case ":help":
