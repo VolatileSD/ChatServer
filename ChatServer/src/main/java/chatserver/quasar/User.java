@@ -14,7 +14,7 @@ import chatserver.util.State;
 import chatserver.util.Pigeon;
 
 public class User extends BasicActor<Msg, Void> {
-  private static int MAXLEN = 1024;
+  private static final int MAXLEN = 1024;
   
   private ActorRef room;
   private final ActorRef roomManager;
