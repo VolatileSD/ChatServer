@@ -62,7 +62,7 @@
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
             <manifestEntries>
-              <Application-Class>notificationclient.NotificationClient2</Application-Class>
+              <Application-Class>notificationclient.NotificationClient</Application-Class>
               <Min-Java-Version>1.8.0</Min-Java-Version>
             </manifestEntries>
           </archive>

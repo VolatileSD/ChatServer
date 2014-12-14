@@ -53,6 +53,7 @@ public class NotificationManager extends BasicActor<Msg, Void> {
 
       @Override
       public void run() {
+         ZMQ.Context context = ZMQ.context(1);
          ZMQ.Socket xpub = context.socket(ZMQ.XPUB);
          ZMQ.Socket xsub = context.socket(ZMQ.XSUB);
          xpub.bind("tcp://*:" + port);
