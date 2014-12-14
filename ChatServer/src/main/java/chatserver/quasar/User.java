@@ -47,7 +47,6 @@ public class User extends BasicActor<Msg, Void> {
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
-                  System.out.println(line);
                   String[] parts = (line.substring(0, line.length() - 2)).split(" ");
                   if (line.startsWith(":")) {
                      switch (util.getCommandType(parts[0])) {

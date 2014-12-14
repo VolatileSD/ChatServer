@@ -31,6 +31,9 @@ public class Util {
          case ":private":
             type = CommandType.PRIVATE;
             break;
+         case ":inbox":
+            type = CommandType.INBOX;
+            break;
          case ":h":
          case ":help":
             type = CommandType.HELP;
