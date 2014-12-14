@@ -6,10 +6,10 @@ import java.util.concurrent.ExecutionException;
 
 public class Pigeon {
 
-   final ActorRef to;
+   private final ActorRef to;
 
    /**
-    * 
+    *
     * @param to To whom the message goes
     */
    public Pigeon(ActorRef to) {

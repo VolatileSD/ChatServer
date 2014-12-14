@@ -54,7 +54,7 @@ public class Manager extends BasicActor<Msg, Void> {
                }
                return true;
             case REMOVE:
-          // in this case, parts has only 2 elements
+               // in this case, parts has only 2 elements
                // in this case, could be a only a String instead of String[]
                if (users.containsKey(parts[1])) {
                   users.remove(parts[1]);

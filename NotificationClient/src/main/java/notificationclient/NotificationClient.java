@@ -15,7 +15,6 @@ public class NotificationClient {
 
       @Override
       public void run() {
-         new Proxy().start();
          ZMQ.Socket cr = NotificationClient.context.socket(ZMQ.PUB);
          cr.bind("inproc://cpubsub");
          new Subscriber().start();
@@ -49,8 +48,6 @@ public class NotificationClient {
          socket.connect("inproc://cpubsub");
          socket.subscribe(":sub".getBytes());
          socket.subscribe(":unsub".getBytes());
-         socket.subscribe("rooms".getBytes());
-         new Test().start();
 
          while (true) {
             byte[] first = socket.recv();
@@ -67,34 +64,10 @@ public class NotificationClient {
                      socket.unsubscribe(second);
                   break;
                default:
-                  System.out.println(new String(first));
-                  System.console().writer().println(new String(second));
+                  System.out.println(new String(second));
                   break;
             }
          }
-      }
-   }
-   
-   static class Test extends Thread{
-      
-      @Override
-      public void run(){
-         ZMQ.Socket socket = NotificationClient.context.socket(ZMQ.PUB);
-         socket.connect("tcp://localhost:3333");
-         socket.sendMore("rooms");
-         socket.send("OALOAL");
-      }
-   }
-   
-   static class Proxy extends Thread {
-
-      @Override
-      public void run() {
-         ZMQ.Socket xpub = context.socket(ZMQ.XPUB);
-         ZMQ.Socket xsub = context.socket(ZMQ.XSUB);
-         xpub.bind("tcp://*:" + NotificationClient.port);
-         xsub.bind("tcp://*:" + 3333);
-         ZMQ.proxy(xpub, xsub, null);
       }
    }
 }
