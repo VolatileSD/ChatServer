@@ -47,6 +47,7 @@ public class User extends BasicActor<Msg, Void> {
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
+                  System.out.println(line);
                   String[] parts = (line.substring(0, line.length() - 2)).split(" ");
                   if (line.startsWith(":")) {
                      switch (util.getCommandType(parts[0])) {
@@ -110,7 +111,10 @@ public class User extends BasicActor<Msg, Void> {
                            changeRoom(parts);
                            break;
                         case PRIVATE:
-                           private_message(parts);
+                           privateMessage(parts);
+                           break;
+                        case INBOX:
+                           readInbox();
                            break;
                         case HELP:
                            say("Available commands\n");
@@ -125,14 +129,18 @@ public class User extends BasicActor<Msg, Void> {
                      room.send(new Msg(MsgType.LINE, null, messcont));
                   }
                   return true;
+
+               case LINE:
+                  say((byte[]) msg.getContent());
+                  return true;
+               case NEW_PRIVATE_MESSAGE:
+                  say("You've got a message from " + msg.getContent() + ". Type :inbox to read it.\n");
+                  return true;
                case EOF:
                case IOE:
                   room.send(new Msg(MsgType.LEAVE, self(), username));
                   socket.close();
                   return false;
-               case LINE:
-                  say((byte[]) msg.getContent());
-                  return true;
             }
          } catch (IOException ioe) {
             room.send(new Msg(MsgType.LEAVE, self(), null));
@@ -212,7 +220,7 @@ public class User extends BasicActor<Msg, Void> {
       }
    }
 
-   private void private_message(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+   private void privateMessage(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
@@ -226,6 +234,22 @@ public class User extends BasicActor<Msg, Void> {
                break;
          }
       }
+   }
+
+   private void readInbox() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, username);
+      switch (reply.getType()) {
+         case OK:
+            say(" -------------------\n");
+            say("|   Inbox Content   |\n");
+            say(" -------------------\n");
+            say(reply.getContent() + "\n");
+            break;
+         case INVALID:
+            say("Something went wrong.\n");
+            break;
+      }
+
    }
 
    private void say(byte[] whatToSay) throws IOException, SuspendExecution {

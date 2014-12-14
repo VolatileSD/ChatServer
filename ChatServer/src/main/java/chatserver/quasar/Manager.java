@@ -46,9 +46,22 @@ public class Manager extends BasicActor<Msg, Void> {
                return true;
             case PRIVATE:
                ActorRef actref = getUsersRef(parts[1]);
+               User dest = users.get(parts[1]);
+               String rec = msg.getUsername();
                if (actref != null) {
-                  //actref.send(MsgType.PRIVATE,)
+                  actref.send(new Msg(MsgType.NEW_PRIVATE_MESSAGE, null, rec));
                   msg.getFrom().send(new Msg(MsgType.OK, null, null));
+               } else {
+                  msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
+               }
+               if (dest != null) {
+                  dest.addMessage(rec, parts[2]);
+               }
+               return true;
+            case INBOX:
+               User u = users.get(msg.getUsername());
+               if (u != null) {
+                  msg.getFrom().send(new Msg(MsgType.OK, null, u.showInbox()));
                } else {
                   msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
                }

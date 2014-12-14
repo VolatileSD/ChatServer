@@ -27,7 +27,7 @@ public class Room extends BasicActor<Msg, Void> {
             case ENTER:
                // in case of the main room everyone will have null as name s
                String username = (String) msg.getContent();
-               users.put(msg.getFrom(), username);
+               users.put(msg.getFrom(), username); // we should do this after the message is send for all users
                msg.getFrom().send(new Msg(MsgType.LINE, null, welcomeMessage));
                byte[] forAllUserEnter = ("#User " + username + " just got in!\n").getBytes();
                for (ActorRef u : users.keySet()) {
@@ -64,7 +64,7 @@ public class Room extends BasicActor<Msg, Void> {
       return null;
    }
 
-   private void setCannotDelete(boolean b) {
-      this.cannotDelete = b;
+   private void setCannotDelete(boolean cannotDelete) {
+      this.cannotDelete = cannotDelete;
    }
 }

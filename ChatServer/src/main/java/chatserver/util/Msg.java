@@ -7,6 +7,7 @@ public class Msg {
    private final MsgType type;
    private final ActorRef from;
    private final Object content;  // careful with mutable objects, such as the byte array
+   private final String fromUsername;
 
    /**
     *
@@ -18,6 +19,14 @@ public class Msg {
       this.type = type;
       this.from = from;
       this.content = content;
+      this.fromUsername = null; // is new String() better?
+   }
+
+   public Msg(MsgType type, ActorRef from, Object content, String fromUsername) {
+      this.type = type;
+      this.from = from;
+      this.content = content;
+      this.fromUsername = fromUsername;
    }
 
    public MsgType getType() {
@@ -30,6 +39,10 @@ public class Msg {
 
    public Object getContent() {
       return content;
+   }
+
+   public String getUsername() {
+      return fromUsername;
    }
 
    @Override
