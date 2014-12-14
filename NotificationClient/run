@@ -1,0 +1,2 @@
+mvn clean package
+java -jar target/notificationclient-1.0-capsule-fat.jar

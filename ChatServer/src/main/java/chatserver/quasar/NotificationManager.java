@@ -8,7 +8,7 @@ import org.zeromq.ZMQ;
 public class NotificationManager extends BasicActor<Msg, Void> {
 
    private static final int internalPort = 3333;
-   private static int port = 3333;
+   private static int port;
    private ZMQ.Socket pub;
    private static ZMQ.Context context;
 
@@ -32,8 +32,9 @@ public class NotificationManager extends BasicActor<Msg, Void> {
       while (receive(msg -> {
          switch (msg.getType()) {
             case CREATE_ROOM:
-               //pub.send("rooms");
-               //pub.send("Room " + msg.getContent() + " was created!");
+               System.out.println("I will send a notification!");
+               pub.sendMore("rooms");
+               pub.send("Room " + msg.getContent() + " was created!");
                return true;
             case DELETE_ROOM:
                return true;
