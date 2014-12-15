@@ -2,14 +2,14 @@ package chatserver.db;
 
 import java.util.Date;
 
-public class Message {
+public class MessageDB {
 
    private final String fromUsername;
    private final String message;
    private boolean seen;
    private final Date date;
 
-   public Message(String fromUsername, String message) {
+   public MessageDB(String fromUsername, String message) {
       this.fromUsername = fromUsername;
       this.message = message;
       this.seen = false;
@@ -30,6 +30,11 @@ public class Message {
 
    @Override
    public String toString() {
-      return "Message{" + "fromUsername=" + fromUsername + ", message=" + message + ", seen=" + seen + ", date=" + date + '}';
+StringBuilder sb = new StringBuilder();
+      sb.append("From: ").append(fromUsername).append("\n");
+      sb.append("When: ").append(date.toString()).append("\n");
+      sb.append("Message: ").append(message).append("\n");
+
+      return sb.toString();
    }
 }

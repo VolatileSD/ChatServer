@@ -1,5 +1,6 @@
 package chatserver.quasar;
 
+import chatserver.db.MessageDB;
 import java.nio.ByteBuffer;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -44,6 +45,9 @@ public class User extends BasicActor<Msg, Void> {
    protected void runLogin() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
          try {
+
+            System.out.println(msg.toString());
+
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
@@ -87,6 +91,9 @@ public class User extends BasicActor<Msg, Void> {
    protected void runChat() throws InterruptedException, SuspendExecution { //Exceptions
       while (receive(msg -> {
          try {
+
+            System.out.println(msg.toString());
+
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
@@ -124,24 +131,24 @@ public class User extends BasicActor<Msg, Void> {
                            break;
                      }
                   } else {
-                     byte[] messcont = ("@" + username + ": " + line).getBytes();
-                     room.send(new Msg(MsgType.LINE, null, messcont));
+                     byte[] message = ("@" + username + ": " + line).getBytes();
+                     room.send(new Msg(MsgType.LINE, null, null, message));
                   }
                   return true;
                case LINE:
                   say((byte[]) msg.getContent());
                   return true;
-               case NEW_PRIVATE_MESSAGE:
-                  say("You've got a message from " + msg.getContent() + ". Type :inbox to read it.\n");
+               case PRIVATE:
+                  say("You've got a message from @" + msg.getFromUsername() + ". Type :inbox to read it.\n");
                   return true;
                case EOF:
                case IOE:
-                  room.send(new Msg(MsgType.LEAVE, self(), username));
+                  room.send(new Msg(MsgType.LEAVE, self(), username, null));
                   socket.close();
                   return false;
             }
          } catch (IOException ioe) {
-            room.send(new Msg(MsgType.LEAVE, self(), null));
+            room.send(new Msg(MsgType.LEAVE, self(), username, null));
          } catch (ExecutionException ee) {
             System.out.println("PIGEON: " + ee.getMessage());
          }
@@ -154,11 +161,11 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
-         Pigeon pigeon = new Pigeon(manager);
-         Msg reply = pigeon.carry(MsgType.CREATE, parts);
+         Msg reply = new Pigeon(manager).carry(MsgType.CREATE, null, parts);
          switch (reply.getType()) {
             case OK:
-               say("New user " + parts[1] + " created successfully\n");
+               say("New user @" + parts[1] + " created successfully\n");
+               // it should be already logged in
                break;
             case INVALID:
                say("Username already exists\n");
@@ -172,13 +179,14 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
-         Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, parts);
+         Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, null, parts);
          switch (reply.getType()) {
             case OK:
                say(parts[1] + ", you are logged in.\n");
                setUsername(parts[1]);
-               room.send(new Msg(MsgType.ENTER, self(), username));
-               manager.send(new Msg(MsgType.LOGIN_OK, self(), parts)); // sends itself to room manager
+               room.send(new Msg(MsgType.ENTER, self(), username, null));
+               manager.send(new Msg(MsgType.LOGIN_OK, self(), username, null)); // sends its actoref to manager
+               // the room receives the same message, it could send to the manager
                runChat();
                break;
             case INVALID:
@@ -201,15 +209,12 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 2) {
          say("Uknown Command\n");
       } else {
-         String[] roomAndUsername = new String[2];
-         roomAndUsername[0] = parts[1];
-         roomAndUsername[1] = username;
-         Msg reply = new Pigeon(roomManager).carry(MsgType.CHANGE_ROOM, roomAndUsername);
+         Msg reply = new Pigeon(roomManager).carry(MsgType.CHANGE_ROOM, username, parts[1]);
          switch (reply.getType()) {
             case OK:
-               room.send(new Msg(MsgType.LEAVE, self(), username));
+               room.send(new Msg(MsgType.LEAVE, self(), username, null));
                room = reply.getFrom();
-               room.send(new Msg(MsgType.ENTER, self(), username));
+               room.send(new Msg(MsgType.ENTER, self(), username, null));
                say("Room changed successfully.\n");
                break;
             case INVALID:
@@ -220,23 +225,29 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void privateMessage(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      if (parts.length != 3) { // ? what if the message has more than one word? maybe < 3 ?
+      if (parts.length < 3) {
          say("Unknown Command\n");
       } else {
-         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, parts, username);
+         StringBuilder sb = new StringBuilder();
+         // problem: two consecutive spaces will be one space now, e.g
+         for(int i = 2; i < parts.length; i++){
+            System.out.println("!" + parts[i] + "!");
+            sb.append(parts[i]).append(" ");
+         }
+         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[] {parts[1], sb.toString()});
          switch (reply.getType()) {
             case OK:
-               say("Message successfully sent to " + parts[1] + ".\n");
+               say("Message successfully sent to @" + parts[1] + ".\n");
                break;
             case INVALID:
-               say("Unknown user " + parts[1] + ".\n");
+               say("Unknown user @" + parts[1] + ".\n");
                break;
          }
       }
    }
 
    private void readInbox() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, username);
+      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, username, null);
       switch (reply.getType()) {
          case OK:
             say(" -------------------\n");
@@ -298,7 +309,7 @@ public class User extends BasicActor<Msg, Void> {
                      byte[] ba = new byte[out.remaining()];
                      out.get(ba);
                      out.clear();
-                     dest.send(new Msg(MsgType.DATA, null, ba));
+                     dest.send(new Msg(MsgType.DATA, null, null, ba));
                   }
                }
                if (eof && !in.hasRemaining()) {
@@ -306,10 +317,10 @@ public class User extends BasicActor<Msg, Void> {
                }
                in.compact();
             }
-            dest.send(new Msg(MsgType.EOF, null, null));
+            dest.send(new Msg(MsgType.EOF));
             return null;
          } catch (IOException e) {
-            dest.send(new Msg(MsgType.IOE, null, null));
+            dest.send(new Msg(MsgType.IOE));
             return null;
          }
       }

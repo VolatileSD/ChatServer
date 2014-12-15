@@ -33,7 +33,7 @@ public class Acceptor extends BasicActor {
          while (true) {
             FiberSocketChannel socket = ss.accept();
             ActorRef user = new User(mainRoom, roomManager, manager, socket).spawn();
-            user.send(new Msg(MsgType.LINE, null, welcomeMessage));
+            user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
          }
       } catch (IOException e) {
          System.out.println(e.getMessage());

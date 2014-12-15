@@ -6,27 +6,28 @@ public class Msg {
 
    private final MsgType type;
    private final ActorRef from;
-   private final Object content;  // careful with mutable objects, such as the byte array
    private final String fromUsername;
+   private final Object content;  // careful with mutable objects, such as the byte array
 
    /**
     *
     * @param type Type of the message
-    * @param from From whom the message is
+    * @param from ActorRef from whom the message is
+    * @param fromUsername Username from whom the message is
     * @param content Content of the message
     */
-   public Msg(MsgType type, ActorRef from, Object content) {
-      this.type = type;
-      this.from = from;
-      this.content = content;
-      this.fromUsername = null; // is new String() better?
-   }
-
-   public Msg(MsgType type, ActorRef from, Object content, String fromUsername) {
+   public Msg(MsgType type, ActorRef from, String fromUsername, Object content) {
       this.type = type;
       this.from = from;
       this.content = content;
       this.fromUsername = fromUsername;
+   }
+   
+   public Msg(MsgType type){
+      this.type = type;
+      this.from = null;
+      this.content = null;
+      this.fromUsername = null;
    }
 
    public MsgType getType() {
@@ -54,14 +55,16 @@ public class Msg {
          sb.append("\nFrom: ");
          sb.append(from);
       }
-      if (content != null) {
-         sb.append("\nContent: ");
-         sb.append(content.toString());
-      }
       if (fromUsername != null) {
          sb.append("\nFromUsername: ");
          sb.append(fromUsername);
       }
+      if (content != null) {
+         sb.append("\nContent: ");
+         sb.append(content.toString());
+      }
+
       return sb.toString();
    }
+
 }

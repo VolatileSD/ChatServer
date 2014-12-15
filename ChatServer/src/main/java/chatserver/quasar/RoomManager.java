@@ -27,24 +27,26 @@ public class RoomManager extends BasicActor<Msg, Void> {
 
       while (receive(msg -> {
          try {
+
+            System.out.println(msg.toString());
+
+            String roomName = (String) msg.getContent();
             switch (msg.getType()) {
                case ROOM_INFO:
-                  String roomName = (String) msg.getContent();
                   if (rooms.containsKey(roomName)) {
                      // he already tested this in rest
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.ROOM_INFO);
                      msg.getFrom().send(reply);
                   } else {
-                     msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
                   }
                   return true;
                case CREATE_ROOM:
-                  String roomName1 = (String) msg.getContent();
-                  if (rooms.containsKey(roomName1)) {
-                     msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
+                  if (rooms.containsKey(roomName)) {
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
                   } else {
-                     rooms.put(roomName1, new Room(roomName1).spawn());
-                     msg.getFrom().send(new Msg(MsgType.OK, null, null));
+                     rooms.put(roomName, new Room(roomName).spawn());
+                     msg.getFrom().send(new Msg(MsgType.OK));
                      notificationManager.send(msg);
                   }
                   return true;
@@ -52,13 +54,11 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   return true;
                case CHANGE_ROOM:
                   //Falta dizer as salas que o user mudou
-                  String[] roomAndUser = (String[]) msg.getContent();
-                  String roomName2 = roomAndUser[0];
-                  if (rooms.containsKey(roomName2)) {
-                     Msg reply = new Pigeon(rooms.get(roomName2)).carry(MsgType.CHANGE_ROOM);
+                  if (rooms.containsKey(roomName)) {
+                     Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.CHANGE_ROOM);
                      msg.getFrom().send(reply);
                   } else {
-                     msg.getFrom().send(new Msg(MsgType.INVALID, null, null));
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
                   }
                   return true;
             }

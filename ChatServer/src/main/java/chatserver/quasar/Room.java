@@ -23,22 +23,28 @@ public class Room extends BasicActor<Msg, Void> {
    protected Void doRun() throws InterruptedException, SuspendExecution {
       byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
       while (receive(msg -> {
+
+         System.out.println(msg.toString());
+
          switch (msg.getType()) {
             case ENTER:
                // in case of the main room everyone will have null as name s
-               String username = (String) msg.getContent();
-               users.put(msg.getFrom(), username); // we should do this after the message is send for all users
-               msg.getFrom().send(new Msg(MsgType.LINE, null, welcomeMessage));
-               byte[] forAllUserEnter = ("#User " + username + " just got in!\n").getBytes();
+               String username = (String) msg.getFromUsername();
+               ActorRef newUser = msg.getFrom();
+               newUser.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
+
+               byte[] forAllUserEnter = ("#User @" + username + " just got in!\n").getBytes();
                for (ActorRef u : users.keySet()) {
-                  u.send(new Msg(MsgType.LINE, null, forAllUserEnter));
+                  u.send(new Msg(MsgType.LINE, null, null, forAllUserEnter));
                }
+
+               users.put(newUser, username);
                return true;
             case LEAVE:
                users.remove(msg.getFrom());
-               byte[] forAllUserLeave = ("#User " + msg.getContent() + " just left!\n").getBytes();
+               byte[] forAllUserLeave = ("#User @" + msg.getFromUsername() + " just left!\n").getBytes();
                for (ActorRef u : users.keySet()) {
-                  u.send(new Msg(MsgType.LINE, null, forAllUserLeave));
+                  u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
                }
                return true;
             case LINE:
@@ -48,12 +54,12 @@ public class Room extends BasicActor<Msg, Void> {
                // clone might solve it
                return true;
             case ROOM_INFO:
-               msg.getFrom().send(new Msg(MsgType.OK, null, users.values()));
+               msg.getFrom().send(new Msg(MsgType.OK, null, null, users.values()));
                return true;
             case DELETE_ROOM:
                return true;
             case CHANGE_ROOM:
-               msg.getFrom().send(new Msg(MsgType.OK, self(), null));
+               msg.getFrom().send(new Msg(MsgType.OK, self(), null, null));
                if (users.isEmpty()) {
                   setCannotDelete(true); // IMPORTANT
                }

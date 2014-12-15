@@ -33,7 +33,7 @@ public class RoomResource {
    @GET
    public Response getRoomInfo(@PathParam("name") String roomName) throws Exception {
       if (rooms.has(roomName)) {
-         Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, roomName);
+         Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, null, roomName);
          switch (msg.getType()) {
             case OK:
                RoomRepresentation rr = new RoomRepresentation();
@@ -50,7 +50,7 @@ public class RoomResource {
 
    @PUT
    public Response createRoom(@PathParam("name") String roomName) throws Exception {
-      Msg msg = new Pigeon(roomManager).carry(MsgType.CREATE_ROOM, roomName);
+      Msg msg = new Pigeon(roomManager).carry(MsgType.CREATE_ROOM, null, roomName);
       switch (msg.getType()) {
          case OK:
             rooms.addRoom(roomName);
