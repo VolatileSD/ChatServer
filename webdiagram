@@ -1,0 +1,66 @@
+title Chat Usage Sequence
+
+User -> Manager: CREATE
+alt username available
+ Manager -> User: OK
+else username unavailable 
+ Manager -> User: INVALID
+end
+
+User -> Manager: LOGIN
+alt password correct
+ Manager -> User: OK
+else password incorrect
+ Manager -> User: INVALID
+end
+
+User -> Manager: LOGOUT
+Manager -> User : OK
+
+User -> RoomManager : CHANGE_ROOM
+alt room exists
+ RoomManager -> RoomAfter : CHANGE_ROOM
+ RoomManager -> User : OK 
+ User -> RoomBefore : LEAVE
+ RoomBefore -> NotificationManager : LEAVE
+ User -> RoomAfter : ENTER
+ RoomAfter -> NotificationManager : ENTER
+else ! room exists
+ RoomManager -> User : INVALID
+end
+
+User -> Manager : PRIVATE
+alt user exists
+ Manager -> User2 : PRIVATE
+ Manager -> User : OK
+else ! user exists
+ Manager -> User : INVALID
+end
+
+User -> Manager : INBOX
+Manager -> User : OK
+
+
+User -> Room : LINE
+Room -> User2 : LINE
+Room -> User3 : LINE
+
+
+REST -> RoomManager : ROOM_INFO
+alt room exists
+ RoomManager -> Room : ROOM_INFO
+ Room -> RoomManager : OK
+ RoomManager -> REST : OK
+else ! room exists
+ RoomManager -> REST : INVALID
+end
+
+REST -> RoomManager : CREATE_ROOM
+alt ! room exists
+ RoomManager -> NotificationManager : CREATE_ROOM
+ RoomManager -> REST : OK
+else room exists
+ RoomManager -> REST : INVALID
+end
+
+
