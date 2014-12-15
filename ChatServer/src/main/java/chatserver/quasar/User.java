@@ -88,9 +88,6 @@ public class User extends BasicActor<Msg, Void> {
    protected void runChat() throws InterruptedException, SuspendExecution { //Exceptions
       while (receive(msg -> {
          try {
-
-            System.out.println(msg.toString());
-
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
