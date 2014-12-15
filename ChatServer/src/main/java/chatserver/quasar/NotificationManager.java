@@ -39,6 +39,8 @@ public class NotificationManager extends BasicActor<Msg, Void> {
             case DELETE_ROOM:
                return true;
             case ENTER:
+               pub.sendMore("rooms/" + msg.getContent());
+               pub.send("User @" + msg.getFromUsername() + " entered the room " + msg.getContent());
                return true;
             case LEAVE:
                return true;
@@ -50,7 +52,6 @@ public class NotificationManager extends BasicActor<Msg, Void> {
    }
 
    static class Proxy extends Thread {
-
       @Override
       public void run() {
          ZMQ.Context context = ZMQ.context(1);
