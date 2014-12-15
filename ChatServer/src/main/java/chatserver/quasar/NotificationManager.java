@@ -39,7 +39,7 @@ public class NotificationManager extends BasicActor<Msg, Void> {
             case DELETE_ROOM:
                return true;
             case ENTER:
-               pub.sendMore("rooms/" + msg.getContent());
+               pub.sendMore("room/" + msg.getContent());
                pub.send("User @" + msg.getFromUsername() + " entered the room " + msg.getContent());
                return true;
             case LEAVE:
