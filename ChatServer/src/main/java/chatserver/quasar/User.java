@@ -50,11 +50,12 @@ public class User extends BasicActor<Msg, Void> {
                   String[] parts = (line.substring(0, line.length() - 2)).split(" ");
                   if (line.startsWith(":")) {
                      switch (util.getCommandType(parts[0])) {
+                        case CREATE:
+                           System.out.println("CASE LOGIN");
+                           create(parts);
+                           return true;
                         case LOGIN:
                            login(parts);
-                           return true;
-                        case CREATE:
-                           create(parts);
                            return true;
                         case REMOVE:
                            //remove(parts);
@@ -128,7 +129,6 @@ public class User extends BasicActor<Msg, Void> {
                      room.send(new Msg(MsgType.LINE, null, messcont));
                   }
                   return true;
-
                case LINE:
                   say((byte[]) msg.getContent());
                   return true;
@@ -152,10 +152,12 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      System.out.println("CREATE FUNCTION");
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
-         Msg reply = new Pigeon(manager).carry(MsgType.CREATE, parts);
+         Pigeon pigeon = new Pigeon(manager);
+         Msg reply = pigeon.carry(MsgType.CREATE, parts);
          switch (reply.getType()) {
             case OK:
                say("New user " + parts[1] + " created successfully\n");
@@ -220,10 +222,10 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void privateMessage(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      if (parts.length != 3) {
+      if (parts.length != 3) { // ? what if the message has more than one word? maybe < 3 ?
          say("Unknown Command\n");
       } else {
-         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, parts);
+         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, parts, username);
          switch (reply.getType()) {
             case OK:
                say("Message successfully sent to " + parts[1] + ".\n");
@@ -236,7 +238,7 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void readInbox() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, username);
+      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, username);
       switch (reply.getType()) {
          case OK:
             say(" -------------------\n");

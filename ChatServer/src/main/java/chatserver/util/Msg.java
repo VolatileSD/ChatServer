@@ -41,7 +41,7 @@ public class Msg {
       return content;
    }
 
-   public String getUsername() {
+   public String getFromUsername() {
       return fromUsername;
    }
 
@@ -57,6 +57,10 @@ public class Msg {
       if (content != null) {
          sb.append("\nContent: ");
          sb.append(content.toString());
+      }
+      if (fromUsername != null) {
+         sb.append("\nFromUsername: ");
+         sb.append(fromUsername);
       }
       return sb.toString();
    }

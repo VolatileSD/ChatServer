@@ -40,6 +40,7 @@ public class Pigeon {
       Actor<Msg, Msg> pigeon = new BasicActor<Msg, Msg>() {
          @Override
          protected Msg doRun() throws InterruptedException, SuspendExecution {
+            System.out.println("SENDING");
             to.send(new Msg(type, self(), content, from));
             Msg reply = receive();
             return reply; // study timeout
