@@ -1,9 +1,9 @@
 package chatserver.db;
 
 import co.paralleluniverse.actors.*;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Set;
 
 public class User {
 
@@ -11,7 +11,7 @@ public class User {
    private final String name;
    private final String pass;
    private boolean loggedIn;
-   private final Map<String, String> inbox = new HashMap();
+   private final Set<Message> inbox = new HashSet();
 
    public User(String pass, String name) {
       this.name = name;
@@ -38,17 +38,17 @@ public class User {
       this.loggedIn = loggedIn;
    }
 
-   public void addMessage(String u, String m) {
-      inbox.put(u, m);
+   public void addMessage(String fromUsername, String message) {
+      inbox.add(new Message(fromUsername, message));
    }
 
    public String showInbox() {
-      Iterator it = inbox.entrySet().iterator();
+      Iterator it = inbox.iterator();
       String res;
       res = "";
       while (it.hasNext()) {
-         Map.Entry pairs = (Map.Entry) it.next();
-         res = res + (pairs.getKey() + " said '" + pairs.getValue() + "'\n -------------------\n");
+         Message m = (Message) it.next();
+         res = res + (m.getFromUsername() + " said '" + m.getMessage() + "'\n -------------------\n");
          it.remove(); // avoids a ConcurrentModificationException
       }
       return res;
