@@ -12,10 +12,12 @@ public class Room extends BasicActor<Msg, Void> {
 
    private final Map<ActorRef, String> users = new HashMap();
    private final String topic; // name?
+   private final ActorRef notificationManager;
    private boolean cannotDelete = false;
 
-   public Room(String topic) {
+   public Room(String topic, ActorRef notificationManager) {
       this.topic = topic;
+      this.notificationManager = notificationManager;
    }
 
    @Override
@@ -23,9 +25,6 @@ public class Room extends BasicActor<Msg, Void> {
    protected Void doRun() throws InterruptedException, SuspendExecution {
       byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
       while (receive(msg -> {
-
-         System.out.println(msg.toString());
-
          switch (msg.getType()) {
             case ENTER:
                // in case of the main room everyone will have null as name s

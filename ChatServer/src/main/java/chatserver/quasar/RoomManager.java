@@ -27,9 +27,6 @@ public class RoomManager extends BasicActor<Msg, Void> {
 
       while (receive(msg -> {
          try {
-
-            System.out.println(msg.toString());
-
             String roomName = (String) msg.getContent();
             switch (msg.getType()) {
                case ROOM_INFO:
@@ -38,22 +35,22 @@ public class RoomManager extends BasicActor<Msg, Void> {
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.ROOM_INFO);
                      msg.getFrom().send(reply);
                   } else {
+                     // so if it enters here there's a big problem
                      msg.getFrom().send(new Msg(MsgType.INVALID));
                   }
                   return true;
                case CREATE_ROOM:
-                  if (rooms.containsKey(roomName)) {
-                     msg.getFrom().send(new Msg(MsgType.INVALID));
-                  } else {
-                     rooms.put(roomName, new Room(roomName).spawn());
+                  if (!rooms.containsKey(roomName)) {
+                     rooms.put(roomName, new Room(roomName, notificationManager).spawn());
                      msg.getFrom().send(new Msg(MsgType.OK));
                      notificationManager.send(msg);
+                  } else {
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
                   }
                   return true;
                case DELETE_ROOM:
                   return true;
                case CHANGE_ROOM:
-                  //Falta dizer as salas que o user mudou
                   if (rooms.containsKey(roomName)) {
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.CHANGE_ROOM);
                      msg.getFrom().send(reply);
@@ -68,9 +65,5 @@ public class RoomManager extends BasicActor<Msg, Void> {
          return false;
       }));
       return null;
-   }
-
-   private void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-
    }
 }

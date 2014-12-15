@@ -12,16 +12,17 @@ import chatserver.util.MsgType;
 public class Acceptor extends BasicActor {
 
    private final int port;
+   private final ActorRef mainRoom;
    private final ActorRef roomManager;
 
-   public Acceptor(int port, ActorRef roomManager) {
+   public Acceptor(int port, ActorRef mainRoom, ActorRef roomManager) {
       this.port = port;
+      this.mainRoom = mainRoom;
       this.roomManager = roomManager;
    }
 
    @Override
    protected Void doRun() throws InterruptedException, SuspendExecution {
-      ActorRef mainRoom = new Room("Main").spawn();
       ActorRef manager = new Manager().spawn();
 
       byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();

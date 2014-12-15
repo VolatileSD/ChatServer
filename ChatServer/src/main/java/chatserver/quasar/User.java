@@ -45,9 +45,6 @@ public class User extends BasicActor<Msg, Void> {
    protected void runLogin() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
          try {
-
-            System.out.println(msg.toString());
-
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());

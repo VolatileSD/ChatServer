@@ -50,16 +50,18 @@ public class RoomResource {
 
    @PUT
    public Response createRoom(@PathParam("name") String roomName) throws Exception {
-      Msg msg = new Pigeon(roomManager).carry(MsgType.CREATE_ROOM, null, roomName);
-      switch (msg.getType()) {
-         case OK:
-            rooms.addRoom(roomName);
-            return Response.status(201).build();
-         case INVALID:
-            return Response.status(409).build();
+      if (!rooms.has(roomName)) {
+         Msg msg = new Pigeon(roomManager).carry(MsgType.CREATE_ROOM, null, roomName);
+         switch (msg.getType()) {
+            case OK:
+               rooms.addRoom(roomName);
+               return Response.status(201).build();
+            default:
+               return Response.status(500).build();
+         }
+      } else {
+         return Response.status(409).build();
       }
-
-      return Response.status(500).build();
    }
 
    @DELETE
