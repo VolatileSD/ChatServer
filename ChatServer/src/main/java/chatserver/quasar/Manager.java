@@ -65,7 +65,7 @@ public class Manager extends BasicActor<Msg, Void> {
             case INBOX:
                // if a user can do :inbox then he is in the users map
                // so this will always enter in the first can of the if
-               User u = users.get((String) msg.getContent());
+               User u = users.get(parts[0];
                if (u != null) {
                   msg.getFrom().send(new Msg(MsgType.OK, null, u.showInbox()));
                } else {
