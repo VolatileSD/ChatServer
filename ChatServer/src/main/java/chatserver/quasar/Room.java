@@ -38,6 +38,8 @@ public class Room extends BasicActor<Msg, Void> {
                }
 
                users.put(newUser, username);
+
+               notificationManager.send(new Msg(MsgType.ENTER, null, username, topic));
                return true;
             case LEAVE:
                users.remove(msg.getFrom());
@@ -45,11 +47,15 @@ public class Room extends BasicActor<Msg, Void> {
                for (ActorRef u : users.keySet()) {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
                }
+
+               notificationManager.send(new Msg(MsgType.LEAVE, null, msg.getFromUsername(), topic));
                return true;
             case LINE:
                for (ActorRef u : users.keySet()) {
-                  u.send(msg); // danger!?!?
-               }          // concurrent exception can be thrown here right?
+                  u.send(msg);
+               }
+               // danger!?!?
+               // concurrent exception can be thrown here right?
                // clone might solve it
                return true;
             case ROOM_INFO:
