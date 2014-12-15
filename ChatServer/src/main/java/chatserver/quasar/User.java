@@ -238,7 +238,7 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void readInbox() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, username);
+      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, username);
       switch (reply.getType()) {
          case OK:
             say(" -------------------\n");

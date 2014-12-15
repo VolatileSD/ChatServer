@@ -54,7 +54,7 @@ public class Manager extends BasicActor<Msg, Void> {
                   msg.getFrom().send(new Msg(MsgType.OK, null, null));
                   User dest = users.get(parts[1]);
                   String rec = msg.getFromUsername(); // rec?
-                  //dest.addMessage(rec, parts[2]);
+                  dest.addMessage(rec, parts[2]);
                   if (dest.isLoggedIn()) {
                      dest.getActorRef().send(new Msg(MsgType.NEW_PRIVATE_MESSAGE, null, rec));
                   }
@@ -65,7 +65,7 @@ public class Manager extends BasicActor<Msg, Void> {
             case INBOX:
                // if a user can do :inbox then he is in the users map
                // so this will always enter in the first can of the if
-               User u = users.get(parts[0];
+               User u = users.get(msg.getFromUsername());
                if (u != null) {
                   msg.getFrom().send(new Msg(MsgType.OK, null, u.showInbox()));
                } else {
