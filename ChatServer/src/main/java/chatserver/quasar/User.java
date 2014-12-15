@@ -51,7 +51,6 @@ public class User extends BasicActor<Msg, Void> {
                   if (line.startsWith(":")) {
                      switch (util.getCommandType(parts[0])) {
                         case CREATE:
-                           System.out.println("CASE LOGIN");
                            create(parts);
                            return true;
                         case LOGIN:
@@ -152,7 +151,6 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      System.out.println("CREATE FUNCTION");
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {
