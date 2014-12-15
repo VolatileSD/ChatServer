@@ -27,7 +27,6 @@ public class Acceptor extends BasicActor {
 
       byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
 
-      // the mainRoom shall be returned when someone asks for the list of rooms?
       try {
          FiberServerSocketChannel ss = FiberServerSocketChannel.open();
          ss.bind(new InetSocketAddress(port));
