@@ -32,17 +32,20 @@ public class NotificationManager extends BasicActor<Msg, Void> {
       while (receive(msg -> {
          switch (msg.getType()) {
             case CREATE_ROOM:
-               System.out.println("I will send a notification!");
                pub.sendMore("rooms");
                pub.send("Room " + msg.getContent() + " was created!");
                return true;
             case DELETE_ROOM:
+               pub.sendMore("rooms");
+               pub.send("Room " + msg.getContent() + " was deleted!");
                return true;
             case ENTER:
                pub.sendMore("room/" + msg.getContent());
                pub.send("User @" + msg.getFromUsername() + " entered the room " + msg.getContent());
                return true;
             case LEAVE:
+               pub.sendMore("room/" + msg.getContent());
+               pub.send("User @" + msg.getFromUsername() + " left the room " + msg.getContent());
                return true;
             // these two would be easier to implement if instead of change_room we had connect and disconnect
          }

@@ -8,15 +8,6 @@ public class Rooms {
    private final Collection<String> rooms = new ArrayList();
 
    /**
-    * Adds a room
-    *
-    * @param roomName name of the room
-    */
-   public synchronized void addRoom(String roomName) {
-      rooms.add(roomName);
-   }
-
-   /**
     * Test if a room exists
     *
     * @param roomName name of the room
@@ -27,11 +18,26 @@ public class Rooms {
    }
 
    /**
+    * Adds a room
+    *
+    * @param roomName name of the room
+    */
+   public synchronized void addRoom(String roomName) {
+      rooms.add(roomName);
+   }
+   
+   /**
+    * Removes a room
+    */
+   public synchronized void removeRoom(String roomName){
+      rooms.remove(roomName);
+   }
+   /**
     *
     * @return list of all rooms
     */
    public synchronized Collection<String> getRooms() {
-    // is this necessary?
+      // is this necessary?
       // or still dangerous?
       return new ArrayList(rooms);
    }

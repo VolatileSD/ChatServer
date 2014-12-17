@@ -32,6 +32,7 @@ public class RoomResource {
 
    @GET
    public Response getRoomInfo(@PathParam("name") String roomName) throws Exception {
+      // REMOVE THROWS EXCEPTION
       if (rooms.has(roomName)) {
          Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, null, roomName);
          switch (msg.getType()) {
@@ -65,7 +66,19 @@ public class RoomResource {
    }
 
    @DELETE
-   public Response deleteRoom(@PathParam("name") String roomName) {
-      return Response.status(500).build();
+   public Response deleteRoom(@PathParam("name") String roomName) throws Exception {
+      if (rooms.has(roomName)) {
+         Msg msg = new Pigeon(roomManager).carry(MsgType.DELETE_ROOM, null, roomName);
+         switch (msg.getType()) {
+            case OK:
+               rooms.removeRoom(roomName);
+               // should we return room representation here?
+               return Response.status(200).build();
+            default:
+               return Response.status(500).build();
+         }
+      } else {
+         return Response.status(409).build();
+      }
    }
 }

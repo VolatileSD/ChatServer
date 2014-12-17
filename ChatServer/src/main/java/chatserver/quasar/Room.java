@@ -27,6 +27,7 @@ public class Room extends BasicActor<Msg, Void> {
       while (receive(msg -> {
          switch (msg.getType()) {
             case ENTER:
+               cannotDelete = false; // this is not intuite xD
                // in case of the main room everyone will have null as name s
                String username = (String) msg.getFromUsername();
                ActorRef newUser = msg.getFrom();
@@ -62,6 +63,11 @@ public class Room extends BasicActor<Msg, Void> {
                msg.getFrom().send(new Msg(MsgType.OK, null, null, users.values()));
                return true;
             case DELETE_ROOM:
+               if(users.size() > 0 || cannotDelete){
+                  msg.getFrom().send(new Msg(MsgType.INVALID));
+               } else{
+                  msg.getFrom().send(new Msg(MsgType.OK));
+               }
                return true;
             case CHANGE_ROOM:
                msg.getFrom().send(new Msg(MsgType.OK, self(), null, null));

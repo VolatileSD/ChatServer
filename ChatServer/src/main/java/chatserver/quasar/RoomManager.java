@@ -49,6 +49,15 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   }
                   return true;
                case DELETE_ROOM:
+                  if (rooms.containsKey(roomName)) {
+                     Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.DELETE_ROOM);
+                     if (reply.getType().equals(MsgType.OK)) {
+                        rooms.remove(roomName);
+                     }
+                     msg.getFrom().send(reply);
+                  } else {
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
+                  }
                   return true;
                case CHANGE_ROOM:
                   if (rooms.containsKey(roomName)) {
