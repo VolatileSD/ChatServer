@@ -74,6 +74,8 @@ public class RoomResource {
                rooms.removeRoom(roomName);
                // should we return room representation here?
                return Response.status(200).build();
+            case INVALID:
+               return Response.status(409).build();
             default:
                return Response.status(500).build();
          }
