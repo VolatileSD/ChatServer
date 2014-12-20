@@ -13,7 +13,7 @@ public class Room extends BasicActor<Msg, Void> {
    private final Map<ActorRef, String> users = new HashMap();
    private final String topic; // name?
    private final ActorRef notificationManager;
-   private boolean cannotDelete = false;
+   private boolean userWillEnterSoon = false;
 
    public Room(String topic, ActorRef notificationManager) {
       this.topic = topic;
@@ -27,7 +27,7 @@ public class Room extends BasicActor<Msg, Void> {
       while (receive(msg -> {
          switch (msg.getType()) {
             case ENTER:
-               cannotDelete = false; // this is not intuite xD
+               userWillEnterSoon = false; // this is not intuite xD
                // in case of the main room everyone will have null as name s
                String username = (String) msg.getFromUsername();
                ActorRef newUser = msg.getFrom();
@@ -63,7 +63,7 @@ public class Room extends BasicActor<Msg, Void> {
                msg.getFrom().send(new Msg(MsgType.OK, null, null, users.values()));
                return true;
             case DELETE_ROOM:
-               if(users.size() > 0 || cannotDelete){
+               if(users.size() > 0 || userWillEnterSoon){
                   msg.getFrom().send(new Msg(MsgType.INVALID));
                } else{
                   msg.getFrom().send(new Msg(MsgType.OK));
@@ -72,7 +72,7 @@ public class Room extends BasicActor<Msg, Void> {
             case CHANGE_ROOM:
                msg.getFrom().send(new Msg(MsgType.OK, self(), null, null));
                if (users.isEmpty()) {
-                  setCannotDelete(true); // IMPORTANT
+                  setUserWillEnterSoon(true); // IMPORTANT
                }
                return true;
          }
@@ -81,7 +81,7 @@ public class Room extends BasicActor<Msg, Void> {
       return null;
    }
 
-   private void setCannotDelete(boolean cannotDelete) {
-      this.cannotDelete = cannotDelete;
+   private void setUserWillEnterSoon(boolean userWillEnterSoon) {
+      this.userWillEnterSoon = userWillEnterSoon;
    }
 }
