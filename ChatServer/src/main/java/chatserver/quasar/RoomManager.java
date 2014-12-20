@@ -9,15 +9,15 @@ import java.util.HashMap;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
-import java.io.IOException;
 
 public class RoomManager extends BasicActor<Msg, Void> {
 
-   private final Map<String, ActorRef> rooms;
+   private final Map<String, ActorRef> rooms = new HashMap();
+   private final ActorRef manager;
    private final ActorRef notificationManager;
 
-   public RoomManager(ActorRef notificationManager) {
-      this.rooms = new HashMap();
+   public RoomManager(ActorRef manager, ActorRef notificationManager) {
+      this.manager = manager;
       this.notificationManager = notificationManager;
    }
 
@@ -41,7 +41,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   return true;
                case CREATE_ROOM:
                   if (!rooms.containsKey(roomName)) {
-                     rooms.put(roomName, new Room(roomName, notificationManager).spawn());
+                     rooms.put(roomName, new Room(roomName, manager, notificationManager).spawn());
                      msg.getFrom().send(new Msg(MsgType.OK));
                      notificationManager.send(msg);
                   } else {

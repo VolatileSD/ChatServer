@@ -1,8 +1,11 @@
 package chatserver.db;
 
 import co.paralleluniverse.actors.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class UserDB {
@@ -12,6 +15,7 @@ public class UserDB {
    private final String pass;
    private boolean loggedIn;
    private final Set<MessageDB> inbox = new HashSet();
+   private final Map<String, List<Integer>> history = new HashMap();
 
    public UserDB(String pass, String name) {
       this.name = name;
@@ -38,7 +42,7 @@ public class UserDB {
       this.loggedIn = loggedIn;
    }
 
-   public void addMessage(String fromUsername, String message) {
+   public void addPrivateMessage(String fromUsername, String message) {
       inbox.add(new MessageDB(fromUsername, message));
    }
 
@@ -61,5 +65,15 @@ public class UserDB {
        }
        return res;
        */
+   }
+   
+   public void addHistoryEntry(String roomName, int currentMessage){
+      if(history.containsKey(roomName)){
+         history.get(roomName).add(currentMessage);
+      } else{
+         ArrayList<Integer> roomLog = new ArrayList();
+         roomLog.add(currentMessage);
+         history.put(roomName, roomLog);
+      }
    }
 }

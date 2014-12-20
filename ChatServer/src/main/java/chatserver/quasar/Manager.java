@@ -60,7 +60,7 @@ public class Manager extends BasicActor<Msg, Void> {
                if (users.containsKey(parts[0])) {
                   msg.getFrom().send(new Msg(MsgType.OK));
                   UserDB dest = users.get(parts[0]);
-                  dest.addMessage(msg.getFromUsername(), parts[1]);
+                  dest.addPrivateMessage(msg.getFromUsername(), parts[1]);
                   if (dest.isLoggedIn()) {
                      dest.getActorRef().send(new Msg(MsgType.PRIVATE, null, msg.getFromUsername(), null));
                   }
@@ -83,6 +83,11 @@ public class Manager extends BasicActor<Msg, Void> {
                } else {
                   msg.getFrom().send(new Msg(MsgType.INVALID));
                }
+               return true;
+            case ENTER: // when someone enters a room we add to the user's history the message number of that room
+               // same with leave
+               return true;
+            case LEAVE:
                return true;
          }
          return false;
