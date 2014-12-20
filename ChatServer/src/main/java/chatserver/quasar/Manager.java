@@ -84,6 +84,8 @@ public class Manager extends BasicActor<Msg, Void> {
                users.get(msg.getFromUsername()).addHistoryEntry(parts[0], Integer.valueOf(parts[1]));
                return true;
             case HISTORY:
+               // give him a clone of the room messages
+               // prevent concurrent exception
                new HistoryWorker(msg).spawn();
                return true;
          }
