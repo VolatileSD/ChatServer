@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat Client SDC</title>
+  <link rel="stylesheet" href="./chat.css">
+</head>
+<body>
+  <ul class="pages">
+    <li class="chat page">
+      <div class="chatArea">
+        <ul class="messages"></ul>
+      </div>
+      <input class="inputMessage" placeholder="Type here..." autofocus/>
+    </li>
+    <li>
+      
+    </li>
+    <li class="login page">
+      <div class="form">
+        <h3 class="title">What's your nickname?</h3>
+        <input id="usernameInput" type="text" maxlength="14" autofocus/>
+        <h3 class="title">What's your password?</h3>
+        <input id="passInput" type="password" maxlength="14"/>
+      </div>
+    </li>
+  </ul>
+   <div id="sidepane">
+    <button class="button" type="button" onclick="alert('Hello world!')" id="cr" disabled>CHANGE ROOM</button>
+     
+    <button class="button" type="button" onclick="alert('Hello world!')" id="disc" disabled>DISCONNECT</button>
+    <button class="button" type="button" onclick="alert('Hello world!')" id="logout"disabled>LOGOUT</button>
+    <button class="button" type="button" onclick="alert('Hello world!')" id="list" disabled>LIST ROOMS</button>
+  
+    </div>
+
+  <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+  <script src="https://cdn.socket.io/socket.io-1.2.1.js"></script>
+  <script src="./chat.js"></script>
+</body>
+</html>
