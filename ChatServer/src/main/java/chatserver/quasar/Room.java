@@ -28,38 +28,46 @@ public class Room extends BasicActor<Msg, Void> {
    protected Void doRun() throws InterruptedException, SuspendExecution {
       byte[] welcomeMessage = ("------ Welcome to Room " + topic + "! ------\n").getBytes();
       while (receive(msg -> {
+         String fromUsername;
          switch (msg.getType()) {
             case ENTER:
                usersWillEnterSoon--; // this is not intuite xD
                // in case of the main room everyone will have null as name
-               String username = (String) msg.getFromUsername();
+               fromUsername = (String) msg.getFromUsername();
                ActorRef newUser = msg.getFrom();
                newUser.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
 
-               byte[] forAllUserEnter = ("#User @" + username + " just got in!\n").getBytes();
+               byte[] forAllUserEnter = ("#User @" + fromUsername + " just got in!\n").getBytes();
                for (ActorRef u : users.values()) {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserEnter));
                }
 
-               users.put(username, newUser);
+               users.put(fromUsername, newUser);
 
-               notificationManager.send(new Msg(MsgType.ENTER, null, username, topic));
+               notificationManager.send(new Msg(MsgType.ENTER, null, fromUsername, topic));
+               // bellow the protocol is broken
+               // we're lying because we're saying the message is from the user when in fact is from the room
+               manager.send(new Msg(MsgType.HISTORY, null, fromUsername, new String[]{topic, "" + currentMessageNumber}));
                return true;
             case LEAVE:
-               users.remove(msg.getFrom());
-               byte[] forAllUserLeave = ("#User @" + msg.getFromUsername() + " just left!\n").getBytes();
+               fromUsername = msg.getFromUsername();
+               users.remove(fromUsername);
+               byte[] forAllUserLeave = ("#User @" + fromUsername + " just left!\n").getBytes();
                for (ActorRef u : users.values()) {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
                }
-
-               notificationManager.send(new Msg(MsgType.LEAVE, null, msg.getFromUsername(), topic));
-               manager.send(new Msg(MsgType.LEAVE));
+               notificationManager.send(new Msg(MsgType.LEAVE, null, fromUsername, topic));
+               manager.send(new Msg(MsgType.HISTORY, null, fromUsername, new String[]{topic, "" + currentMessageNumber}));
                return true;
             case LINE:
+               fromUsername = msg.getFromUsername();
+               byte[] message = ("@" + fromUsername + ": " + msg.getContent()).getBytes();
+               Msg line = new Msg(MsgType.LINE, null, null, message);
                for (ActorRef u : users.values()) {
-                  u.send(msg);
+                  u.send(line);
                }
                currentMessageNumber++;
+               manager.send(new Msg(MsgType.LINE, null, fromUsername, new String[]{topic, (String) msg.getContent()}));
                return true;
             case ROOM_INFO:
                msg.getFrom().send(new Msg(MsgType.OK, null, null, users.values()));

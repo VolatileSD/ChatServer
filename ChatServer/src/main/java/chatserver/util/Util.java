@@ -34,6 +34,9 @@ public class Util {
          case ":inbox":
             type = CommandType.INBOX;
             break;
+         case ":history":
+            type = CommandType.HISTORY;
+            break;
          case ":h":
          case ":help":
             type = CommandType.HELP;

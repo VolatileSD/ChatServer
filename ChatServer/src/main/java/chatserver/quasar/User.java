@@ -116,6 +116,9 @@ public class User extends BasicActor<Msg, Void> {
                         case INBOX:
                            readInbox();
                            break;
+                        case HISTORY:
+                           downloadHistory(parts);
+                           break;
                         case HELP:
                            say("Available commands\n");
                            //Help command: returns a list of all available commands
@@ -125,8 +128,8 @@ public class User extends BasicActor<Msg, Void> {
                            break;
                      }
                   } else {
-                     byte[] message = ("@" + username + ": " + line).getBytes();
-                     room.send(new Msg(MsgType.LINE, null, null, message));
+                     //byte[] message = ("@" + username + ": " + line).getBytes();
+                     room.send(new Msg(MsgType.LINE, null, username, line));
                   }
                   return true;
                case LINE:
@@ -135,6 +138,8 @@ public class User extends BasicActor<Msg, Void> {
                case PRIVATE:
                   say("You've got a message from @" + msg.getFromUsername() + ". Type :inbox to read it.\n");
                   return true;
+               case HISTORY: // download history is asynch
+                  say((String) msg.getContent());
                case EOF:
                case IOE:
                   room.send(new Msg(MsgType.LEAVE, self(), username, null));
@@ -166,6 +171,9 @@ public class User extends BasicActor<Msg, Void> {
                break;
          }
       }
+   }
+
+   private void remove(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
    }
 
    private void login(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
@@ -224,11 +232,11 @@ public class User extends BasicActor<Msg, Void> {
       } else {
          StringBuilder sb = new StringBuilder();
          // problem: two consecutive spaces will be one space now, e.g
-         for(int i = 2; i < parts.length; i++){
+         for (int i = 2; i < parts.length; i++) {
             System.out.println("!" + parts[i] + "!");
             sb.append(parts[i]).append(" ");
          }
-         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[] {parts[1], sb.toString()});
+         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString()});
          switch (reply.getType()) {
             case OK:
                say("Message successfully sent to @" + parts[1] + ".\n");
@@ -253,7 +261,10 @@ public class User extends BasicActor<Msg, Void> {
             say("Something went wrong.\n");
             break;
       }
+   }
 
+   private void downloadHistory(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      manager.send(new Msg(MsgType.HISTORY, self(), username, parts[1]));
    }
 
    private void say(byte[] whatToSay) throws IOException, SuspendExecution {
