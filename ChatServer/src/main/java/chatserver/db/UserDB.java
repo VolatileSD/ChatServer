@@ -15,7 +15,7 @@ public class UserDB {
    private final String pass;
    private boolean loggedIn;
    private final Set<MessageDB> inbox = new HashSet();
-   private final Map<String, List<Integer>> history = new HashMap();
+   private final Map<String, List<Integer>> roomsLog = new HashMap(); // name is not intuite
 
    public UserDB(String pass, String name) {
       this.name = name;
@@ -68,12 +68,16 @@ public class UserDB {
    }
    
    public void addHistoryEntry(String roomName, int currentMessage){
-      if(history.containsKey(roomName)){
-         history.get(roomName).add(currentMessage);
+      if(roomsLog.containsKey(roomName)){
+         roomsLog.get(roomName).add(currentMessage);
       } else{
          ArrayList<Integer> roomLog = new ArrayList();
          roomLog.add(currentMessage);
-         history.put(roomName, roomLog);
+         roomsLog.put(roomName, roomLog);
       }
+   }
+   
+   public List<Integer> getRoomLog(String roomName){
+      return roomsLog.containsKey(roomName) ? new ArrayList(roomsLog.get(roomName)) : null;
    }
 }

@@ -1,13 +1,22 @@
 package chatserver.quasar;
 
+import chatserver.db.MessageDB;
 import chatserver.util.Msg;
+import co.paralleluniverse.actors.ActorRef;
 import co.paralleluniverse.actors.BasicActor;
 import co.paralleluniverse.fibers.SuspendExecution;
+import java.util.List;
 
-public class HistoryWorker extends BasicActor<Msg, Void>{
-   
-   public HistoryWorker(Msg msg){
-      
+public class HistoryWorker extends BasicActor<Msg, Void> {
+
+   private ActorRef from;
+   private List<Integer> roomLog;
+   private List<MessageDB> messages;
+
+   public HistoryWorker(ActorRef from, List<Integer> roomLog, List<MessageDB> messages) {
+      this.from = from;
+      this.roomLog = roomLog;
+      this.messages = messages;
    }
 
    @Override

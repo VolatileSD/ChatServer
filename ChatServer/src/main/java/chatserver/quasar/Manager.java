@@ -1,14 +1,15 @@
 package chatserver.quasar;
 
+import chatserver.util.Msg;
+import chatserver.util.MsgType;
+import chatserver.db.UserDB;
+import chatserver.db.MessageDB;
 import chatserver.db.RoomDB;
 import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import java.util.Map;
 import java.util.HashMap;
-
-import chatserver.util.Msg;
-import chatserver.util.MsgType;
-import chatserver.db.UserDB;
+import java.util.List;
 
 /**
  * Manager deals with the creation, removal and login of users. It also handles
@@ -21,7 +22,7 @@ public class Manager extends BasicActor<Msg, Void> {
 
    private final Map<String, UserDB> users = new HashMap();
    private final Map<String, RoomDB> rooms = new HashMap();
-   
+
    @Override
    @SuppressWarnings("empty-statement")
    protected Void doRun() throws InterruptedException, SuspendExecution {
@@ -78,7 +79,7 @@ public class Manager extends BasicActor<Msg, Void> {
             case LINE:
                rooms.get(parts[0]).addMessage(msg.getFromUsername(), parts[1]);
                return true;
-            case HISTORY_ENTRY: 
+            case HISTORY_ENTRY:
                // when someone enters a room we add to the user's history the message number of that room
                // same with leave
                users.get(msg.getFromUsername()).addHistoryEntry(parts[0], Integer.valueOf(parts[1]));
@@ -86,7 +87,14 @@ public class Manager extends BasicActor<Msg, Void> {
             case HISTORY:
                // give him a clone of the room messages
                // prevent concurrent exception
-               new HistoryWorker(msg).spawn();
+               String roomName = (String) msg.getContent();
+               if (rooms.containsKey(roomName)) {
+                  List<MessageDB> messages = rooms.get(roomName).getMessages();
+                  List<Integer> roomLog = users.get(msg.getFromUsername()).getRoomLog(roomName);
+                  new HistoryWorker(msg.getFrom(), roomLog, messages).spawn();
+               } else {
+                  msg.getFrom().send(new Msg(MsgType.INVALID));
+               }
                return true;
          }
          return false;
