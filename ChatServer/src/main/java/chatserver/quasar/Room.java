@@ -65,7 +65,7 @@ public class Room extends BasicActor<Msg, Void> {
                msg.getFrom().send(new Msg(MsgType.OK, null, null, users.values()));
                return true;
             case DELETE_ROOM:
-               if (users.size() > 0 || usersWillEnterSoon == 0) {
+               if (users.size() + usersWillEnterSoon > 0) {
                   msg.getFrom().send(new Msg(MsgType.INVALID));
                } else {
                   msg.getFrom().send(new Msg(MsgType.OK));
