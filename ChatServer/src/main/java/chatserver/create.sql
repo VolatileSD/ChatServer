@@ -32,7 +32,7 @@ CREATE INDEX Message.id unique
 DROP CLASS Room
 CREATE CLASS Room EXTENDS V
 CREATE PROPERTY Room.name string
- 
+
 CREATE INDEX Room.name unique
  
 #
