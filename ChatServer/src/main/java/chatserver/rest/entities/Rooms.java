@@ -5,8 +5,19 @@ import java.util.ArrayList;
 
 public class Rooms {
 
-   private final Collection<String> rooms = new ArrayList();
+   private final Collection<String> rooms;
 
+   public Rooms(){
+      rooms = new ArrayList();
+   }
+   
+   public Rooms(Collection<String> rooms){
+      this.rooms = new ArrayList();
+      for(String s : rooms){
+         this.rooms.add(s);
+      }
+   }
+   
    /**
     * Test if a room exists
     *

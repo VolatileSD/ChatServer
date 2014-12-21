@@ -1,3 +1,5 @@
+/*
+
 package chatserver.rest.entities;
 
 import java.io.IOException;
@@ -12,10 +14,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.ResponseHandler;
 
-
-/*
- * Admin client : resquests to the REST API
- */
 public class Admin {
 
    public final void listRoomsRequest() throws Exception {
@@ -75,4 +73,10 @@ public class Admin {
 
    }
 
+}
+
+*/
+
+public class Admin{
+   
 }

@@ -1,6 +1,6 @@
 package chatserver.quasar;
 
-import chatserver.db.MessageDB;
+import chatserver.db.entity.Message;
 import chatserver.util.Msg;
 import co.paralleluniverse.actors.ActorRef;
 import co.paralleluniverse.actors.BasicActor;
@@ -11,9 +11,9 @@ public class HistoryWorker extends BasicActor<Msg, Void> {
 
    private ActorRef from;
    private List<Integer> roomLog;
-   private List<MessageDB> messages;
+   private List<Message> messages;
 
-   public HistoryWorker(ActorRef from, List<Integer> roomLog, List<MessageDB> messages) {
+   public HistoryWorker(ActorRef from, List<Integer> roomLog, List<Message> messages) {
       this.from = from;
       this.roomLog = roomLog;
       this.messages = messages;

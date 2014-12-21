@@ -1,6 +1,6 @@
 package chatserver.quasar;
 
-import chatserver.db.MessageDB;
+import chatserver.db.entity.Message;
 import java.nio.ByteBuffer;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -12,6 +12,7 @@ import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Util;
 import chatserver.util.Pigeon;
+import java.util.List;
 
 public class User extends BasicActor<Msg, Void> {
 
@@ -20,6 +21,7 @@ public class User extends BasicActor<Msg, Void> {
    private ActorRef room;
    private final ActorRef roomManager;
    private final ActorRef manager;
+   private String rid;
    private String username;
    private final FiberSocketChannel socket;
    private final Util util;
@@ -186,6 +188,7 @@ public class User extends BasicActor<Msg, Void> {
             case OK:
                say(parts[1] + ", you are logged in.\n");
                setUsername(parts[1]);
+               setRid((String) reply.getContent());
                room.send(new Msg(MsgType.ENTER, self(), username, null));
                manager.send(new Msg(MsgType.LOGIN_OK, self(), username, null)); // sends its actoref to manager
                // the room receives the same message, it could send to the manager
@@ -233,9 +236,10 @@ public class User extends BasicActor<Msg, Void> {
          StringBuilder sb = new StringBuilder();
          // problem: two consecutive spaces will be one space now, e.g
          for (int i = 2; i < parts.length; i++) {
-            System.out.println("!" + parts[i] + "!");
             sb.append(parts[i]).append(" ");
          }
+         // the way it is now, i can send a message to myself
+         // is that ok?
          Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString()});
          switch (reply.getType()) {
             case OK:
@@ -249,13 +253,23 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void readInbox() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, username, null);
+      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, new String[]{rid});
       switch (reply.getType()) {
          case OK:
-            say(" -------------------\n");
-            say("|   Inbox Content   |\n");
-            say(" -------------------\n");
-            say(reply.getContent() + "\n");
+            List<chatserver.db.entity.Message> inbox = (List) reply.getContent();
+            if (inbox.isEmpty()) {
+               say("Your inbox is empty.\n");
+            } else {
+               StringBuilder sb = new StringBuilder();
+               sb.append(" -------------------\n");
+               sb.append("|   Inbox Content   |\n");
+               sb.append(" -------------------\n\n");
+               for (chatserver.db.entity.Message m : inbox) {
+                  sb.append(m.toString()).append("\n");
+               }
+
+               say(sb.toString());
+            }
             break;
          case INVALID:
             say("Something went wrong.\n");
@@ -273,6 +287,10 @@ public class User extends BasicActor<Msg, Void> {
 
    private void say(String whatToSay) throws IOException, SuspendExecution {
       say(whatToSay.getBytes());
+   }
+
+   private void setRid(String rid) {
+      this.rid = rid;
    }
 
    private void setUsername(String username) {

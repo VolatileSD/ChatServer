@@ -1,3 +1,4 @@
+/*
 package chatserver.gui;
 
 import com.googlecode.lanterna.gui.*;
@@ -8,7 +9,7 @@ import com.googlecode.lanterna.gui.component.Label;
 import com.googlecode.lanterna.gui.dialog.MessageBox;
 
 public class AdminGUI extends Window {
-   /* CODIGO QUE ESTAVA NA MAIN
+   CODIGO QUE ESTAVA NA MAIN
     GUIScreen guiScreen = TerminalFacade.createGUIScreen();
     if(guiScreen == null) {
     System.err.println("Couldn't allocate a terminal!");
@@ -23,7 +24,7 @@ public class AdminGUI extends Window {
     //Do GUI logic here
 
     guiScreen.getScreen().stopScreen();
-    */
+    
 
    public AdminGUI() {
       super("My Window!");
@@ -47,4 +48,10 @@ public class AdminGUI extends Window {
          }
       }));
    }
+}
+
+*/
+
+public class AdminGUI{
+   
 }

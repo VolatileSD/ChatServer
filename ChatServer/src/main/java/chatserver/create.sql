@@ -21,7 +21,8 @@ CREATE INDEX User.username unique
 DROP CLASS Message
 CREATE CLASS Message EXTENDS V
 CREATE PROPERTY Message.id long
-CREATE PROPERTY Message.message string
+CREATE PROPERTY Message.from string
+CREATE PROPERTY Message.text string
 CREATE PROPERTY Message.date datetime
  
 CREATE INDEX Message.id unique
