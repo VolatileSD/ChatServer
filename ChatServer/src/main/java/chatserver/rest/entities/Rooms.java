@@ -7,17 +7,17 @@ public class Rooms {
 
    private final Collection<String> rooms;
 
-   public Rooms(){
+   public Rooms() {
       rooms = new ArrayList();
    }
-   
-   public Rooms(Collection<String> rooms){
+
+   public Rooms(Collection<String> rooms) {
       this.rooms = new ArrayList();
-      for(String s : rooms){
+      for (String s : rooms) {
          this.rooms.add(s);
       }
    }
-   
+
    /**
     * Test if a room exists
     *
@@ -36,13 +36,14 @@ public class Rooms {
    public synchronized void addRoom(String roomName) {
       rooms.add(roomName);
    }
-   
+
    /**
     * Removes a room
     */
-   public synchronized void removeRoom(String roomName){
+   public synchronized void removeRoom(String roomName) {
       rooms.remove(roomName);
    }
+
    /**
     *
     * @return list of all rooms

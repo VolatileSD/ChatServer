@@ -55,6 +55,7 @@ public class NotificationManager extends BasicActor<Msg, Void> {
    }
 
    static class Proxy extends Thread {
+
       @Override
       public void run() {
          ZMQ.Context context = ZMQ.context(1);

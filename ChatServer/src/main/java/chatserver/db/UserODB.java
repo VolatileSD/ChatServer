@@ -5,7 +5,6 @@ import chatserver.db.entity.User;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +23,13 @@ public class UserODB {
          sb.append(username).append("', password = '");
          sb.append(password).append("', registrationDate = sysdate()");
          /*
-         ODocument document = new ODocument("User");
-         document.field("username", username);
-         document.field("password", password);
-         document.field("registrationDate", new Date());
+          ODocument document = new ODocument("User");
+          document.field("username", username);
+          document.field("password", password);
+          document.field("registrationDate", new Date());
 
-         document.save();
-         */
+          document.save();
+          */
          db.execute(sb.toString());
       } finally {
          db.close();

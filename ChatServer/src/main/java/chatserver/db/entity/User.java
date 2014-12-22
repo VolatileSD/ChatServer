@@ -3,7 +3,7 @@ package chatserver.db.entity;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.Date;
 
-public class User extends AbstractEntity{
+public class User extends AbstractEntity {
 
    private String username;
    private String password;
@@ -15,8 +15,8 @@ public class User extends AbstractEntity{
       this.password = user.field("password");
       this.registrationDate = user.field("registrationDate");
    }
-   
-   public String getPassword(){
+
+   public String getPassword() {
       return password;
    }
 }

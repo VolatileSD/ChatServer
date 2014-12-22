@@ -1,12 +1,13 @@
 package chatserver.quasar;
 
-import co.paralleluniverse.actors.*;
 import co.paralleluniverse.fibers.SuspendExecution;
 import java.util.Map;
 import java.util.HashMap;
 
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
+import co.paralleluniverse.actors.ActorRef;
+import co.paralleluniverse.actors.BasicActor;
 
 public class Room extends BasicActor<Msg, Void> {
 

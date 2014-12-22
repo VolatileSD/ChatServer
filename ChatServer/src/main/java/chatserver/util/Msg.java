@@ -22,8 +22,8 @@ public class Msg {
       this.content = content;
       this.fromUsername = fromUsername;
    }
-   
-   public Msg(MsgType type){
+
+   public Msg(MsgType type) {
       this.type = type;
       this.from = null;
       this.content = null;

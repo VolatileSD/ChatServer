@@ -9,14 +9,6 @@ import chatserver.rest.resources.RoomResource;
 import chatserver.rest.resources.RoomsResource;
 import chatserver.rest.health.ChatServerHealthCheck;
 import chatserver.rest.entities.Rooms;
-import chatserver.util.Msg;
-import chatserver.util.MsgType;
-import chatserver.util.Pigeon;
-import co.paralleluniverse.fibers.SuspendExecution;
-import java.util.Collection;
-import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ChatServerApplication extends Application<ChatServerConfiguration> {
 
@@ -40,15 +32,15 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
    @Override
    public void run(ChatServerConfiguration configuration, Environment environment) {
       /*
-      Msg msg;
-      try {
-         msg = new Pigeon(manager).carry(MsgType.RESTORE);
-      } catch (InterruptedException | SuspendExecution | ExecutionException e) {
-         Logger.getLogger(ChatServerApplication.class.getName()).log(Level.SEVERE, "Error trying to restore!{0}", e.getMessage());
-         return;
-      }
-      Rooms rooms = new Rooms((Collection) msg.getContent());
-      */
+       Msg msg;
+       try {
+       msg = new Pigeon(manager).carry(MsgType.RESTORE);
+       } catch (InterruptedException | SuspendExecution | ExecutionException e) {
+       Logger.getLogger(ChatServerApplication.class.getName()).log(Level.SEVERE, "Error trying to restore!{0}", e.getMessage());
+       return;
+       }
+       Rooms rooms = new Rooms((Collection) msg.getContent());
+       */
       Rooms rooms = new Rooms();
       environment.jersey().register(new RoomsResource(rooms));
       environment.jersey().register(new RoomResource(rooms, roomManager));

@@ -1,6 +1,5 @@
 package chatserver.quasar;
 
-import chatserver.db.entity.Message;
 import java.nio.ByteBuffer;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
