@@ -41,7 +41,10 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   return true;
                case CREATE_ROOM:
                   if (!rooms.containsKey(roomName)) {
-                     Msg reply = new Pigeon(manager).carry(MsgType.CREATE_ROOM, null, roomName);
+                     String[] content = new String[1];
+                     content[0] = roomName;
+                     System.out.println("!" + content[0] + "!");
+                     Msg reply = new Pigeon(manager).carry(MsgType.CREATE_ROOM, null, new String[]{roomName});
                      switch (msg.getType()) {
                         case OK:
                            msg.getFrom().send(new Msg(MsgType.OK));

@@ -26,6 +26,7 @@ public class Manager extends BasicActor<Msg, Void> {
    protected Void doRun() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
          User user;
+         System.out.println((String) msg.getContent());
          String[] parts = (String[]) msg.getContent();
          switch (msg.getType()) {
             case CREATE:
@@ -71,7 +72,7 @@ public class Manager extends BasicActor<Msg, Void> {
                // authenticate first
                return true;
             case CREATE_ROOM:
-               chatserver.db.entity.Room room = roomODB.create((String) msg.getContent());
+               chatserver.db.entity.Room room = roomODB.create(parts[0]);
                if (room != null) {
                   msg.getFrom().send(new Msg(MsgType.OK, null, null, room.getRid()));
                } else {
