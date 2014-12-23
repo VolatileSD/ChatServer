@@ -65,31 +65,14 @@ public class Manager extends BasicActor<Msg, Void> {
                List<Message> inbox = userODB.getInbox(parts[0]);
                msg.getFrom().send(new Msg(MsgType.OK, null, null, inbox));
                return true;
-            /*
+             /*
              case REMOVE:
              // authenticate first
              return true;
              case LINE:
              rooms.get(parts[0]).addMessage(msg.getFromUsername(), parts[1]);
              return true;
-             case HISTORY_ENTRY:
-             // when someone enters a room we add to the user's history the message number of that room
-             // same with leave
-             users.get(msg.getFromUsername()).addHistoryEntry(parts[0], Integer.valueOf(parts[1]));
-             return true;
-             case HISTORY:
-             // give him a clone of the room messages
-             // prevent concurrent exception
-             String roomName = (String) msg.getContent();
-             if (rooms.containsKey(roomName)) {
-             List<MessageDB> messages = rooms.get(roomName).getMessages();
-             List<Integer> roomLog = users.get(msg.getFromUsername()).getRoomLog(roomName);
-             new HistoryWorker(msg.getFrom(), roomLog, messages).spawn();
-             } else {
-             msg.getFrom().send(new Msg(MsgType.INVALID));
-             }
-             return true;
-             */
+               */
          }
          return false;
       }));

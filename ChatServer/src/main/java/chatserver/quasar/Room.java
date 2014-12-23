@@ -16,7 +16,7 @@ public class Room extends BasicActor<Msg, Void> {
    private final ActorRef manager;
    private final ActorRef notificationManager;
    private int usersWillEnterSoon = 0;
-   private int currentMessageNumber = 0;
+   private int messageCount = 0;
 
    public Room(String topic, ActorRef manager, ActorRef notificationManager) {
       this.topic = topic;
@@ -46,9 +46,6 @@ public class Room extends BasicActor<Msg, Void> {
                users.put(fromUsername, newUser);
 
                notificationManager.send(new Msg(MsgType.ENTER, null, fromUsername, topic));
-               // bellow the protocol is broken
-               // we're lying because we're saying the message is from the user when in fact is from the room
-               manager.send(new Msg(MsgType.HISTORY, null, fromUsername, new String[]{topic, "" + currentMessageNumber}));
                return true;
             case LEAVE:
                fromUsername = msg.getFromUsername();
@@ -58,7 +55,7 @@ public class Room extends BasicActor<Msg, Void> {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
                }
                notificationManager.send(new Msg(MsgType.LEAVE, null, fromUsername, topic));
-               manager.send(new Msg(MsgType.HISTORY, null, fromUsername, new String[]{topic, "" + currentMessageNumber}));
+               messageCount++;
                return true;
             case LINE:
                fromUsername = msg.getFromUsername();
@@ -67,7 +64,6 @@ public class Room extends BasicActor<Msg, Void> {
                for (ActorRef u : users.values()) {
                   u.send(line);
                }
-               currentMessageNumber++;
                manager.send(new Msg(MsgType.LINE, null, fromUsername, new String[]{topic, (String) msg.getContent()}));
                return true;
             case ROOM_INFO:

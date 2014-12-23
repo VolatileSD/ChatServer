@@ -117,9 +117,6 @@ public class User extends BasicActor<Msg, Void> {
                         case INBOX:
                            readInbox();
                            break;
-                        case HISTORY:
-                           downloadHistory(parts);
-                           break;
                         case HELP:
                            say("Available commands\n");
                            //Help command: returns a list of all available commands
@@ -139,8 +136,6 @@ public class User extends BasicActor<Msg, Void> {
                case PRIVATE:
                   say("You've got a message from @" + msg.getFromUsername() + ". Type :inbox to read it.\n");
                   return true;
-               case HISTORY: // download history is asynch
-                  say((String) msg.getContent());
                case EOF:
                case IOE:
                   room.send(new Msg(MsgType.LEAVE, self(), username, null));
@@ -274,10 +269,6 @@ public class User extends BasicActor<Msg, Void> {
             say("Something went wrong.\n");
             break;
       }
-   }
-
-   private void downloadHistory(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      manager.send(new Msg(MsgType.HISTORY, self(), username, parts[1]));
    }
 
    private void say(byte[] whatToSay) throws IOException, SuspendExecution {
