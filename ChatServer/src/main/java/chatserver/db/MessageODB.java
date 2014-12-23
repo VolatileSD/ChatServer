@@ -7,19 +7,14 @@ public class MessageODB {
 
    private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
 
-   public MessageODB() {
-   }
-
    public Message create(String from, String text) {
       Message m = null;
+      StringBuilder sb = new StringBuilder().append("INSERT INTO Message set from = '");
+      sb.append(from).append("', text = '");
+      sb.append(text).append("', date = sysdate() RETURN @this");
+
       try {
-         db.open();
-         StringBuilder sb = new StringBuilder().append("INSERT INTO Message set from = '");
-         sb.append(from).append("', text = '");
-         sb.append(text).append("', date = sysdate() RETURN @this");
-
          ODocument document = (ODocument) db.execute(sb.toString());
-
          m = new Message(document);
       } finally {
          db.close();
@@ -27,5 +22,5 @@ public class MessageODB {
 
       return m;
    }
-   
+
 }

@@ -13,13 +13,15 @@ public class Room extends BasicActor<Msg, Void> {
 
    private final Map<String, ActorRef> users = new HashMap();
    private final String topic; // name?
+   private final String rid;
    private final ActorRef manager;
    private final ActorRef notificationManager;
    private int usersWillEnterSoon = 0;
    private int messageCount = 0; // maybe when someone asks for the room info send this and createDate, e.g.
 
-   public Room(String topic, ActorRef manager, ActorRef notificationManager) {
+   public Room(String topic, String rid, ActorRef manager, ActorRef notificationManager) {
       this.topic = topic;
+      this.rid = rid;
       this.manager = manager;
       this.notificationManager = notificationManager;
    }
@@ -64,7 +66,7 @@ public class Room extends BasicActor<Msg, Void> {
                for (ActorRef u : users.values()) {
                   u.send(line);
                }
-               manager.send(new Msg(MsgType.LINE, null, fromUsername, new String[]{topic, (String) msg.getContent()}));
+               manager.send(new Msg(MsgType.LINE, null, fromUsername, new String[]{rid, (String) msg.getContent()}));
                return true;
             case ROOM_INFO:
                msg.getFrom().send(new Msg(MsgType.OK, null, null, users.values()));

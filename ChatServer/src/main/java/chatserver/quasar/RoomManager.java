@@ -41,9 +41,20 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   return true;
                case CREATE_ROOM:
                   if (!rooms.containsKey(roomName)) {
-                     rooms.put(roomName, new Room(roomName, manager, notificationManager).spawn());
-                     msg.getFrom().send(new Msg(MsgType.OK));
-                     notificationManager.send(msg);
+                     Msg reply = new Pigeon(manager).carry(MsgType.CREATE_ROOM, null, roomName);
+                     switch (msg.getType()) {
+                        case OK:
+                           msg.getFrom().send(new Msg(MsgType.OK));
+                           ActorRef newRoomRef = new Room(roomName, (String) reply.getContent(), manager, notificationManager).spawn();
+                           rooms.put(roomName, newRoomRef);
+                           notificationManager.send(msg);
+                           break;
+                        case INVALID: // db problem
+                           // maybe instead of invalid return a new message type
+                           // internal error or something
+                           msg.getFrom().send(new Msg(MsgType.INVALID));
+                           break;
+                     }
                   } else {
                      msg.getFrom().send(new Msg(MsgType.INVALID));
                   }

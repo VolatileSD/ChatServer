@@ -1,6 +1,7 @@
 package chatserver.quasar;
 
 import chatserver.db.MessageODB;
+import chatserver.db.RoomODB;
 import chatserver.db.entity.User;
 import chatserver.db.UserODB;
 import chatserver.db.entity.Message;
@@ -18,6 +19,7 @@ public class Manager extends BasicActor<Msg, Void> {
    private final Map<String, ActorRef> users = new HashMap();
    private final UserODB userODB = new UserODB();
    private final MessageODB messageODB = new MessageODB();
+   private final RoomODB roomODB = new RoomODB();
 
    @Override
    @SuppressWarnings("empty-statement")
@@ -65,13 +67,22 @@ public class Manager extends BasicActor<Msg, Void> {
                List<Message> inbox = userODB.getInbox(parts[0]);
                msg.getFrom().send(new Msg(MsgType.OK, null, null, inbox));
                return true;
-             case REMOVE:
-             // authenticate first
-             return true;
-             case LINE:
-             Message m = messageODB.create(msg.getFromUsername(), parts[1]);
-             roomODB.addMessage(parts[0], m);
-             return true;
+            case REMOVE:
+               // authenticate first
+               return true;
+            case CREATE_ROOM:
+               chatserver.db.entity.Room room = roomODB.create((String) msg.getContent());
+               if (room != null) {
+                  msg.getFrom().send(new Msg(MsgType.OK, null, null, room.getRid()));
+               } else {
+                  msg.getFrom().send(new Msg(MsgType.INVALID));
+               }
+               return true;
+            case LINE:
+               // parts = ["roomRid", "message"]
+               Message m = messageODB.create(msg.getFromUsername(), parts[1]);
+               roomODB.addMessage(parts[0], m);
+               return true;
          }
          return false;
       }));

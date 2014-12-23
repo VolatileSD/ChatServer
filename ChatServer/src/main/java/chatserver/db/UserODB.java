@@ -13,43 +13,16 @@ public class UserODB {
 
    private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
 
-   public UserODB() {
-   }
-
    public void create(String username, String password) {
-      try {
-         db.open();
-         StringBuilder sb = new StringBuilder().append("INSERT INTO User set username = '");
-         sb.append(username).append("', password = '");
-         sb.append(password).append("', registrationDate = sysdate()");
-         /*
-          ODocument document = new ODocument("User");
-          document.field("username", username);
-          document.field("password", password);
-          document.field("registrationDate", new Date());
+      StringBuilder sb = new StringBuilder().append("INSERT INTO User set username = '");
+      sb.append(username).append("', password = '");
+      sb.append(password).append("', registrationDate = sysdate()");
 
-          document.save();
-          */
+      try {
          db.execute(sb.toString());
       } finally {
          db.close();
       }
-   }
-
-   // unused
-   public User findByRid(String rid) {
-      User user = null;
-
-      try {
-         String[] cap = rid.split(":");
-         ORecordId orid = new ORecordId(Integer.parseInt(cap[0]), Long.parseLong(cap[1]));
-         ODocument document = new ODocument(orid);
-         user = new User(document);
-      } finally {
-         db.close();
-      }
-
-      return user;
    }
 
    public User findByUsername(String username) {

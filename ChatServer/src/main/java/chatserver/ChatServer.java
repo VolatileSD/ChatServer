@@ -18,7 +18,7 @@ public class ChatServer {
       ActorRef manager = new Manager().spawnThread();
       ActorRef roomManager = new RoomManager(manager, notificationManager).spawn();
       new ChatServerApplication(manager, roomManager).run(args); // starts rest
-      ActorRef mainRoom = new Room("Main", manager, notificationManager).spawn();
+      ActorRef mainRoom = new Room("Main", null, manager, notificationManager).spawn();
       // the mainRoom shall be returned when someone asks for the list of rooms?
 
       Acceptor acceptor = new Acceptor(chatPort, mainRoom, roomManager);
