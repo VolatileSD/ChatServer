@@ -65,14 +65,13 @@ public class Manager extends BasicActor<Msg, Void> {
                List<Message> inbox = userODB.getInbox(parts[0]);
                msg.getFrom().send(new Msg(MsgType.OK, null, null, inbox));
                return true;
-             /*
              case REMOVE:
              // authenticate first
              return true;
              case LINE:
-             rooms.get(parts[0]).addMessage(msg.getFromUsername(), parts[1]);
+             Message m = messageODB.create(msg.getFromUsername(), parts[1]);
+             roomODB.addMessage(parts[0], m);
              return true;
-               */
          }
          return false;
       }));
