@@ -15,9 +15,9 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
    private final ActorRef manager;
    private final ActorRef roomManager;
 
-   public ChatServerApplication(ActorRef roomManager, ActorRef manager) {
-      this.roomManager = roomManager;
+   public ChatServerApplication(ActorRef manager, ActorRef roomManager) {
       this.manager = manager;
+      this.roomManager = roomManager;
    }
 
    @Override

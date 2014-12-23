@@ -26,7 +26,6 @@ public class Manager extends BasicActor<Msg, Void> {
    protected Void doRun() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
          User user;
-         System.out.println((String) msg.getContent());
          String[] parts = (String[]) msg.getContent();
          switch (msg.getType()) {
             case CREATE:
