@@ -16,7 +16,7 @@ public class Room extends BasicActor<Msg, Void> {
    private final ActorRef manager;
    private final ActorRef notificationManager;
    private int usersWillEnterSoon = 0;
-   private int messageCount = 0;
+   private int messageCount = 0; // maybe when someone asks for the room info send this and createDate, e.g.
 
    public Room(String topic, ActorRef manager, ActorRef notificationManager) {
       this.topic = topic;
