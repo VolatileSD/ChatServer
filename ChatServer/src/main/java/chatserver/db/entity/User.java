@@ -5,10 +5,10 @@ import java.util.Date;
 
 public class User extends AbstractEntity {
 
-   private String username;
-   private String password;
-   private Date registrationDate;
-   private boolean loggedIn;
+   private final String username;
+   private final String password;
+   private final Date registrationDate;
+   private final boolean loggedIn;
 
    public User(ODocument user) {
       super(user.getIdentity().toString());

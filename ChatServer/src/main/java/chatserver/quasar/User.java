@@ -12,10 +12,13 @@ import chatserver.util.MsgType;
 import chatserver.util.Util;
 import chatserver.util.Pigeon;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class User extends BasicActor<Msg, Void> {
 
    private static final int MAXLEN = 1024;
+   private static final Logger logger = Logger.getLogger(User.class.getName());
 
    private ActorRef room;
    private final ActorRef roomManager;
@@ -76,7 +79,7 @@ public class User extends BasicActor<Msg, Void> {
             }
          } catch (IOException ioe) { // do something?
          } catch (ExecutionException ee) {
-            System.out.println("PIGEON: " + ee.getMessage());
+            logger.log(Level.SEVERE, "Pigeon error - {0}", ee.getMessage());
          }
 
          return false;  // stops the actor if some unexpected message is received
@@ -137,13 +140,15 @@ public class User extends BasicActor<Msg, Void> {
                case EOF:
                case IOE:
                   room.send(new Msg(MsgType.LEAVE, self(), username, null));
+                  manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
                   socket.close();
                   return false;
             }
          } catch (IOException ioe) {
             room.send(new Msg(MsgType.LEAVE, self(), username, null));
+            manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
          } catch (ExecutionException ee) {
-            System.out.println("PIGEON: " + ee.getMessage());
+            logger.log(Level.SEVERE, "Pigeon error - {0}", ee.getMessage());
          }
 
          return false;  // stops the actor if some unexpected message is received
@@ -158,7 +163,6 @@ public class User extends BasicActor<Msg, Void> {
          switch (reply.getType()) {
             case OK:
                say("New user @" + parts[1] + " created successfully\n");
-               // it should be already logged in
                break;
             case INVALID:
                say("Username already exists\n");
@@ -198,7 +202,6 @@ public class User extends BasicActor<Msg, Void> {
       } else {
          manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
          runLogin();
-         // update Manager map : set loggedIn = false;
       }
    }
 

@@ -15,7 +15,7 @@ public class UserODB {
    public void create(String username, String password) {
       StringBuilder sb = new StringBuilder().append("INSERT INTO User SET username = '");
       sb.append(username).append("', password = '");
-      sb.append(password).append("', registrationDate = sysdate(), loggedIn = true");
+      sb.append(password).append("', registrationDate = sysdate(), loggedIn = false");
 
       try {
          db.execute(sb.toString());
@@ -72,18 +72,18 @@ public class UserODB {
 
    public boolean remove(String username, String password) {
       /*
-      User user = findByUsernameAndPassword(username, password);
-      if (user != null) {
-         try {
+       User user = findByUsernameAndPassword(username, password);
+       if (user != null) {
+       try {
             
-         } finally {
-            db.close();
-         }
-         return true;
-      } else {
-         return false;
-      }
-      */
+       } finally {
+       db.close();
+       }
+       return true;
+       } else {
+       return false;
+       }
+       */
       return true;
    }
 
