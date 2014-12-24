@@ -38,8 +38,8 @@ public class Manager extends BasicActor<Msg, Void> {
                }
                return true;
             case LOGIN:
-               user = userODB.findByUsernameAndPassword(parts[1], parts[2]);
-               if (user != null) {
+               user = userODB.login(parts[1], parts[2]);
+               if (user != null) { // if username and password are correct and the user is not logged in
                   msg.getFrom().send(new Msg(MsgType.OK, null, null, user.getRid()));
                   // send the rid to the user to speed future queries
                } else {
@@ -49,6 +49,12 @@ public class Manager extends BasicActor<Msg, Void> {
             case LOGIN_OK:
                users.put(msg.getFromUsername(), msg.getFrom());
                // we will use this actor ref to notify possible private messages
+               return true;
+            case LOGOUT:
+               userODB.logout(parts[0]);
+               return true;
+            case REMOVE:
+               // authenticate first
                return true;
             case PRIVATE:
                // parts here is something like: ["usernameTo", "message"]
@@ -67,9 +73,6 @@ public class Manager extends BasicActor<Msg, Void> {
             case INBOX:
                List<Message> inbox = userODB.getInbox(parts[0]);
                msg.getFrom().send(new Msg(MsgType.OK, null, null, inbox));
-               return true;
-            case REMOVE:
-               // authenticate first
                return true;
             case CREATE_ROOM:
                chatserver.db.entity.Room room = roomODB.create(parts[0]);

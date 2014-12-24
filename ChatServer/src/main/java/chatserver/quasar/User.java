@@ -196,6 +196,7 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 1) {
          say("Unknown Command\n");
       } else {
+         manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
          runLogin();
          // update Manager map : set loggedIn = false;
       }
