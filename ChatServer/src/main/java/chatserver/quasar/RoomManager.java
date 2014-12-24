@@ -9,9 +9,12 @@ import java.util.HashMap;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RoomManager extends BasicActor<Msg, Void> {
 
+   private static final Logger logger = Logger.getLogger(RoomManager.class.getName());
    private final Map<String, ActorRef> rooms = new HashMap();
    private final ActorRef manager;
    private final ActorRef notificationManager;
@@ -36,6 +39,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                      msg.getFrom().send(reply);
                   } else {
                      // so if it enters here there's a big problem
+                     logger.log(Level.SEVERE, "Error trying to show info about an existing room");
                      msg.getFrom().send(new Msg(MsgType.INVALID));
                   }
                   return true;
@@ -48,11 +52,11 @@ public class RoomManager extends BasicActor<Msg, Void> {
                            ActorRef newRoomRef = new Room(roomName, (String) reply.getContent(), manager, notificationManager).spawn();
                            rooms.put(roomName, newRoomRef);
                            notificationManager.send(msg);
+                           logger.log(Level.INFO, "Room Successfully created in DB");
                            break;
-                        case INVALID: // db problem
-                           // maybe instead of invalid return a new message type
-                           // internal error or something
+                        case INVALID:
                            msg.getFrom().send(new Msg(MsgType.INVALID));
+                           logger.log(Level.SEVERE, "DB error trying to create a room");
                            break;
                      }
                   } else {
@@ -80,7 +84,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   return true;
             }
          } catch (ExecutionException ee) {
-            System.out.println("PIGEON: " + ee.getMessage());
+            logger.log(Level.SEVERE, "Pigeon error - {0}", ee.getMessage());
          }
          return false;
       }));

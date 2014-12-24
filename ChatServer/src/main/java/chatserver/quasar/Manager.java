@@ -48,6 +48,7 @@ public class Manager extends BasicActor<Msg, Void> {
                return true;
             case LOGIN_OK:
                users.put(msg.getFromUsername(), msg.getFrom());
+               // we will use this actor ref to notify possible private messages
                return true;
             case PRIVATE:
                // parts here is something like: ["usernameTo", "message"]

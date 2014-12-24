@@ -8,7 +8,7 @@ public class Util {
     * @param cmd command to be parsed
     * @return the type of the command
     */
-   public CommandType getCommandType(String cmd) {
+   public static CommandType getCommandType(String cmd) {
       CommandType type = CommandType.UNKNOWN;
 
       switch (cmd) {

@@ -23,14 +23,12 @@ public class User extends BasicActor<Msg, Void> {
    private String rid;
    private String username;
    private final FiberSocketChannel socket;
-   private final Util util;
 
    public User(ActorRef room, ActorRef roomManager, ActorRef manager, FiberSocketChannel socket) {
       this.room = room;
       this.roomManager = roomManager;
       this.manager = manager;
       this.socket = socket;
-      this.util = new Util();
    }
 
    @Override
@@ -51,7 +49,7 @@ public class User extends BasicActor<Msg, Void> {
                   String line = new String((byte[]) msg.getContent());
                   String[] parts = (line.substring(0, line.length() - 2)).split(" ");
                   if (line.startsWith(":")) {
-                     switch (util.getCommandType(parts[0])) {
+                     switch (Util.getCommandType(parts[0])) {
                         case CREATE:
                            create(parts);
                            return true;
@@ -94,7 +92,7 @@ public class User extends BasicActor<Msg, Void> {
                   String line = new String((byte[]) msg.getContent());
                   String[] parts = (line.substring(0, line.length() - 2)).split(" ");
                   if (line.startsWith(":")) {
-                     switch (util.getCommandType(parts[0])) {
+                     switch (Util.getCommandType(parts[0])) {
                         case CREATE:
                            say("You are signed in. Logout first to create another account\n");
                            break;
@@ -185,7 +183,6 @@ public class User extends BasicActor<Msg, Void> {
                setRid((String) reply.getContent());
                room.send(new Msg(MsgType.ENTER, self(), username, null));
                manager.send(new Msg(MsgType.LOGIN_OK, self(), username, null)); // sends its actoref to manager
-               // the room receives the same message, it could send to the manager
                runChat();
                break;
             case INVALID:
