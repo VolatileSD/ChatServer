@@ -26,11 +26,11 @@ public class UserODB {
 
    public User findByUsername(String username) {
       User user = null;
-      Map<String, Object> params = new HashMap();
-      params.put("username", username);
+      StringBuilder sb = new StringBuilder().append("SELECT FROM User WHERE username = '");
+      sb.append(username).append("'");
 
       try {
-         List<ODocument> resultList = db.executeSynchQuery("SELECT FROM User WHERE username = :username", params);
+         List<ODocument> resultList = db.executeSynchQuery(sb.toString());
          if (!resultList.isEmpty()) {
             user = new User(resultList.get(0));
          }
