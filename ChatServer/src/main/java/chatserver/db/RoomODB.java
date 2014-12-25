@@ -8,6 +8,8 @@ package chatserver.db;
 import chatserver.db.entity.Message;
 import chatserver.db.entity.Room;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -81,6 +83,20 @@ public class RoomODB {
       } finally {
          db.close();
       }
+   }
+
+   public Collection<String> getActiveRooms() {
+      Collection<String> rooms = new ArrayList();
+      try {
+         List<ODocument> resultList = db.executeSynchQuery("SELECT FROM Room WHERE active = true");
+         for (ODocument d : resultList) {
+            rooms.add(d.field("name"));
+         }
+      } finally {
+         db.close();
+      }
+      
+      return rooms;
    }
 
 }
