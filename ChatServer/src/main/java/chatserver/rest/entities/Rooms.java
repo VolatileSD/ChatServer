@@ -2,6 +2,7 @@ package chatserver.rest.entities;
 
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Rooms {
 
@@ -11,9 +12,9 @@ public class Rooms {
       rooms = new ArrayList();
    }
 
-   public Rooms(Collection<String> rooms) {
+   public Rooms(Map<String, String> rooms) {
       this.rooms = new ArrayList();
-      for (String s : rooms) {
+      for (String s : rooms.keySet()) {
          this.rooms.add(s);
       }
    }

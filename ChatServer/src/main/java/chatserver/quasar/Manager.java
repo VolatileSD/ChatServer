@@ -30,8 +30,9 @@ public class Manager extends BasicActor<Msg, Void> {
          String[] parts = (String[]) msg.getContent();
          switch (msg.getType()) {
             case RESTORE:
-               Collection<String> rooms = roomODB.getActiveRooms();
-               msg.getFrom().send(new Msg(MsgType.RESTORE, null, null, rooms));
+               Map<String, String> rooms = roomODB.getActiveRooms();
+               Msg restoreMsg = new Msg(MsgType.RESTORE, null, null, rooms);
+               msg.getFrom().send(restoreMsg);
                return true;
             case CREATE:
                user = userODB.findByUsername(parts[1]);

@@ -10,7 +10,9 @@ import chatserver.db.entity.Room;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -48,7 +50,7 @@ public class RoomODB {
 
    public Room findByName(String name) {
       Room room = null;
-      StringBuilder sb = new StringBuilder().append("SELEC FROM Room WHERE name = '");
+      StringBuilder sb = new StringBuilder().append("SELECT FROM Room WHERE name = '");
       sb.append(name).append("'");
 
       try {
@@ -85,12 +87,13 @@ public class RoomODB {
       }
    }
 
-   public Collection<String> getActiveRooms() {
-      Collection<String> rooms = new ArrayList();
+   public Map<String, String> getActiveRooms() {
+      Map<String, String> rooms = new HashMap();
       try {
          List<ODocument> resultList = db.executeSynchQuery("SELECT FROM Room WHERE active = true");
          for (ODocument d : resultList) {
-            rooms.add(d.field("name"));
+            Room r = new Room(d);
+            rooms.put(r.getName(), r.getRid());
          }
       } finally {
          db.close();

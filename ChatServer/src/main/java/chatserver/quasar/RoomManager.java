@@ -9,6 +9,7 @@ import java.util.HashMap;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,9 +31,17 @@ public class RoomManager extends BasicActor<Msg, Void> {
 
       while (receive(msg -> {
          try {
-            String roomName = (String) msg.getContent();
+            String roomName;
             switch (msg.getType()) {
+               case RESTORE:
+                  Map<String, String> activeRooms = (Map) msg.getContent();
+                  for (String s : activeRooms.keySet()) {
+                     ActorRef roomRef = new Room(s, activeRooms.get(s), manager, notificationManager).spawn();
+                     rooms.put(s, roomRef);
+                  }
+                  return true;
                case ROOM_INFO:
+                  roomName = (String) msg.getContent();
                   if (rooms.containsKey(roomName)) {
                      // he already tested this in rest
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.ROOM_INFO);
@@ -44,6 +53,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   }
                   return true;
                case CREATE_ROOM:
+                  roomName = (String) msg.getContent();
                   if (!rooms.containsKey(roomName)) {
                      Msg reply = new Pigeon(manager).carry(MsgType.CREATE_ROOM, null, new String[]{roomName});
                      switch (reply.getType()) {
@@ -64,6 +74,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   }
                   return true;
                case DELETE_ROOM:
+                  roomName = (String) msg.getContent();
                   if (rooms.containsKey(roomName)) {
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.DELETE_ROOM);
                      if (reply.getType().equals(MsgType.OK)) {
@@ -75,6 +86,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   }
                   return true;
                case CHANGE_ROOM:
+                  roomName = (String) msg.getContent();
                   if (rooms.containsKey(roomName)) {
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.CHANGE_ROOM);
                      msg.getFrom().send(reply);

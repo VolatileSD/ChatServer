@@ -13,7 +13,7 @@ import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
 import co.paralleluniverse.fibers.SuspendExecution;
-import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,12 +42,12 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
       Msg msg;
       try {
          msg = new Pigeon(manager).carry(MsgType.RESTORE);
+         roomManager.send(msg);
       } catch (InterruptedException | SuspendExecution | ExecutionException e) {
          Logger.getLogger(ChatServerApplication.class.getName()).log(Level.SEVERE, "Error trying to restore - {0}", e.getMessage());
          return;
       }
-      Rooms rooms = new Rooms((Collection) msg.getContent());
-//      Rooms rooms = new Rooms();
+      Rooms rooms = new Rooms((Map) msg.getContent());
       environment.jersey().register(new RoomsResource(rooms));
       environment.jersey().register(new RoomResource(rooms, roomManager));
       environment.healthChecks().register("ChatServer", new ChatServerHealthCheck());
