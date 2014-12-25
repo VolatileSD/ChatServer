@@ -105,4 +105,12 @@ public class UserODB {
       return inbox;
    }
 
+   public void logoutEveryone() {
+      try{
+         db.execute("UPDATE User set loggedIn = false");
+      } finally{
+         db.close(); 
+      }
+   }
+
 }

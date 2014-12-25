@@ -16,12 +16,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Manager extends BasicActor<Msg, Void> {
-   
+
    private final Map<String, ActorRef> users = new HashMap();
    private final UserODB userODB = new UserODB();
    private final MessageODB messageODB = new MessageODB();
    private final RoomODB roomODB = new RoomODB();
-   
+
    @Override
    @SuppressWarnings("empty-statement")
    protected Void doRun() throws InterruptedException, SuspendExecution {
@@ -30,6 +30,7 @@ public class Manager extends BasicActor<Msg, Void> {
          String[] parts = (String[]) msg.getContent();
          switch (msg.getType()) {
             case RESTORE:
+               userODB.logoutEveryone();
                Map<String, String> rooms = roomODB.getActiveRooms();
                Msg restoreMsg = new Msg(MsgType.RESTORE, null, null, rooms);
                msg.getFrom().send(restoreMsg);
@@ -88,10 +89,15 @@ public class Manager extends BasicActor<Msg, Void> {
                   msg.getFrom().send(new Msg(MsgType.INVALID));
                }
                return true;
+            case DELETE_ROOM:
+               roomODB.setActive(parts[0], false);
+               return true;
             case LINE:
-               // parts = ["roomRid", "message"]
-               Message m = messageODB.create(msg.getFromUsername(), parts[1]);
-               roomODB.addMessage(parts[0], m);
+               if (parts[0] != null) { // because of main room
+                  // parts = ["roomRid", "message"]
+                  Message m = messageODB.create(msg.getFromUsername(), parts[1]);
+                  roomODB.addMessage(parts[0], m);
+               }
                return true;
          }
          return false;

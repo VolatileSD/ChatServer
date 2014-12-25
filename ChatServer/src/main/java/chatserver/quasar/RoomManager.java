@@ -9,7 +9,6 @@ import java.util.HashMap;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
-import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -79,6 +78,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.DELETE_ROOM);
                      if (reply.getType().equals(MsgType.OK)) {
                         rooms.remove(roomName);
+                        manager.send(new Msg(MsgType.DELETE_ROOM, null, null, reply.getContent()));
                      }
                      msg.getFrom().send(reply);
                   } else {

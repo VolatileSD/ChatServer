@@ -17,7 +17,6 @@ public class Room extends BasicActor<Msg, Void> {
    private final ActorRef manager;
    private final ActorRef notificationManager;
    private int usersWillEnterSoon = 0;
-   private int messageCount = 0; // maybe when someone asks for the room info send this and createDate, e.g.
 
    public Room(String topic, String rid, ActorRef manager, ActorRef notificationManager) {
       this.topic = topic;
@@ -57,7 +56,6 @@ public class Room extends BasicActor<Msg, Void> {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
                }
                notificationManager.send(new Msg(MsgType.LEAVE, null, fromUsername, topic));
-               messageCount++;
                return true;
             case LINE:
                fromUsername = msg.getFromUsername();
@@ -75,7 +73,7 @@ public class Room extends BasicActor<Msg, Void> {
                if (users.size() + usersWillEnterSoon > 0) {
                   msg.getFrom().send(new Msg(MsgType.INVALID));
                } else {
-                  msg.getFrom().send(new Msg(MsgType.OK));
+                  msg.getFrom().send(new Msg(MsgType.OK, null, null, new String[]{rid}));
                }
                return true;
             case CHANGE_ROOM:
