@@ -174,10 +174,15 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void remove(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      if (parts.length != 3) {
+         say("Unknown Command\n");
+      } else{
+         Msg reply = new Pigeon(manager).carry(MsgType.REMOVE, null, parts);
+      }
+
    }
 
    private void login(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      boolean b = false;
       if (parts.length != 3) {
          say("Unknown Command\n");
       } else {

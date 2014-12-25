@@ -10,18 +10,6 @@ public class UserODB {
 
    private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
 
-   public void create(String username, String password) {
-      StringBuilder sb = new StringBuilder("INSERT INTO User SET username = '");
-      sb.append(username).append("', password = '");
-      sb.append(password).append("', registrationDate = sysdate(), loggedIn = false");
-
-      try {
-         db.execute(sb.toString());
-      } finally {
-         db.close();
-      }
-   }
-
    public User findByUsername(String username) {
       User user = null;
       StringBuilder sb = new StringBuilder("SELECT FROM User WHERE username = '");
@@ -44,12 +32,49 @@ public class UserODB {
       return user != null && user.getPassword().equals(password) ? user : null;
    }
 
+   public User create(String username, String password) {
+      User user = findByUsername(username);
+      if (user == null) {
+         StringBuilder sb = new StringBuilder("INSERT INTO User SET username = '");
+         sb.append(username).append("', password = '");
+         sb.append(password).append("', registrationDate = sysdate(), loggedIn = false");
+         sb.append(" active = true RETURN @this");
+
+         try {
+            ODocument document = (ODocument) db.execute(sb.toString());
+            user = new User(document);
+         } finally {
+            db.close();
+         }
+      } else {
+         user = null;
+      }
+
+      return user;
+   }
+
+   public User remove(String username, String password) {
+      // the fact that we dont actually remove the user it allows us to implement activate account in the future
+      User user = findByUsernameAndPassword(username, password);
+      if (user != null) {
+         if(!user.isActive()){
+            user = null; // maybe here we could say the user does not exists
+         } else{
+            setActive(user.getRid(), false);
+         }
+      }
+
+      return user;
+   }
+
    public User login(String username, String password) {
       User user = findByUsernameAndPassword(username, password);
-      if (user.isLoggedIn()) {
-         user = null; // maybe here we could say that the user is already logged in
-      } else {
-         setLoggedIn(user.getRid(), true);
+      if (user != null) {
+         if (user.isLoggedIn()) {
+            user = null; // maybe here we could say that the user is already logged in
+         } else {
+            setLoggedIn(user.getRid(), true);
+         }
       }
       return user;
    }
@@ -68,21 +93,14 @@ public class UserODB {
       }
    }
 
-   public boolean remove(String username, String password) {
-      /*
-       User user = findByUsernameAndPassword(username, password);
-       if (user != null) {
-       try {
-            
-       } finally {
-       db.close();
-       }
-       return true;
-       } else {
-       return false;
-       }
-       */
-      return true;
+   public void setActive(String rid, boolean active) {
+      StringBuilder sb = new StringBuilder("UPDATE ");
+      sb.append(rid).append(" SET active = ").append(active);
+      try {
+         db.execute(sb.toString());
+      } finally {
+         db.close();
+      }
    }
 
    public void addPrivateMessage(User user, Message message) {

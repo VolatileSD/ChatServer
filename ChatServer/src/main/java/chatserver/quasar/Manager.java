@@ -2,7 +2,6 @@ package chatserver.quasar;
 
 import chatserver.db.MessageODB;
 import chatserver.db.RoomODB;
-import chatserver.db.entity.User;
 import chatserver.db.UserODB;
 import chatserver.db.entity.Message;
 import chatserver.util.Msg;
@@ -25,7 +24,7 @@ public class Manager extends BasicActor<Msg, Void> {
    @SuppressWarnings("empty-statement")
    protected Void doRun() throws InterruptedException, SuspendExecution {
       while (receive(msg -> {
-         User user;
+         chatserver.db.entity.User user;
          String[] parts = (String[]) msg.getContent();
          switch (msg.getType()) {
             case RESTORE:
@@ -35,11 +34,18 @@ public class Manager extends BasicActor<Msg, Void> {
                msg.getFrom().send(restoreMsg);
                return true;
             case CREATE:
-               user = userODB.findByUsername(parts[1]);
-               if (user == null) { // If the username does not exists, creates a new user
-                  userODB.create(parts[1], parts[2]);
+               user = userODB.create(parts[1], parts[2]);
+               if (user != null) {
                   msg.getFrom().send(new Msg(MsgType.OK));
                } else { // if the username is in use, emit a warning
+                  msg.getFrom().send(new Msg(MsgType.INVALID));
+               }
+               return true;
+            case REMOVE:
+               user = userODB.remove(parts[1], parts[2]);
+               if (user != null) {
+                  msg.getFrom().send(new Msg(MsgType.OK));
+               } else { // if password is wrong or the user is already inactive
                   msg.getFrom().send(new Msg(MsgType.INVALID));
                }
                return true;
@@ -58,9 +64,6 @@ public class Manager extends BasicActor<Msg, Void> {
                return true;
             case LOGOUT:
                userODB.logout(parts[0]);
-               return true;
-            case REMOVE:
-               // authenticate first
                return true;
             case PRIVATE:
                // parts here is something like: ["usernameTo", "message"]
