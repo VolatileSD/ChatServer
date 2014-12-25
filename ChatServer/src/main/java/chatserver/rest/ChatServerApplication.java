@@ -13,6 +13,7 @@ import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
 import co.paralleluniverse.fibers.SuspendExecution;
+import java.util.Collection;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
