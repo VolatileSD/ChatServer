@@ -10,7 +10,6 @@ import chatserver.util.MsgType;
 import co.paralleluniverse.actors.ActorRef;
 import co.paralleluniverse.actors.BasicActor;
 import co.paralleluniverse.fibers.SuspendExecution;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

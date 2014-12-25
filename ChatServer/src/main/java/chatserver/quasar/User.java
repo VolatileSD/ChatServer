@@ -56,14 +56,17 @@ public class User extends BasicActor<Msg, Void> {
                         case CREATE:
                            create(parts);
                            return true;
+                        case REMOVE:
+                           remove(parts);
+                           return true;
                         case LOGIN:
                            login(parts);
                            return true;
-                        case REMOVE:
-                           //remove(parts);
-                           return true;
                         case HELP:
-                           say("Available commands\n:create user pass\n:login user pass - if you already registered\n");
+                           say("Available commands\n:create user pass\n:login user pass - if you already registered\n:remove user pass\n");
+                           return true;
+                        default:
+                           say("Login before anything else.\n");
                            return true;
                      }
                   } else {
@@ -99,17 +102,17 @@ public class User extends BasicActor<Msg, Void> {
                         case CREATE:
                            say("You are signed in. Logout first to create another account\n");
                            break;
+                        case REMOVE:
+                           remove(parts);
+                           break;
                         case LOGIN:
-                           // check if is already logged in
                            say("You are already logged in.");
                            break;
                         case LOGOUT:
-                           // check if is already logged out
-                           // if is logged in, send a LEAVE message to his room
                            logout(parts);
+                           say("Successfully logged out!");
                            break;
                         case CHANGE_ROOM:
-                           // check if is already logged in
                            changeRoom(parts);
                            break;
                         case PRIVATE:
@@ -127,7 +130,6 @@ public class User extends BasicActor<Msg, Void> {
                            break;
                      }
                   } else {
-                     //byte[] message = ("@" + username + ": " + line).getBytes();
                      room.send(new Msg(MsgType.LINE, null, username, line));
                   }
                   return true;
@@ -135,7 +137,7 @@ public class User extends BasicActor<Msg, Void> {
                   say((byte[]) msg.getContent());
                   return true;
                case PRIVATE:
-                  say("You've got a message from @" + msg.getFromUsername() + ". Type :inbox to read it.\n");
+                  say(new StringBuilder("You've got a message from @").append(msg.getFromUsername()).append(". Type :inbox to read it.\n").toString());
                   return true;
                case EOF:
                case IOE:
@@ -162,7 +164,7 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.CREATE, null, parts);
          switch (reply.getType()) {
             case OK:
-               say("New user @" + parts[1] + " created successfully\n");
+               say(new StringBuilder("New user @").append(parts[1]).append(" created successfully\n").toString());
                break;
             case INVALID:
                say("Username already exists\n");
@@ -200,6 +202,7 @@ public class User extends BasicActor<Msg, Void> {
       if (parts.length != 1) {
          say("Unknown Command\n");
       } else {
+         room.send(new Msg(MsgType.LEAVE, self(), username, null));
          manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
          runLogin();
       }
@@ -218,7 +221,7 @@ public class User extends BasicActor<Msg, Void> {
                say("Room changed successfully.\n");
                break;
             case INVALID:
-               say("Room " + parts[1] + " does not exist\n");
+               say(new StringBuilder("Room ").append(parts[1]).append("does not exist\n").toString());
                break;
          }
       }
@@ -238,10 +241,10 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString()});
          switch (reply.getType()) {
             case OK:
-               say("Message successfully sent to @" + parts[1] + ".\n");
+               say(new StringBuilder("Message successfully sent to @").append(parts[1]).append(".\n").toString());
                break;
             case INVALID:
-               say("Unknown user @" + parts[1] + ".\n");
+               say(new StringBuilder("Unknown user @").append("parts[1").append(".\n").toString());
                break;
          }
       }

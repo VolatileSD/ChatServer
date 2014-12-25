@@ -30,22 +30,31 @@ public class NotificationManager extends BasicActor<Msg, Void> {
       this.pub.connect("tcp://localhost:" + internalPort); // sure?
 
       while (receive(msg -> {
+         StringBuilder sb;
          switch (msg.getType()) {
             case CREATE_ROOM:
                pub.sendMore("rooms");
-               pub.send("Room " + msg.getContent() + " was created!");
+               sb = new StringBuilder("Room ");
+               sb.append(msg.getContent()).append(" was created!");
+               pub.send(sb.toString());
                return true;
             case DELETE_ROOM:
                pub.sendMore("rooms");
-               pub.send("Room " + msg.getContent() + " was deleted!");
+               sb = new StringBuilder("Room ");
+               sb.append(msg.getContent()).append(" was deleted!");
+               pub.send(sb.toString());
                return true;
             case ENTER:
                pub.sendMore("room/" + msg.getContent());
-               pub.send("User @" + msg.getFromUsername() + " entered the room " + msg.getContent());
+               sb = new StringBuilder("User @").append(msg.getFromUsername());
+               sb.append(" entered the room ").append(msg.getContent());
+               pub.send(sb.toString());
                return true;
             case LEAVE:
                pub.sendMore("room/" + msg.getContent());
-               pub.send("User @" + msg.getFromUsername() + " left the room " + msg.getContent());
+               sb = new StringBuilder("User @").append(msg.getFromUsername());
+               sb.append(" left the room ").append(msg.getContent());
+               pub.send(sb.toString());
                return true;
             // these two would be easier to implement if instead of change_room we had connect and disconnect
          }

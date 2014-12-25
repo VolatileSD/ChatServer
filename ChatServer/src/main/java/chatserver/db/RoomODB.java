@@ -8,8 +8,6 @@ package chatserver.db;
 import chatserver.db.entity.Message;
 import chatserver.db.entity.Room;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +23,7 @@ public class RoomODB {
    public Room create(String name) {
       Room room = findByName(name);
       if (room == null) {
-         StringBuilder sb = new StringBuilder();
-         sb.append("INSERT INTO Room set name = '");
+         StringBuilder sb = new StringBuilder("INSERT INTO Room set name = '");
          sb.append(name).append("', creationDate = sysdate(), active = true RETURN @this");
          try {
             ODocument document = (ODocument) db.execute(sb.toString());
@@ -50,7 +47,7 @@ public class RoomODB {
 
    public Room findByName(String name) {
       Room room = null;
-      StringBuilder sb = new StringBuilder().append("SELECT FROM Room WHERE name = '");
+      StringBuilder sb = new StringBuilder("SELECT FROM Room WHERE name = '");
       sb.append(name).append("'");
 
       try {
@@ -66,7 +63,7 @@ public class RoomODB {
    }
 
    public void setActive(String rid, boolean active) {
-      StringBuilder sb = new StringBuilder().append("UPDATE ");
+      StringBuilder sb = new StringBuilder("UPDATE ");
       sb.append(rid).append(" SET active = ").append(active);
       try {
          db.execute(sb.toString());
@@ -98,7 +95,7 @@ public class RoomODB {
       } finally {
          db.close();
       }
-      
+
       return rooms;
    }
 

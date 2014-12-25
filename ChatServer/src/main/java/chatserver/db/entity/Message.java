@@ -18,8 +18,7 @@ public class Message extends AbstractEntity {
 
    @Override
    public String toString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append(date.toString());
+      StringBuilder sb = new StringBuilder(date.toString());
       sb.append("\nFrom: ").append(from);
       sb.append("\nMessage: ").append(text).append("\n");
 

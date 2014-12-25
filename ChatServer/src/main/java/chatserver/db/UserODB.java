@@ -4,16 +4,14 @@ import chatserver.db.entity.Message;
 import chatserver.db.entity.User;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class UserODB {
 
    private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
 
    public void create(String username, String password) {
-      StringBuilder sb = new StringBuilder().append("INSERT INTO User SET username = '");
+      StringBuilder sb = new StringBuilder("INSERT INTO User SET username = '");
       sb.append(username).append("', password = '");
       sb.append(password).append("', registrationDate = sysdate(), loggedIn = false");
 
@@ -26,7 +24,7 @@ public class UserODB {
 
    public User findByUsername(String username) {
       User user = null;
-      StringBuilder sb = new StringBuilder().append("SELECT FROM User WHERE username = '");
+      StringBuilder sb = new StringBuilder("SELECT FROM User WHERE username = '");
       sb.append(username).append("'");
 
       try {
@@ -61,7 +59,7 @@ public class UserODB {
    }
 
    public void setLoggedIn(String rid, boolean loggedIn) {
-      StringBuilder sb = new StringBuilder().append("UPDATE ");
+      StringBuilder sb = new StringBuilder("UPDATE ");
       sb.append(rid).append(" SET loggedIn = ").append(loggedIn);
       try {
          db.execute(sb.toString());
@@ -106,10 +104,10 @@ public class UserODB {
    }
 
    public void logoutEveryone() {
-      try{
+      try {
          db.execute("UPDATE User set loggedIn = false");
-      } finally{
-         db.close(); 
+      } finally {
+         db.close();
       }
    }
 

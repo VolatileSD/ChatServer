@@ -9,7 +9,7 @@ public class MessageODB {
 
    public Message create(String from, String text) {
       Message m = null;
-      StringBuilder sb = new StringBuilder().append("INSERT INTO Message set from = '");
+      StringBuilder sb = new StringBuilder("INSERT INTO Message set from = '");
       sb.append(from).append("', text = '");
       sb.append(text).append("', date = sysdate() RETURN @this");
 

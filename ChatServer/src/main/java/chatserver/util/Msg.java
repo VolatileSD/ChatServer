@@ -48,8 +48,7 @@ public class Msg {
 
    @Override
    public String toString() {
-      StringBuilder sb = new StringBuilder();
-      sb.append("Type: ");
+      StringBuilder sb = new StringBuilder("Type: ");
       sb.append(type);
       if (from != null) {
          sb.append("\nFrom: ");

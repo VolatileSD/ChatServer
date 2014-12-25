@@ -18,8 +18,16 @@ public class User extends AbstractEntity {
       this.loggedIn = user.field("loggedIn");
    }
 
+   public String getUsername() {
+      return username;
+   }
+
    public String getPassword() {
       return password;
+   }
+
+   public Date getRegistrationDate() {
+      return registrationDate;
    }
 
    public boolean isLoggedIn() {
