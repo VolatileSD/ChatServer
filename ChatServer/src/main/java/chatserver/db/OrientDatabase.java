@@ -4,7 +4,6 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,34 +59,13 @@ public class OrientDatabase {
    }
 
    public Object execute(String command) {
+      logger.log(Level.INFO, command);
       OCommandSQL oCommand = new OCommandSQL(command);
       return getDB().command(oCommand).execute();
    }
 
    public List<ODocument> executeSynchQuery(String query) {
+      logger.log(Level.INFO, query);
       return getDB().command(new OSQLSynchQuery(query)).execute();
-   }
-
-   public List<ODocument> executeSynchQuery(String query, Object params) {
-      return getDB().command(new OSQLSynchQuery(query)).execute(params);
-   }
-
-   private static List<Long> getEntries(String logEntry) {
-      if (logEntry == null) {
-         return null;
-      }
-
-      List<Long> entries = new ArrayList<>();
-      String[] listEntries = logEntry.split("\\s*,\\s*");
-
-      if (listEntries.length == 0) {
-         return null;
-      }
-
-      for (String entry : listEntries) {
-         entries.add(Long.valueOf(entry));
-      }
-
-      return entries.isEmpty() ? null : entries;
    }
 }

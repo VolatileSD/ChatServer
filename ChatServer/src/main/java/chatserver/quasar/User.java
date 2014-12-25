@@ -100,17 +100,16 @@ public class User extends BasicActor<Msg, Void> {
                   if (line.startsWith(":")) {
                      switch (Util.getCommandType(parts[0])) {
                         case CREATE:
-                           say("You are signed in. Logout first to create another account\n");
+                           say("You are signed in. Logout first to create another account.\n");
                            break;
                         case REMOVE:
-                           remove(parts);
+                           say("Logout first.\n");
                            break;
                         case LOGIN:
-                           say("You are already logged in.");
+                           say("You are already logged in.\n");
                            break;
                         case LOGOUT:
                            logout(parts);
-                           say("Successfully logged out!");
                            break;
                         case CHANGE_ROOM:
                            changeRoom(parts);
@@ -122,11 +121,11 @@ public class User extends BasicActor<Msg, Void> {
                            readInbox();
                            break;
                         case HELP:
-                           say("Available commands\n");
+                           say("Available commands.\n");
                            //Help command: returns a list of all available commands
                            break;
                         case UNKNOWN:
-                           say("Unknown Command\n");
+                           say("Unknown Command.\n");
                            break;
                      }
                   } else {
@@ -159,15 +158,15 @@ public class User extends BasicActor<Msg, Void> {
 
    private void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
-         say("Unknown Command\n");
+         say("Unknown Command.\n");
       } else {
          Msg reply = new Pigeon(manager).carry(MsgType.CREATE, null, parts);
          switch (reply.getType()) {
             case OK:
-               say(new StringBuilder("New user @").append(parts[1]).append(" created successfully\n").toString());
+               say(new StringBuilder("New user @").append(parts[1]).append(" created successfully.\n").toString());
                break;
             case INVALID:
-               say("Username already exists\n");
+               say("Username already exists.\n");
                break;
          }
       }
@@ -175,16 +174,28 @@ public class User extends BasicActor<Msg, Void> {
 
    private void remove(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
-         say("Unknown Command\n");
-      } else{
+         say("Unknown Command.\n");
+      } else {
          Msg reply = new Pigeon(manager).carry(MsgType.REMOVE, null, parts);
+         switch (reply.getType()) {
+            case OK:
+               say("User removed successfully.\n");
+               room.send(new Msg(MsgType.LEAVE, self(), username, null));
+               runLogin();
+               break;
+            case INVALID:
+               say("Invalid.\n");
+               // the password could be wrong
+               // or the user could be already inactive
+               break;
+         }
       }
 
    }
 
    private void login(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
-         say("Unknown Command\n");
+         say("Unknown Command.\n");
       } else {
          Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, null, parts);
          switch (reply.getType()) {
@@ -205,10 +216,11 @@ public class User extends BasicActor<Msg, Void> {
 
    private void logout(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 1) {
-         say("Unknown Command\n");
+         say("Unknown Command.\n");
       } else {
          room.send(new Msg(MsgType.LEAVE, self(), username, null));
          manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
+         say("Successfully logged out.\n");
          runLogin();
       }
    }
@@ -226,7 +238,7 @@ public class User extends BasicActor<Msg, Void> {
                say("Room changed successfully.\n");
                break;
             case INVALID:
-               say(new StringBuilder("Room ").append(parts[1]).append("does not exist\n").toString());
+               say(new StringBuilder("Room ").append(parts[1]).append(" does not exist\n").toString());
                break;
          }
       }

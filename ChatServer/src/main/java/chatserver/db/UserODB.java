@@ -37,7 +37,7 @@ public class UserODB {
       if (user == null) {
          StringBuilder sb = new StringBuilder("INSERT INTO User SET username = '");
          sb.append(username).append("', password = '");
-         sb.append(password).append("', registrationDate = sysdate(), loggedIn = false");
+         sb.append(password).append("', registrationDate = sysdate(), loggedIn = false,");
          sb.append(" active = true RETURN @this");
 
          try {
@@ -57,9 +57,9 @@ public class UserODB {
       // the fact that we dont actually remove the user it allows us to implement activate account in the future
       User user = findByUsernameAndPassword(username, password);
       if (user != null) {
-         if(!user.isActive()){
-            user = null; // maybe here we could say the user does not exists
-         } else{
+         if (!user.isActive() || user.isLoggedIn()) {
+            user = null;
+         } else {
             setActive(user.getRid(), false);
          }
       }
@@ -70,8 +70,8 @@ public class UserODB {
    public User login(String username, String password) {
       User user = findByUsernameAndPassword(username, password);
       if (user != null) {
-         if (user.isLoggedIn()) {
-            user = null; // maybe here we could say that the user is already logged in
+         if (user.isLoggedIn() || !user.isActive()) {
+            user = null; // maybe here we could say that the user is already logged in or inactive
          } else {
             setLoggedIn(user.getRid(), true);
          }
@@ -96,6 +96,9 @@ public class UserODB {
    public void setActive(String rid, boolean active) {
       StringBuilder sb = new StringBuilder("UPDATE ");
       sb.append(rid).append(" SET active = ").append(active);
+      if (!active) {
+         sb.append(", loggedIn = false");
+      }
       try {
          db.execute(sb.toString());
       } finally {
