@@ -10,17 +10,18 @@ import chatserver.util.MsgType;
 import co.paralleluniverse.actors.ActorRef;
 import co.paralleluniverse.actors.BasicActor;
 import co.paralleluniverse.fibers.SuspendExecution;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Manager extends BasicActor<Msg, Void> {
-
+   
    private final Map<String, ActorRef> users = new HashMap();
    private final UserODB userODB = new UserODB();
    private final MessageODB messageODB = new MessageODB();
    private final RoomODB roomODB = new RoomODB();
-
+   
    @Override
    @SuppressWarnings("empty-statement")
    protected Void doRun() throws InterruptedException, SuspendExecution {
@@ -28,6 +29,10 @@ public class Manager extends BasicActor<Msg, Void> {
          User user;
          String[] parts = (String[]) msg.getContent();
          switch (msg.getType()) {
+            case RESTORE:
+               Collection<String> rooms = roomODB.getActiveRooms();
+               msg.getFrom().send(new Msg(MsgType.RESTORE, null, null, rooms));
+               return true;
             case CREATE:
                user = userODB.findByUsername(parts[1]);
                if (user == null) { // If the username does not exists, creates a new user
