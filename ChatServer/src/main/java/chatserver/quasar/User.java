@@ -229,7 +229,8 @@ public class User extends BasicActor<Msg, Void> {
       } else {
          room.send(new Msg(MsgType.LEAVE, self(), username, null));
          manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
-         say("Successfully logged out.\n");
+         //ok();
+         //say("Successfully logged out.\n");
          runLogin();
       }
    }

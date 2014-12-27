@@ -5,9 +5,16 @@
  */
 package chatclient;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,21 +23,25 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.ResponseHandler;
+
 /**
  *
  * @author pc-user
  */
-public class RunChat extends javax.swing.JFrame {
+public class RunChat extends JFrame {
 
    private final int MAXLEN = 1024;
+   private SocketChannel socket;
+   private JFrame runLogin;
 
    /**
     * Creates new form RunChat
     */
-   public RunChat(SocketChannel socket) {
+   public RunChat(JFrame runLogin, SocketChannel socket) {
       initComponents();
-      replyTxt.setText("");
-      new LineReader(socket).start();
+      this.socket = socket;
+      this.runLogin = runLogin;
+      new LineReader().start();
    }
 
    /**
@@ -48,17 +59,12 @@ public class RunChat extends javax.swing.JFrame {
       chatTxt = new javax.swing.JTextArea();
       sendTxt = new javax.swing.JTextField();
       listRoomsBtn = new javax.swing.JButton();
-      logoutBtn = new javax.swing.JButton();
       listUsersBtn = new javax.swing.JButton();
       listUsersRoomLbl = new javax.swing.JLabel();
       roomListUsersTxt = new javax.swing.JTextField();
-      roomChangeRoomTxt = new javax.swing.JTextField();
-      changeRoomBtn = new javax.swing.JButton();
-      changeRoomListLbl = new javax.swing.JLabel();
       logoutBtn1 = new javax.swing.JButton();
-      replyTxt = new javax.swing.JLabel();
       jScrollPane3 = new javax.swing.JScrollPane();
-      jList1 = new javax.swing.JList();
+      list = new javax.swing.JList();
 
       javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
       jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -72,6 +78,9 @@ public class RunChat extends javax.swing.JFrame {
       );
 
       setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+      setFocusable(false);
+      setMinimumSize(new java.awt.Dimension(600, 410));
+      setPreferredSize(new java.awt.Dimension(740, 450));
 
       chatTxt.setEditable(false);
       chatTxt.setColumns(20);
@@ -91,13 +100,6 @@ public class RunChat extends javax.swing.JFrame {
          }
       });
 
-      logoutBtn.setText("Logout");
-      logoutBtn.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            logoutBtnActionPerformed(evt);
-         }
-      });
-
       listUsersBtn.setText("List Users in Room");
       listUsersBtn.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -107,15 +109,6 @@ public class RunChat extends javax.swing.JFrame {
 
       listUsersRoomLbl.setText("Room:");
 
-      changeRoomBtn.setText("Change Room");
-      changeRoomBtn.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            changeRoomBtnActionPerformed(evt);
-         }
-      });
-
-      changeRoomListLbl.setText("Room:");
-
       logoutBtn1.setText("Inbox");
       logoutBtn1.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -123,17 +116,7 @@ public class RunChat extends javax.swing.JFrame {
          }
       });
 
-      replyTxt.setForeground(new java.awt.Color(0, 102, 204));
-      replyTxt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-      replyTxt.setText("Login ok");
-      replyTxt.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
-      jList1.setModel(new javax.swing.AbstractListModel() {
-         String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-         public int getSize() { return strings.length; }
-         public Object getElementAt(int i) { return strings[i]; }
-      });
-      jScrollPane3.setViewportView(jList1);
+      jScrollPane3.setViewportView(list);
 
       javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
       getContentPane().setLayout(layout);
@@ -142,61 +125,42 @@ public class RunChat extends javax.swing.JFrame {
          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addComponent(sendTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 537, Short.MAX_VALUE)
+               .addComponent(sendTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
                .addComponent(jScrollPane1))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGap(6, 6, 6)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                  .addComponent(listRoomsBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addGroup(layout.createSequentialGroup()
-                     .addComponent(listUsersRoomLbl)
-                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                     .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                  .addComponent(listUsersBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addGroup(layout.createSequentialGroup()
-                     .addComponent(changeRoomListLbl)
-                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                     .addComponent(roomChangeRoomTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                  .addComponent(changeRoomBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addComponent(replyTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
-               .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(logoutBtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE))
+               .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(logoutBtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(listUsersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                  .addComponent(listUsersRoomLbl)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                  .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addContainerGap())
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-         .addGroup(layout.createSequentialGroup()
+         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                  .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jScrollPane3)
                   .addGap(18, 18, 18)
-                  .addComponent(listRoomsBtn)
-                  .addGap(26, 26, 26)
+                  .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addGap(51, 51, 51)
+                  .addComponent(listUsersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                   .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                      .addComponent(listUsersRoomLbl)
                      .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                  .addComponent(listUsersBtn)
-                  .addGap(54, 54, 54)
-                  .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                     .addComponent(changeRoomListLbl)
-                     .addComponent(roomChangeRoomTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                  .addComponent(changeRoomBtn)
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                  .addComponent(replyTxt)
-                  .addGap(85, 85, 85)
-                  .addComponent(logoutBtn1)
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                  .addComponent(logoutBtn)
-                  .addGap(26, 26, 26))
-               .addGroup(layout.createSequentialGroup()
-                  .addComponent(jScrollPane1)
-                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                  .addComponent(sendTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                  .addGap(25, 25, 25))))
+                  .addGap(52, 52, 52))
+               .addComponent(jScrollPane1))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+               .addComponent(logoutBtn1)
+               .addComponent(sendTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addContainerGap())
       );
 
       pack();
@@ -204,7 +168,12 @@ public class RunChat extends javax.swing.JFrame {
    }// </editor-fold>//GEN-END:initComponents
 
    private void sendTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendTxtActionPerformed
-      // TODO add your handling code here:
+      try {
+         say(sendTxt.getText() + "\n");
+         sendTxt.setText("");
+      } catch (IOException ex) {
+         errorBox(ex.getMessage());
+      }
    }//GEN-LAST:event_sendTxtActionPerformed
 
    private void listRoomsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listRoomsBtnActionPerformed
@@ -212,10 +181,6 @@ public class RunChat extends javax.swing.JFrame {
       try {
          try {
             HttpGet httpget = new HttpGet("http://localhost:8080/rooms");
-
-            System.out.println("Executing request " + httpget.getRequestLine());
-
-            // Create a custom response handler
             ResponseHandler<String> responseHandler = (final HttpResponse response) -> {
                int status = response.getStatusLine().getStatusCode();
                String responseBody = null;
@@ -226,9 +191,29 @@ public class RunChat extends javax.swing.JFrame {
                return responseBody;
             };
             String responseBody = httpclient.execute(httpget, responseHandler);
-            if(responseBody != null){
-               System.out.println(responseBody);
-            } else{
+            if (responseBody != null) {
+               ObjectMapper mapper = new ObjectMapper();
+               JsonNode json = mapper.readTree(responseBody);
+               Iterator it = json.get("rooms").iterator();
+               DefaultListModel dlm = new DefaultListModel();
+               while (it.hasNext()) {
+                  dlm.addElement(((JsonNode) it.next()).textValue());
+               }
+               list.setModel(dlm);
+
+               list.addMouseListener(new MouseAdapter() {
+                  @Override
+                  public void mouseClicked(MouseEvent evt) {
+                     if (evt.getClickCount() == 2) {
+                        try {
+                           say(new StringBuilder(":cr ").append(list.getSelectedValue()).append("\n").toString());
+                        } catch (IOException ex) {
+                           errorBox(ex.getMessage());
+                        }
+                     }
+                  }
+               });
+            } else {
                errorBox("");
             }
          } finally {
@@ -239,17 +224,9 @@ public class RunChat extends javax.swing.JFrame {
       }
    }//GEN-LAST:event_listRoomsBtnActionPerformed
 
-   private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-      // TODO add your handling code here:
-   }//GEN-LAST:event_logoutBtnActionPerformed
-
    private void listUsersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listUsersBtnActionPerformed
       // TODO add your handling code here:
    }//GEN-LAST:event_listUsersBtnActionPerformed
-
-   private void changeRoomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeRoomBtnActionPerformed
-      // TODO add your handling code here:
-   }//GEN-LAST:event_changeRoomBtnActionPerformed
 
    private void logoutBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtn1ActionPerformed
       // TODO add your handling code here:
@@ -257,13 +234,8 @@ public class RunChat extends javax.swing.JFrame {
 
    private class LineReader extends Thread {
 
-      private final SocketChannel socket;
       private final ByteBuffer in = ByteBuffer.allocate(MAXLEN);
       private final ByteBuffer out = ByteBuffer.allocate(MAXLEN);
-
-      public LineReader(SocketChannel socket) {
-         this.socket = socket;
-      }
 
       @Override
       public void run() {
@@ -307,22 +279,25 @@ public class RunChat extends javax.swing.JFrame {
       JOptionPane.showMessageDialog(null, infoMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
    }
 
+   private void say(byte[] whatToSay) throws IOException {
+      socket.write(ByteBuffer.wrap(whatToSay));
+   }
+
+   private void say(String whatToSay) throws IOException {
+      say(whatToSay.getBytes());
+   }
+
    // Variables declaration - do not modify//GEN-BEGIN:variables
-   private javax.swing.JButton changeRoomBtn;
-   private javax.swing.JLabel changeRoomListLbl;
    private javax.swing.JTextArea chatTxt;
    private javax.swing.JDialog jDialog1;
-   private javax.swing.JList jList1;
    private javax.swing.JPopupMenu jPopupMenu1;
    private javax.swing.JScrollPane jScrollPane1;
    private javax.swing.JScrollPane jScrollPane3;
+   private javax.swing.JList list;
    private javax.swing.JButton listRoomsBtn;
    private javax.swing.JButton listUsersBtn;
    private javax.swing.JLabel listUsersRoomLbl;
-   private javax.swing.JButton logoutBtn;
    private javax.swing.JButton logoutBtn1;
-   private javax.swing.JLabel replyTxt;
-   private javax.swing.JTextField roomChangeRoomTxt;
    private javax.swing.JTextField roomListUsersTxt;
    private javax.swing.JTextField sendTxt;
    // End of variables declaration//GEN-END:variables

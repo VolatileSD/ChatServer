@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import javax.swing.JOptionPane;
 
-public class ChatClient extends javax.swing.JFrame {
+public class RunLogin extends javax.swing.JFrame {
 
    private static SocketChannel socket;
    private final ByteBuffer buf = ByteBuffer.allocate(10);
@@ -14,7 +14,7 @@ public class ChatClient extends javax.swing.JFrame {
    /**
     * Creates new form ChatClientUI
     */
-   public ChatClient() {
+   public RunLogin() {
       initComponents();
    }
 
@@ -137,32 +137,40 @@ public class ChatClient extends javax.swing.JFrame {
    private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
-      if (username != null && password != null) {
+      if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
          StringBuilder sb = new StringBuilder(":login ");
          sb.append(username).append(" ").append(password).append("\n");
          try {
             say(sb.toString());
-            switch (getReply()) {
+            System.out.println("waiting");
+            String reply = getReply();
+            switch (reply) {
                case ":ok":
-                  this.setVisible(false);
-                  RunChat runChat = new RunChat(socket);
+                  System.out.println("!waiting");
+                  setVisible(false);
+                  usernameTxt.setText("");
+                  passwordTxt.setText("");
+                  RunChat runChat = new RunChat(this, socket);
                   runChat.setVisible(true);
                   break;
                case ":ko":
+                  System.out.println("!!waiting");
                   replyTxt.setText("Login invalid!");
+                  break;
+               default:
+                  System.out.println(reply);
                   break;
             }
          } catch (IOException e) {
             errorBox(e.getMessage());
          }
       }
-
    }//GEN-LAST:event_loginBtnActionPerformed
 
    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
-      if (username != null && password != null) {
+      if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
          StringBuilder sb = new StringBuilder(":create ");
          sb.append(username).append(" ").append(password).append("\n");
          try {
@@ -184,7 +192,7 @@ public class ChatClient extends javax.swing.JFrame {
    private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
-      if (username != null && password != null) {
+      if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
          StringBuilder sb = new StringBuilder(":remove ");
          sb.append(username).append(" ").append(password).append("\n");
          try {
@@ -220,13 +228,13 @@ public class ChatClient extends javax.swing.JFrame {
             }
          }
       } catch (ClassNotFoundException ex) {
-         java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(RunLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       } catch (InstantiationException ex) {
-         java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(RunLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       } catch (IllegalAccessException ex) {
-         java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(RunLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-         java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         java.util.logging.Logger.getLogger(RunLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       }
       //</editor-fold>
       try {
@@ -239,7 +247,7 @@ public class ChatClient extends javax.swing.JFrame {
 
       /* Create and display the form */
       java.awt.EventQueue.invokeLater(() -> {
-         ChatClient chatClient = new ChatClient();
+         RunLogin chatClient = new RunLogin();
          chatClient.replyTxt.setText("");
          chatClient.setVisible(true);
       });
