@@ -184,12 +184,14 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.REMOVE, null, parts);
          switch (reply.getType()) {
             case OK:
-               say("User removed successfully.\n");
+               ok();
+               //say("User removed successfully.\n");
                room.send(new Msg(MsgType.LEAVE, self(), username, null));
                runLogin();
                break;
             case INVALID:
-               say("Invalid.\n");
+               ko();
+               //say("Invalid.\n");
                // the password could be wrong
                // or the user could be already inactive
                break;
