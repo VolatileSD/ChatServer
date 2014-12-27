@@ -227,7 +227,7 @@ public class RunChat extends javax.swing.JFrame {
             };
             String responseBody = httpclient.execute(httpget, responseHandler);
             if(responseBody != null){
-               
+               System.out.println(responseBody);
             } else{
                errorBox("");
             }
