@@ -45,7 +45,6 @@ public class Room extends BasicActor<Msg, Void> {
                }
 
                users.put(fromUsername, newUser);
-
                notificationManager.send(new Msg(MsgType.ENTER, null, fromUsername, topic));
                return true;
             case LEAVE:
@@ -60,7 +59,7 @@ public class Room extends BasicActor<Msg, Void> {
                return true;
             case LINE:
                fromUsername = msg.getFromUsername();
-               byte[] message = new StringBuilder("@").append(fromUsername).append(":").append(msg.getContent()).toString().getBytes();
+               byte[] message = new StringBuilder("@").append(fromUsername).append(": ").append(msg.getContent()).toString().getBytes();
                Msg line = new Msg(MsgType.LINE, null, null, message);
                for (ActorRef u : users.values()) {
                   u.send(line);

@@ -142,11 +142,8 @@ public class RunLogin extends javax.swing.JFrame {
          sb.append(username).append(" ").append(password).append("\n");
          try {
             say(sb.toString());
-            System.out.println("waiting");
-            String reply = getReply();
-            switch (reply) {
+            switch (getReply()) {
                case ":ok":
-                  System.out.println("!waiting");
                   setVisible(false);
                   usernameTxt.setText("");
                   passwordTxt.setText("");
@@ -154,11 +151,7 @@ public class RunLogin extends javax.swing.JFrame {
                   runChat.setVisible(true);
                   break;
                case ":ko":
-                  System.out.println("!!waiting");
                   replyTxt.setText("Login invalid!");
-                  break;
-               default:
-                  System.out.println(reply);
                   break;
             }
          } catch (IOException e) {
