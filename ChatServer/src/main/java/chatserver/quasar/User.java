@@ -166,10 +166,12 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.CREATE, null, parts);
          switch (reply.getType()) {
             case OK:
-               say(new StringBuilder("New user @").append(parts[1]).append(" created successfully.\n").toString());
+               ok();
+               //say(new StringBuilder("New user @").append(parts[1]).append(" created successfully.\n").toString());
                break;
             case INVALID:
-               say("Username already exists.\n");
+               ko();
+               //say("Username already exists.\n");
                break;
          }
       }
@@ -203,7 +205,8 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, null, parts);
          switch (reply.getType()) {
             case OK:
-               say(parts[1] + ", you are logged in.\n");
+               //say(parts[1] + ", you are logged in.\n");
+               ok();
                setUsername(parts[1]);
                setRid((String) reply.getContent());
                room.send(new Msg(MsgType.ENTER, self(), username, null));
@@ -211,7 +214,8 @@ public class User extends BasicActor<Msg, Void> {
                runChat();
                break;
             case INVALID:
-               say("Login invalid. Check valid username or password.\n");
+               ko();
+               //say("Login invalid. Check valid username or password.\n");
                break;
          }
       }
@@ -301,6 +305,14 @@ public class User extends BasicActor<Msg, Void> {
 
    private void say(String whatToSay) throws IOException, SuspendExecution {
       say(whatToSay.getBytes());
+   }
+   
+   private void ok() throws IOException, SuspendExecution{
+      say(":ok");
+   }
+   
+   private void ko() throws IOException, SuspendExecution{
+      say(":ko");
    }
 
    private void setRid(String rid) {

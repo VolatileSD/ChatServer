@@ -27,7 +27,7 @@ public class Acceptor extends BasicActor {
    protected Void doRun() throws InterruptedException, SuspendExecution {
       ActorRef manager = new Manager().spawn();
 
-      byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
+      //byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
 
       try {
          FiberServerSocketChannel ss = FiberServerSocketChannel.open();
@@ -36,7 +36,7 @@ public class Acceptor extends BasicActor {
             FiberSocketChannel socket = ss.accept();
             Logger.getLogger(Acceptor.class.getName()).log(Level.INFO, "New connection!");
             ActorRef user = new User(mainRoom, roomManager, manager, socket).spawn();
-            user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
+            //user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
          }
       } catch (IOException e) {
          System.out.println(e.getMessage());
