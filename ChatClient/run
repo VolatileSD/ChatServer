@@ -1,0 +1,2 @@
+mvn clean package
+java -jar target/chatclient-1.0-capsule-fat.jar
