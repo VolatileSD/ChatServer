@@ -8,6 +8,8 @@ import co.paralleluniverse.fibers.io.*;
 
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Acceptor extends BasicActor {
 
@@ -32,6 +34,7 @@ public class Acceptor extends BasicActor {
          ss.bind(new InetSocketAddress(port));
          while (true) {
             FiberSocketChannel socket = ss.accept();
+            Logger.getLogger(Acceptor.class.getName()).log(Level.INFO, "New connection!");
             ActorRef user = new User(mainRoom, roomManager, manager, socket).spawn();
             user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
          }

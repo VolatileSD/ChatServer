@@ -50,7 +50,10 @@ public class User extends BasicActor<Msg, Void> {
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
-                  String[] parts = (line.substring(0, line.length() - 2)).split(" ");
+                  String[] parts = (line.substring(0, line.length() - 1)).split(" ");
+                  //for (char c : line.toCharArray()) {
+                  //   logger.log(Level.INFO, "!{0}!", c);
+                  //}
                   if (line.startsWith(":")) {
                      switch (Util.getCommandType(parts[0])) {
                         case CREATE:
@@ -96,7 +99,7 @@ public class User extends BasicActor<Msg, Void> {
             switch (msg.getType()) {
                case DATA:
                   String line = new String((byte[]) msg.getContent());
-                  String[] parts = (line.substring(0, line.length() - 2)).split(" ");
+                  String[] parts = (line.substring(0, line.length() - 1)).split(" ");
                   if (line.startsWith(":")) {
                      switch (Util.getCommandType(parts[0])) {
                         case CREATE:
