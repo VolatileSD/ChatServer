@@ -1,5 +1,4 @@
 /*
-
 package chatserver.rest.entities;
 
 import java.io.IOException;
@@ -75,8 +74,5 @@ public class Admin {
 
 }
 
-*/
 
-public class Admin{
-   
-}
+*/
