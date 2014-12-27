@@ -182,7 +182,25 @@ public class ChatClient extends javax.swing.JFrame {
    }//GEN-LAST:event_registerBtnActionPerformed
 
    private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
-      // TODO add your handling code here:
+      String username = usernameTxt.getText();
+      String password = passwordTxt.getText();
+      if (username != null && password != null) {
+         StringBuilder sb = new StringBuilder(":remove ");
+         sb.append(username).append(" ").append(password).append("\n");
+         try {
+            say(sb.toString());
+            switch (getReply()) {
+               case ":ok":
+                  replyTxt.setText("Remove ok!");
+                  break;
+               case ":ko":
+                  replyTxt.setText("Remove invalid!");
+                  break;
+            }
+         } catch (IOException e) {
+            errorBox(e.getMessage());
+         }
+      }
    }//GEN-LAST:event_removeBtnActionPerformed
 
    /**
