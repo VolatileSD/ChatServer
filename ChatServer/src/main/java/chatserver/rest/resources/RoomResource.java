@@ -17,6 +17,7 @@ import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
 import chatserver.rest.representations.RoomRepresentation;
 import chatserver.rest.entities.Rooms;
+import com.google.gson.Gson;
 
 @Path("/room/{name}")
 @Produces(MediaType.APPLICATION_JSON)
@@ -37,10 +38,12 @@ public class RoomResource {
          Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, null, roomName);
          switch (msg.getType()) {
             case OK:
-               RoomRepresentation rr = new RoomRepresentation();
-               rr.setName(roomName);
-               rr.setUsers((Collection<String>) msg.getContent());
-               return Response.ok(new ObjectMapper().writeValueAsString(rr)).build();
+               RoomRepresentation rr = new RoomRepresentation(roomName, (Collection<String>) msg.getContent());
+               //RoomRepresentation rr = new RoomRepresentation();
+               //rr.setName(roomName);
+               //rr.setUsers((Collection<String>) msg.getContent());
+               //return Response.ok(new ObjectMapper().writeValueAsString(rr)).build();
+               return Response.ok(new Gson().toJson(rr)).build();
             default:
                return Response.status(500).build();
          }

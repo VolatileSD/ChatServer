@@ -5,14 +5,13 @@
  */
 package chatclient;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import chatclient.representations.RoomsRepresentation;
+import com.google.gson.Gson;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -192,12 +191,10 @@ public class RunChat extends JFrame {
             };
             String responseBody = httpclient.execute(httpget, responseHandler);
             if (responseBody != null) {
-               ObjectMapper mapper = new ObjectMapper();
-               JsonNode json = mapper.readTree(responseBody);
-               Iterator it = json.get("rooms").iterator();
+               RoomsRepresentation rr = new Gson().fromJson(responseBody, RoomsRepresentation.class);
                DefaultListModel dlm = new DefaultListModel();
-               while (it.hasNext()) {
-                  dlm.addElement(((JsonNode) it.next()).textValue());
+               for (String room : rr.getRooms()) {
+                  dlm.addElement(room);
                }
                list.setModel(dlm);
 

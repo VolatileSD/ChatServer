@@ -1,4 +1,4 @@
-package chatserver.rest.representations;
+package chatclient.representations;
 
 import java.util.Collection;
 

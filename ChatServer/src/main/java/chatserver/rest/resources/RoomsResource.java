@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import chatserver.rest.representations.RoomsRepresentation;
 import chatserver.rest.entities.Rooms;
+import com.google.gson.Gson;
 
 @Path("/rooms")
 @Produces(MediaType.APPLICATION_JSON)
@@ -22,8 +23,7 @@ public class RoomsResource {
 
    @GET
    public Response getRooms() throws Exception {
-      RoomsRepresentation rr = new RoomsRepresentation();
-      rr.setRooms(rooms.getRooms());
-      return Response.ok(new ObjectMapper().writeValueAsString(rr)).build();
+      RoomsRepresentation rr = new RoomsRepresentation(rooms.getRooms());
+      return Response.ok(new Gson().toJson(rr)).build();
    }
 }
