@@ -23,6 +23,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.text.DefaultCaret;
 
 /**
  *
@@ -39,6 +40,7 @@ public class Inbox extends JFrame {
     */
    public Inbox(SocketChannel socket) {
       initComponents();
+      alwaysScrollDown();
       this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       this.addWindowListener(new WindowAdapter() {
          @Override
@@ -162,8 +164,6 @@ public class Inbox extends JFrame {
       for (MessageRepresentation m : tr.getMessages()) {
          messageTxt.append(m.toString());
       }
-      
-      messageScrollDown();
    }
 
    private void addUsersOneClickAction() {
@@ -186,9 +186,10 @@ public class Inbox extends JFrame {
       usersList = new javax.swing.JList();
       jScrollPane1.setViewportView(usersList);
    }
-   
-   private void messageScrollDown(){
-      //jScrollPane2 = new JScrollPane(messageTxt);
+
+   private void alwaysScrollDown() {
+      DefaultCaret caret = (DefaultCaret) messageTxt.getCaret();
+      caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
    }
 
    private static void errorBox(String infoMessage) {
