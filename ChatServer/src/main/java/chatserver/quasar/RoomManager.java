@@ -78,6 +78,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.DELETE_ROOM);
                      if (reply.getType().equals(MsgType.OK)) {
                         rooms.remove(roomName);
+                        notificationManager.send(msg);
                         manager.send(new Msg(MsgType.DELETE_ROOM, null, null, reply.getContent()));
                      }
                      msg.getFrom().send(reply);
