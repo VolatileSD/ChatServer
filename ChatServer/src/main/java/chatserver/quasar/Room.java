@@ -67,7 +67,7 @@ public class Room extends BasicActor<Msg, Void> {
                manager.send(new Msg(MsgType.LINE, null, fromUsername, new String[]{rid, (String) msg.getContent()}));
                return true;
             case ROOM_INFO:
-               msg.getFrom().send(new Msg(MsgType.OK, null, null, users.values()));
+               msg.getFrom().send(new Msg(MsgType.OK, null, null, users.keySet()));
                return true;
             case DELETE_ROOM:
                if (users.size() + usersWillEnterSoon > 0) {
