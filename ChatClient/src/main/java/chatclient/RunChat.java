@@ -61,7 +61,7 @@ public class RunChat extends JFrame {
       listUsersBtn = new javax.swing.JButton();
       listUsersRoomLbl = new javax.swing.JLabel();
       roomListUsersTxt = new javax.swing.JTextField();
-      logoutBtn1 = new javax.swing.JButton();
+      inboxBtn = new javax.swing.JButton();
       jScrollPane3 = new javax.swing.JScrollPane();
       list = new javax.swing.JList();
 
@@ -108,13 +108,14 @@ public class RunChat extends JFrame {
 
       listUsersRoomLbl.setText("Room:");
 
-      logoutBtn1.setText("Inbox");
-      logoutBtn1.addActionListener(new java.awt.event.ActionListener() {
+      inboxBtn.setText("Inbox");
+      inboxBtn.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
-            logoutBtn1ActionPerformed(evt);
+            inboxBtnActionPerformed(evt);
          }
       });
 
+      list.setEnabled(false);
       jScrollPane3.setViewportView(list);
 
       javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -130,7 +131,7 @@ public class RunChat extends JFrame {
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(logoutBtn1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(inboxBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addComponent(listUsersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                   .addComponent(listUsersRoomLbl)
@@ -157,7 +158,7 @@ public class RunChat extends JFrame {
                .addComponent(jScrollPane1))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-               .addComponent(logoutBtn1)
+               .addComponent(inboxBtn)
                .addComponent(sendTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addContainerGap())
       );
@@ -176,10 +177,39 @@ public class RunChat extends JFrame {
    }//GEN-LAST:event_sendTxtActionPerformed
 
    private void listRoomsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listRoomsBtnActionPerformed
+      String responseBody = httpGet("rooms");
+
+      if (responseBody != null) {
+         RoomsRepresentation rr = new Gson().fromJson(responseBody, RoomsRepresentation.class);
+         DefaultListModel dlm = new DefaultListModel();
+         for (String room : rr.getRooms()) {
+            dlm.addElement(room);
+         }
+         clearList();
+         list.setModel(dlm);
+
+         addRoomsDoubleClickAction();
+
+      } else {
+         errorBox("");
+      }
+   }//GEN-LAST:event_listRoomsBtnActionPerformed
+
+   private void listUsersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listUsersBtnActionPerformed
+      // TODO add your handling code here:
+   }//GEN-LAST:event_listUsersBtnActionPerformed
+
+   private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {                                             
+      // TODO add your handling code here:
+   }   
+   
+   private String httpGet(String path) {
+      String result = null;
       CloseableHttpClient httpclient = HttpClients.createDefault();
+
       try {
          try {
-            HttpGet httpget = new HttpGet("http://localhost:8080/rooms");
+            HttpGet httpget = new HttpGet("http://localhost:8080/" + path);
             ResponseHandler<String> responseHandler = (final HttpResponse response) -> {
                int status = response.getStatusLine().getStatusCode();
                String responseBody = null;
@@ -189,45 +219,38 @@ public class RunChat extends JFrame {
                }
                return responseBody;
             };
-            String responseBody = httpclient.execute(httpget, responseHandler);
-            if (responseBody != null) {
-               RoomsRepresentation rr = new Gson().fromJson(responseBody, RoomsRepresentation.class);
-               DefaultListModel dlm = new DefaultListModel();
-               for (String room : rr.getRooms()) {
-                  dlm.addElement(room);
-               }
-               list.setModel(dlm);
 
-               list.addMouseListener(new MouseAdapter() {
-                  @Override
-                  public void mouseClicked(MouseEvent evt) {
-                     if (evt.getClickCount() == 2) {
-                        try {
-                           say(new StringBuilder(":cr ").append(list.getSelectedValue()).append("\n").toString());
-                        } catch (IOException ex) {
-                           errorBox(ex.getMessage());
-                        }
-                     }
-                  }
-               });
-            } else {
-               errorBox("");
-            }
+            result = httpclient.execute(httpget, responseHandler);
+
          } finally {
             httpclient.close();
          }
       } catch (IOException ex) {
          errorBox(ex.getMessage());
       }
-   }//GEN-LAST:event_listRoomsBtnActionPerformed
 
-   private void listUsersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listUsersBtnActionPerformed
-      // TODO add your handling code here:
-   }//GEN-LAST:event_listUsersBtnActionPerformed
+      return result;
+   }
 
-   private void logoutBtn1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtn1ActionPerformed
-      // TODO add your handling code here:
-   }//GEN-LAST:event_logoutBtn1ActionPerformed
+   private void clearList() {
+      list = new javax.swing.JList();
+      jScrollPane3.setViewportView(list);
+   }
+
+   private void addRoomsDoubleClickAction() {
+      list.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseClicked(MouseEvent evt) {
+            if (evt.getClickCount() == 2) {
+               try {
+                  say(new StringBuilder(":cr ").append(list.getSelectedValue()).append("\n").toString());
+               } catch (IOException ex) {
+                  errorBox(ex.getMessage());
+               }
+            }
+         }
+      });
+   }
 
    private class LineReader extends Thread {
 
@@ -286,6 +309,7 @@ public class RunChat extends JFrame {
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JTextArea chatTxt;
+   private javax.swing.JButton inboxBtn;
    private javax.swing.JDialog jDialog1;
    private javax.swing.JPopupMenu jPopupMenu1;
    private javax.swing.JScrollPane jScrollPane1;
@@ -294,7 +318,6 @@ public class RunChat extends JFrame {
    private javax.swing.JButton listRoomsBtn;
    private javax.swing.JButton listUsersBtn;
    private javax.swing.JLabel listUsersRoomLbl;
-   private javax.swing.JButton logoutBtn1;
    private javax.swing.JTextField roomListUsersTxt;
    private javax.swing.JTextField sendTxt;
    // End of variables declaration//GEN-END:variables

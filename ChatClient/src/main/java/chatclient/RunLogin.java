@@ -56,12 +56,6 @@ public class RunLogin extends javax.swing.JFrame {
          }
       });
 
-      usernameTxt.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            usernameTxtActionPerformed(evt);
-         }
-      });
-
       usernameLbl.setText("Username");
 
       passwordLbl.setText("Password");
@@ -130,9 +124,6 @@ public class RunLogin extends javax.swing.JFrame {
       pack();
       setLocationRelativeTo(null);
    }// </editor-fold>//GEN-END:initComponents
-
-   private void usernameTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameTxtActionPerformed
-   }//GEN-LAST:event_usernameTxtActionPerformed
 
    private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
       String username = usernameTxt.getText();

@@ -63,7 +63,7 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jScrollPane3" min="-2" pref="184" max="-2" attributes="0"/>
                   <Component id="listRoomsBtn" alignment="0" min="-2" pref="184" max="-2" attributes="0"/>
-                  <Component id="logoutBtn1" alignment="1" min="-2" pref="184" max="-2" attributes="0"/>
+                  <Component id="inboxBtn" alignment="1" min="-2" pref="184" max="-2" attributes="0"/>
                   <Component id="listUsersBtn" alignment="0" min="-2" pref="184" max="-2" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="listUsersRoomLbl" min="-2" max="-2" attributes="0"/>
@@ -97,7 +97,7 @@
               </Group>
               <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="logoutBtn1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="inboxBtn" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="sendTxt" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -150,12 +150,12 @@
     </Component>
     <Component class="javax.swing.JTextField" name="roomListUsersTxt">
     </Component>
-    <Component class="javax.swing.JButton" name="logoutBtn1">
+    <Component class="javax.swing.JButton" name="inboxBtn">
       <Properties>
         <Property name="text" type="java.lang.String" value="Inbox"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="logoutBtn1ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="inboxBtnActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane3">
@@ -170,6 +170,7 @@
             <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
               <StringArray count="0"/>
             </Property>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
       </SubComponents>
