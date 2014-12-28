@@ -9,10 +9,6 @@ let a  = ALTER DATABASE CUSTOM useLightweightEdges=true
 DROP CLASS User
 CREATE CLASS User EXTENDS V
 CREATE PROPERTY User.username string
-CREATE PROPERTY User.password string
-CREATE PROPERTY User.roomLog embeddedmap
-CREATE PROPERTY User.registrationDate datetime
- 
 CREATE INDEX User.username unique
  
 #
@@ -20,12 +16,6 @@ CREATE INDEX User.username unique
 #
 DROP CLASS Message
 CREATE CLASS Message EXTENDS V
-CREATE PROPERTY Message.id long
-CREATE PROPERTY Message.from string
-CREATE PROPERTY Message.text string
-CREATE PROPERTY Message.date datetime
- 
-CREATE INDEX Message.id unique
  
 #
 # Room 
@@ -46,6 +36,7 @@ CREATE CLASS Messages EXTENDS E
 DROP CLASS PrivateMessages
 CREATE CLASS PrivateMessages EXTENDS E
 # from User to Message
+# from Message to User
  
  
 return $e

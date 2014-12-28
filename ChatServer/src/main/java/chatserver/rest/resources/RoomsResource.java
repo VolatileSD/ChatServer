@@ -5,9 +5,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import chatserver.rest.representations.RoomsRepresentation;
+import common.representations.RoomsRepresentation;
 import chatserver.rest.entities.Rooms;
 import com.google.gson.Gson;
 

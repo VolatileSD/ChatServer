@@ -5,8 +5,8 @@
  */
 package chatclient;
 
-import chatclient.representations.RoomRepresentation;
-import chatclient.representations.RoomsRepresentation;
+import common.representations.RoomRepresentation;
+import common.representations.RoomsRepresentation;
 import com.google.gson.Gson;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

@@ -10,6 +10,21 @@ public class UserODB {
 
    private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
 
+   public User findByRid(String rid) {
+      User user = null;
+
+      try {
+         List<ODocument> resultList = db.executeSynchQuery("SELECT FROM " + rid);
+         if (!resultList.isEmpty()) {
+            user = new User(resultList.get(0));
+         }
+      } finally {
+         db.close();
+      }
+
+      return user;
+   }
+
    public User findByUsername(String username) {
       User user = null;
       StringBuilder sb = new StringBuilder("SELECT FROM User WHERE username = '");
@@ -106,14 +121,15 @@ public class UserODB {
       }
    }
 
-   public void addPrivateMessage(User user, Message message) {
-      db.createEdge("PrivateMessages", user.getRid(), message.getRid());
+   public void addPrivateMessage(User userFrom, User userTo, Message message) {
+      db.createEdge("PrivateMessages", userFrom.getRid(), message.getRid());
+      db.createEdge("PrivateMessages", message.getRid(), userTo.getRid());
    }
 
    public List<Message> getInbox(String rid) {
       List<Message> inbox = new ArrayList();
       try {
-         List<ODocument> resultList = db.executeSynchQuery("SELECT expand(out('PrivateMessages')) FROM " + rid);
+         List<ODocument> resultList = db.executeSynchQuery("SELECT expand(in('PrivateMessages')) FROM " + rid);
          for (ODocument d : resultList) {
             inbox.add(new Message(d));
          }

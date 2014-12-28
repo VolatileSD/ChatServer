@@ -9,13 +9,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import co.paralleluniverse.actors.ActorRef;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Collection;
 
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
-import chatserver.rest.representations.RoomRepresentation;
+import common.representations.RoomRepresentation;
 import chatserver.rest.entities.Rooms;
 import com.google.gson.Gson;
 

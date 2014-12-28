@@ -69,9 +69,10 @@ public class Manager extends BasicActor<Msg, Void> {
                // parts here is something like: ["usernameTo", "message"]
                user = userODB.findByUsername(parts[0]);
                if (user != null) {
+                  chatserver.db.entity.User userFrom = userODB.findByRid(parts[2]);
                   msg.getFrom().send(new Msg(MsgType.OK));
-                  Message message = messageODB.create(msg.getFromUsername(), parts[1]);
-                  userODB.addPrivateMessage(user, message);
+                  Message message = messageODB.create(msg.getFromUsername(), parts[0], parts[1]);
+                  userODB.addPrivateMessage(userFrom, user, message);
                   if (users.containsKey(parts[0])) { // if its logged in
                      users.get(parts[0]).send(new Msg(MsgType.PRIVATE, null, msg.getFromUsername(), null));
                   }
@@ -97,7 +98,7 @@ public class Manager extends BasicActor<Msg, Void> {
             case LINE:
                if (parts[0] != null) { // because of main room
                   // parts = ["roomRid", "message"]
-                  Message m = messageODB.create(msg.getFromUsername(), parts[1]);
+                  Message m = messageODB.create(msg.getFromUsername(), "", parts[1]);
                   roomODB.addMessage(parts[0], m);
                }
                return true;

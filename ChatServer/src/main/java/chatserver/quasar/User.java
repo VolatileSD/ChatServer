@@ -121,7 +121,10 @@ public class User extends BasicActor<Msg, Void> {
                            privateMessage(parts);
                            break;
                         case INBOX:
-                           readInbox();
+                           readInbox(parts);
+                           break;
+                        case INBOX_USERS:
+                           inboxUsers(parts);
                            break;
                         case HELP:
                            say("Available commands.\n");
@@ -265,7 +268,7 @@ public class User extends BasicActor<Msg, Void> {
          }
          // the way it is now, i can send a message to myself
          // is that ok?
-         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString()});
+         Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString(), rid});
          switch (reply.getType()) {
             case OK:
                say(new StringBuilder("Message successfully sent to @").append(parts[1]).append(".\n").toString());
@@ -277,29 +280,39 @@ public class User extends BasicActor<Msg, Void> {
       }
    }
 
-   private void readInbox() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, new String[]{rid});
-      switch (reply.getType()) {
-         case OK:
-            List<chatserver.db.entity.Message> inbox = (List) reply.getContent();
-            if (inbox.isEmpty()) {
-               say("Your inbox is empty.\n");
-            } else {
-               StringBuilder sb = new StringBuilder();
-               sb.append(" -------------------\n");
-               sb.append("|   Inbox Content   |\n");
-               sb.append(" -------------------\n\n");
-               for (chatserver.db.entity.Message m : inbox) {
-                  sb.append(m.toString()).append("\n");
-               }
+   private void readInbox(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      if (parts.length == 1) {
+         Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, new String[]{rid, ""});
+         switch (reply.getType()) {
+            case OK:
+               List<chatserver.db.entity.Message> inbox = (List) reply.getContent();
+               if (inbox.isEmpty()) {
+                  say("Your inbox is empty.\n");
+               } else {
+                  StringBuilder sb = new StringBuilder();
+                  sb.append(" -------------------\n");
+                  sb.append("|   Inbox Content   |\n");
+                  sb.append(" -------------------\n\n");
+                  for (chatserver.db.entity.Message m : inbox) {
+                     sb.append(m.toString()).append("\n");
+                  }
 
-               say(sb.toString());
-            }
-            break;
-         case INVALID:
-            say("Something went wrong.\n");
-            break;
+                  say(sb.toString());
+               }
+               break;
+            case INVALID:
+               say("Something went wrong.\n");
+               break;
+         }
+      } else if (parts.length == 2) {
+         
+      } else {
+         say("Unknown Command\n");
       }
+   }
+
+   private void inboxUsers(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+
    }
 
    private void say(byte[] whatToSay) throws IOException, SuspendExecution {
@@ -309,12 +322,12 @@ public class User extends BasicActor<Msg, Void> {
    private void say(String whatToSay) throws IOException, SuspendExecution {
       say(whatToSay.getBytes());
    }
-   
-   private void ok() throws IOException, SuspendExecution{
+
+   private void ok() throws IOException, SuspendExecution {
       say(":ok");
    }
-   
-   private void ko() throws IOException, SuspendExecution{
+
+   private void ko() throws IOException, SuspendExecution {
       say(":ko");
    }
 

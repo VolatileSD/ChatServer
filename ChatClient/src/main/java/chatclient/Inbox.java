@@ -46,6 +46,7 @@ public class Inbox extends JFrame {
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 
+      jPopupMenu1 = new javax.swing.JPopupMenu();
       jDialog1 = new javax.swing.JDialog();
       jScrollPane1 = new javax.swing.JScrollPane();
       usersList = new javax.swing.JList();
@@ -74,7 +75,6 @@ public class Inbox extends JFrame {
       messageTxt.setRows(5);
       jScrollPane2.setViewportView(messageTxt);
 
-      privateTxt.setPreferredSize(new java.awt.Dimension(4, 19));
       privateTxt.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
             privateTxtActionPerformed(evt);
@@ -91,7 +91,7 @@ public class Inbox extends JFrame {
             .addGap(18, 18, 18)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
-               .addComponent(privateTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+               .addComponent(privateTxt))
             .addContainerGap())
       );
       layout.setVerticalGroup(
@@ -129,6 +129,7 @@ public class Inbox extends JFrame {
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JDialog jDialog1;
+   private javax.swing.JPopupMenu jPopupMenu1;
    private javax.swing.JScrollPane jScrollPane1;
    private javax.swing.JScrollPane jScrollPane2;
    private javax.swing.JTextArea messageTxt;

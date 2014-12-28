@@ -4,6 +4,6 @@ public enum CommandType {
 
    HELP, CHANGE_ROOM,
    CREATE, REMOVE, LOGIN, LOGOUT,
-   PRIVATE, INBOX,
+   PRIVATE, INBOX, INBOX_USERS,
    UNKNOWN
 }
