@@ -109,6 +109,12 @@ public class RunChat extends JFrame {
 
       listUsersRoomLbl.setText("Room:");
 
+      roomListUsersTxt.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            roomListUsersTxtActionPerformed(evt);
+         }
+      });
+
       inboxBtn.setText("Inbox");
       inboxBtn.addActionListener(new java.awt.event.ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,19 +132,19 @@ public class RunChat extends JFrame {
          .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addComponent(sendTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 549, Short.MAX_VALUE)
+               .addComponent(sendTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
                .addComponent(jScrollPane1))
             .addGap(6, 6, 6)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-               .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(listRoomsBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addComponent(inboxBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(listUsersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(listUsersBtn, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                   .addComponent(listUsersRoomLbl)
                   .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                   .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addContainerGap())
+            .addGap(6, 6, 6))
       );
       layout.setVerticalGroup(
          layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -200,20 +206,27 @@ public class RunChat extends JFrame {
       String roomName = roomListUsersTxt.getText();
       if (roomName != null && !"".equals(roomName)) {
          String responseBody = httpGet("room/" + roomName);
-         RoomRepresentation rr = new Gson().fromJson(responseBody, RoomRepresentation.class);
-         DefaultListModel dlm = new DefaultListModel();
-         for (String user : rr.getUsers()) {
-            dlm.addElement(user);
+         if (responseBody != null) {
+            RoomRepresentation rr = new Gson().fromJson(responseBody, RoomRepresentation.class);
+            DefaultListModel dlm = new DefaultListModel();
+            for (String user : rr.getUsers()) {
+               dlm.addElement(user);
+            }
+            clearList();
+            list.setModel(dlm);
+         } else {
+            errorBox(new StringBuilder("Room ").append(roomName).append(" does not exist!").toString());
          }
-         clearList();
-         list.setModel(dlm);
-         
          roomListUsersTxt.setText("");
       }
    }//GEN-LAST:event_listUsersBtnActionPerformed
 
+   private void roomListUsersTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roomListUsersTxtActionPerformed
+      listUsersBtnActionPerformed(evt);
+   }//GEN-LAST:event_roomListUsersTxtActionPerformed
+
    private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
-      // TODO add your handling code here:
+      new Inbox(socket).setVisible(true);
    }
 
    private String httpGet(String path) {

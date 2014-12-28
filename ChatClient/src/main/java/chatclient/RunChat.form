@@ -56,22 +56,22 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="sendTxt" pref="549" max="32767" attributes="0"/>
+                  <Component id="sendTxt" pref="555" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" min="-2" pref="184" max="-2" attributes="0"/>
-                  <Component id="listRoomsBtn" alignment="0" min="-2" pref="184" max="-2" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" min="-2" pref="184" max="-2" attributes="0"/>
+                  <Component id="listRoomsBtn" alignment="1" min="-2" pref="184" max="-2" attributes="0"/>
                   <Component id="inboxBtn" alignment="1" min="-2" pref="184" max="-2" attributes="0"/>
-                  <Component id="listUsersBtn" alignment="0" min="-2" pref="184" max="-2" attributes="0"/>
+                  <Component id="listUsersBtn" alignment="1" min="-2" pref="184" max="-2" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="listUsersRoomLbl" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Component id="roomListUsersTxt" min="-2" pref="128" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -149,6 +149,9 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="roomListUsersTxt">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="roomListUsersTxtActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="inboxBtn">
       <Properties>
