@@ -5,13 +5,24 @@
  */
 package chatclient;
 
+import com.google.gson.Gson;
+import common.representations.MessageRepresentation;
+import common.representations.RoomRepresentation;
+import common.representations.TalkRepresentation;
+import common.representations.UsersRepresentation;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 
 /**
  *
@@ -21,6 +32,7 @@ public class Inbox extends JFrame {
 
    private final int MAXLEN = 1024;
    private SocketChannel socket;
+   private String selectedUser;
 
    /**
     * Creates new form RunChat
@@ -34,9 +46,15 @@ public class Inbox extends JFrame {
             dispose();
          }
       });
+      this.selectedUser = "";
       this.socket = socket;
+      try {
+         say(":iu\n");
+      } catch (IOException ex) {
+         errorBox(ex.getMessage());
+      }
    }
-   
+
    /**
     * This method is called from within the constructor to initialize the form.
     * WARNING: Do NOT modify this code. The content of this method is always
@@ -71,6 +89,7 @@ public class Inbox extends JFrame {
 
       jScrollPane1.setViewportView(usersList);
 
+      messageTxt.setEditable(false);
       messageTxt.setColumns(20);
       messageTxt.setRows(5);
       jScrollPane2.setViewportView(messageTxt);
@@ -112,8 +131,65 @@ public class Inbox extends JFrame {
    }// </editor-fold>//GEN-END:initComponents
 
    private void privateTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privateTxtActionPerformed
-      // TODO add your handling code here:
+      try {
+         if (!"".equals(selectedUser)) {
+            say(new StringBuilder(":private ").append(selectedUser).append(" ").append(privateTxt.getText()).append("\n").toString());
+            privateTxt.setText("");
+            say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
+            // do this more efficiently
+         }
+      } catch (IOException ex) {
+         errorBox(ex.getMessage());
+      }
    }//GEN-LAST:event_privateTxtActionPerformed
+
+   protected void updateUsers(String users) {
+      UsersRepresentation rr = new Gson().fromJson(users, UsersRepresentation.class);
+      DefaultListModel dlm = new DefaultListModel();
+      for (String user : rr.getUsers()) {
+         dlm.addElement(user);
+      }
+      clearList();
+      usersList.setModel(dlm);
+
+      addUsersOneClickAction();
+      System.out.println(users);
+   }
+
+   protected void updateTalk(String talk) {
+      TalkRepresentation tr = new Gson().fromJson(talk, TalkRepresentation.class);
+      messageTxt.setText("");
+      for (MessageRepresentation m : tr.getMessages()) {
+         messageTxt.append(m.toString());
+      }
+      
+      messageScrollDown();
+   }
+
+   private void addUsersOneClickAction() {
+      usersList.addMouseListener(new MouseAdapter() {
+         @Override
+         public void mouseClicked(MouseEvent evt) {
+            if (evt.getClickCount() == 2) {
+               try {
+                  selectedUser = (String) usersList.getSelectedValue();
+                  say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
+               } catch (IOException ex) {
+                  errorBox(ex.getMessage());
+               }
+            }
+         }
+      });
+   }
+
+   private void clearList() {
+      usersList = new javax.swing.JList();
+      jScrollPane1.setViewportView(usersList);
+   }
+   
+   private void messageScrollDown(){
+      //jScrollPane2 = new JScrollPane(messageTxt);
+   }
 
    private static void errorBox(String infoMessage) {
       JOptionPane.showMessageDialog(null, infoMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
@@ -136,4 +212,5 @@ public class Inbox extends JFrame {
    private javax.swing.JTextField privateTxt;
    private javax.swing.JList usersList;
    // End of variables declaration//GEN-END:variables
+
 }

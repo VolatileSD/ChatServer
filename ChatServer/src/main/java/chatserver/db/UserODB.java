@@ -3,6 +3,9 @@ package chatserver.db;
 import chatserver.db.entity.Message;
 import chatserver.db.entity.User;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import common.representations.MessageRepresentation;
+import common.representations.TalkRepresentation;
+import common.representations.UsersRepresentation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,6 +111,14 @@ public class UserODB {
       }
    }
 
+   public void logoutEveryone() {
+      try {
+         db.execute("UPDATE User set loggedIn = false");
+      } finally {
+         db.close();
+      }
+   }
+
    public void setActive(String rid, boolean active) {
       StringBuilder sb = new StringBuilder("UPDATE ");
       sb.append(rid).append(" SET active = ").append(active);
@@ -140,12 +151,45 @@ public class UserODB {
       return inbox;
    }
 
-   public void logoutEveryone() {
+   public UsersRepresentation getInboxUsers(String rid) {
+      StringBuilder sb = new StringBuilder("SELECT distinct(from) AS username FROM (SELECT expand(in('PrivateMessages')) FROM ");
+      sb.append(rid).append(")");
+      // try to order by last message sent
+      UsersRepresentation users = new UsersRepresentation();
+
       try {
-         db.execute("UPDATE User set loggedIn = false");
+         List<ODocument> resultList = db.executeSynchQuery(sb.toString());
+         ArrayList<String> usernames = new ArrayList();
+         for (ODocument d : resultList) {
+            usernames.add(d.field("username"));
+         }
+         users = new UsersRepresentation(usernames);
       } finally {
          db.close();
       }
+
+      return users;
+   }
+
+   public TalkRepresentation getTalk(String rid, String username, String withUsername) {
+      StringBuilder sb = new StringBuilder("SELECT FROM (SELECT expand(both('PrivateMessages')) FROM ");
+      sb.append(rid).append(") WHERE (from = '").append(username);
+      sb.append("' AND to = '").append(withUsername).append("') OR (from = '").append(withUsername);
+      sb.append("' AND to = '").append(username).append("') ORDER BY date ASC");
+      TalkRepresentation talk = new TalkRepresentation();
+
+      try {
+         List<ODocument> resuList = db.executeSynchQuery(sb.toString());
+         ArrayList<MessageRepresentation> messages = new ArrayList();
+         for (ODocument d : resuList) {
+            messages.add(new MessageRepresentation(d.field("from"), d.field("text"), d.field("date")));
+         }
+         talk = new TalkRepresentation(messages);
+      } finally {
+         db.close();
+      }
+
+      return talk;
    }
 
 }

@@ -30,17 +30,17 @@ import org.apache.http.client.ResponseHandler;
  */
 public class RunChat extends JFrame {
 
-   private final int MAXLEN = 1024;
+   private final int MAXLEN = 2048; // problem when receiving json with more than 2048 char
    private SocketChannel socket;
-   private JFrame runLogin;
+   private Inbox inbox;
 
    /**
     * Creates new form RunChat
     */
-   public RunChat(JFrame runLogin, SocketChannel socket) {
+   public RunChat(SocketChannel socket) {
       initComponents();
       this.socket = socket;
-      this.runLogin = runLogin;
+      this.inbox = null;
       new LineReader().start();
    }
 
@@ -226,7 +226,8 @@ public class RunChat extends JFrame {
    }//GEN-LAST:event_roomListUsersTxtActionPerformed
 
    private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
-      new Inbox(socket).setVisible(true);
+      this.inbox = new Inbox(socket);
+      this.inbox.setVisible(true);
    }
 
    private String httpGet(String path) {
@@ -306,7 +307,14 @@ public class RunChat extends JFrame {
                      byte[] ba = new byte[out.remaining()];
                      out.get(ba);
                      out.clear();
-                     chatTxt.append(new String(ba));
+                     String text = new String(ba);
+                     if (text.startsWith(":iu:")) {
+                        inbox.updateUsers(text.substring(4));
+                     } else if (text.startsWith(":tk:")) {
+                        inbox.updateTalk(text.substring(4));
+                     } else {
+                        chatTxt.append(new String(ba));
+                     }
                   }
                }
                if (eof && !in.hasRemaining()) {

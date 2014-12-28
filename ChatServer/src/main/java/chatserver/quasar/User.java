@@ -11,6 +11,9 @@ import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Util;
 import chatserver.util.Pigeon;
+import com.google.gson.Gson;
+import common.representations.TalkRepresentation;
+import common.representations.UsersRepresentation;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -121,10 +124,13 @@ public class User extends BasicActor<Msg, Void> {
                            privateMessage(parts);
                            break;
                         case INBOX:
-                           readInbox(parts);
+                           readInbox(parts); // this will only be used by telnet/nc client
                            break;
                         case INBOX_USERS:
-                           inboxUsers(parts);
+                           inboxUsers(); // this is supposed to be used only by ChatClient
+                           break;
+                        case TALK:
+                           talk(parts[1]); // this is supposed to be used only by ChatClient
                            break;
                         case HELP:
                            say("Available commands.\n");
@@ -274,15 +280,17 @@ public class User extends BasicActor<Msg, Void> {
                say(new StringBuilder("Message successfully sent to @").append(parts[1]).append(".\n").toString());
                break;
             case INVALID:
-               say(new StringBuilder("Unknown user @").append("parts[1").append(".\n").toString());
+               say(new StringBuilder("Unknown user @").append(parts[1]).append(".\n").toString());
                break;
          }
       }
    }
 
    private void readInbox(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      if (parts.length == 1) {
-         Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, new String[]{rid, ""});
+      if (parts.length != 1) {
+         say("Unknown Command\n");
+      } else {
+         Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, new String[]{rid});
          switch (reply.getType()) {
             case OK:
                List<chatserver.db.entity.Message> inbox = (List) reply.getContent();
@@ -304,15 +312,19 @@ public class User extends BasicActor<Msg, Void> {
                say("Something went wrong.\n");
                break;
          }
-      } else if (parts.length == 2) {
-         
-      } else {
-         say("Unknown Command\n");
       }
    }
 
-   private void inboxUsers(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+   private void inboxUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      // no need to verify if is a good command 
+      // it will only be used by chatclient
+      Msg reply = new Pigeon(manager).carry(MsgType.INBOX_USERS, null, new String[]{rid});
+      say(new StringBuilder(":iu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
+   }
 
+   private void talk(String withUsername) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      Msg reply = new Pigeon(manager).carry(MsgType.TALK, null, new String[]{rid, username, withUsername});
+      say(new StringBuilder(":tk:").append(new Gson().toJson((TalkRepresentation) reply.getContent())).append("\n").toString());
    }
 
    private void say(byte[] whatToSay) throws IOException, SuspendExecution {

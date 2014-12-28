@@ -138,7 +138,7 @@ public class RunLogin extends javax.swing.JFrame {
                   setVisible(false);
                   usernameTxt.setText("");
                   passwordTxt.setText("");
-                  RunChat runChat = new RunChat(this, socket);
+                  RunChat runChat = new RunChat(socket);
                   runChat.setVisible(true);
                   break;
                case ":ko":

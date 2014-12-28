@@ -9,6 +9,8 @@ import chatserver.util.MsgType;
 import co.paralleluniverse.actors.ActorRef;
 import co.paralleluniverse.actors.BasicActor;
 import co.paralleluniverse.fibers.SuspendExecution;
+import common.representations.TalkRepresentation;
+import common.representations.UsersRepresentation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +67,24 @@ public class Manager extends BasicActor<Msg, Void> {
             case LOGOUT:
                userODB.logout(parts[0]);
                return true;
+            case CREATE_ROOM:
+               chatserver.db.entity.Room room = roomODB.create(parts[0]);
+               if (room != null) {
+                  msg.getFrom().send(new Msg(MsgType.OK, null, null, room.getRid()));
+               } else {
+                  msg.getFrom().send(new Msg(MsgType.INVALID));
+               }
+               return true;
+            case DELETE_ROOM:
+               roomODB.setActive(parts[0], false);
+               return true;
+            case LINE:
+               if (parts[0] != null) { // because of main room
+                  // parts = ["roomRid", "message"]
+                  Message m = messageODB.create(msg.getFromUsername(), "", parts[1]);
+                  roomODB.addMessage(parts[0], m);
+               }
+               return true;
             case PRIVATE:
                // parts here is something like: ["usernameTo", "message"]
                user = userODB.findByUsername(parts[0]);
@@ -84,23 +104,13 @@ public class Manager extends BasicActor<Msg, Void> {
                List<Message> inbox = userODB.getInbox(parts[0]);
                msg.getFrom().send(new Msg(MsgType.OK, null, null, inbox));
                return true;
-            case CREATE_ROOM:
-               chatserver.db.entity.Room room = roomODB.create(parts[0]);
-               if (room != null) {
-                  msg.getFrom().send(new Msg(MsgType.OK, null, null, room.getRid()));
-               } else {
-                  msg.getFrom().send(new Msg(MsgType.INVALID));
-               }
+            case INBOX_USERS:
+               UsersRepresentation users = userODB.getInboxUsers(parts[0]);
+               msg.getFrom().send(new Msg(MsgType.OK, null, null, users));
                return true;
-            case DELETE_ROOM:
-               roomODB.setActive(parts[0], false);
-               return true;
-            case LINE:
-               if (parts[0] != null) { // because of main room
-                  // parts = ["roomRid", "message"]
-                  Message m = messageODB.create(msg.getFromUsername(), "", parts[1]);
-                  roomODB.addMessage(parts[0], m);
-               }
+            case TALK:
+               TalkRepresentation talk = userODB.getTalk(parts[0], parts[1], parts[2]);
+               msg.getFrom().send(new Msg(MsgType.OK, null, null, talk));
                return true;
          }
          return false;

@@ -8,14 +8,10 @@
     <version>1.0</version>
 
     <name>ChatServer</name>
-    <url></url>
-  
-    <!--Dropwizard -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dropwizard.version>0.7.1</dropwizard.version>
     </properties>
-    <!-- Dropwizard -->
 
     <dependencies>
         <dependency>
@@ -71,6 +67,7 @@
             <groupId>volatile</groupId>
             <artifactId>common</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
             <type>jar</type>
         </dependency>
         
