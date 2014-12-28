@@ -5,6 +5,7 @@
  */
 package chatclient;
 
+import chatclient.representations.RoomRepresentation;
 import chatclient.representations.RoomsRepresentation;
 import com.google.gson.Gson;
 import java.awt.event.MouseAdapter;
@@ -196,13 +197,25 @@ public class RunChat extends JFrame {
    }//GEN-LAST:event_listRoomsBtnActionPerformed
 
    private void listUsersBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_listUsersBtnActionPerformed
-      // TODO add your handling code here:
+      String roomName = roomListUsersTxt.getText();
+      if (roomName != null && !"".equals(roomName)) {
+         String responseBody = httpGet("room/" + roomName);
+         RoomRepresentation rr = new Gson().fromJson(responseBody, RoomRepresentation.class);
+         DefaultListModel dlm = new DefaultListModel();
+         for (String user : rr.getUsers()) {
+            dlm.addElement(user);
+         }
+         clearList();
+         list.setModel(dlm);
+         
+         roomListUsersTxt.setText("");
+      }
    }//GEN-LAST:event_listUsersBtnActionPerformed
 
-   private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {                                             
+   private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
       // TODO add your handling code here:
-   }   
-   
+   }
+
    private String httpGet(String path) {
       String result = null;
       CloseableHttpClient httpclient = HttpClients.createDefault();
