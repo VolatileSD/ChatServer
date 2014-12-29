@@ -6,10 +6,9 @@
 package chatclient;
 
 import com.google.gson.Gson;
-import common.representations.MessageRepresentation;
-import common.representations.RoomRepresentation;
-import common.representations.TalkRepresentation;
-import common.representations.UsersRepresentation;
+import common.representation.MessageRepresentation;
+import common.representation.TalkRepresentation;
+import common.representation.UsersRepresentation;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -17,12 +16,9 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
 import javax.swing.text.DefaultCaret;
 
 /**
@@ -155,7 +151,6 @@ public class Inbox extends JFrame {
       usersList.setModel(dlm);
 
       addUsersOneClickAction();
-      System.out.println(users);
    }
 
    protected void updateTalk(String talk) {

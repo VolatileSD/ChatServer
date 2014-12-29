@@ -1,4 +1,4 @@
-package chatserver.rest.entities;
+package chatserver.rest.entity;
 
 import java.util.Collection;
 import java.util.ArrayList;

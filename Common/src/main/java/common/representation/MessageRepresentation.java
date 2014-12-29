@@ -1,4 +1,4 @@
-package common.representations;
+package common.representation;
 
 import java.util.Date;
 

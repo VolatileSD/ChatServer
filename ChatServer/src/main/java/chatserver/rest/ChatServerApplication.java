@@ -5,10 +5,10 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import co.paralleluniverse.actors.ActorRef;
 
-import chatserver.rest.resources.RoomResource;
-import chatserver.rest.resources.RoomsResource;
+import chatserver.rest.resource.RoomResource;
+import chatserver.rest.resource.RoomsResource;
 import chatserver.rest.health.ChatServerHealthCheck;
-import chatserver.rest.entities.Rooms;
+import chatserver.rest.entity.Rooms;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;

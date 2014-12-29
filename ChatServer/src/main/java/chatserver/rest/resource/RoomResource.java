@@ -1,4 +1,4 @@
-package chatserver.rest.resources;
+package chatserver.rest.resource;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
@@ -14,8 +14,8 @@ import java.util.Collection;
 import chatserver.util.Msg;
 import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
-import common.representations.RoomRepresentation;
-import chatserver.rest.entities.Rooms;
+import common.representation.RoomRepresentation;
+import chatserver.rest.entity.Rooms;
 import com.google.gson.Gson;
 
 @Path("/room/{name}")

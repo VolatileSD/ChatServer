@@ -12,8 +12,9 @@ import chatserver.util.MsgType;
 import chatserver.util.Util;
 import chatserver.util.Pigeon;
 import com.google.gson.Gson;
-import common.representations.TalkRepresentation;
-import common.representations.UsersRepresentation;
+import common.representation.TalkRepresentation;
+import common.representation.UsersRepresentation;
+import common.saying.Saying;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -175,12 +176,10 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.CREATE, null, parts);
          switch (reply.getType()) {
             case OK:
-               ok();
-               //say(new StringBuilder("New user @").append(parts[1]).append(" created successfully.\n").toString());
+               say(Saying.getCreateOk(parts[1]));
                break;
             case INVALID:
-               ko();
-               //say("Username already exists.\n");
+               say(Saying.getCreateInvalid());
                break;
          }
       }
@@ -193,14 +192,12 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.REMOVE, null, parts);
          switch (reply.getType()) {
             case OK:
-               ok();
-               //say("User removed successfully.\n");
+               say(Saying.getRemoveOk());
                room.send(new Msg(MsgType.LEAVE, self(), username, null));
                runLogin();
                break;
             case INVALID:
-               ko();
-               //say("Invalid.\n");
+               say(Saying.getRemoveInvalid());
                // the password could be wrong
                // or the user could be already inactive
                break;
@@ -216,17 +213,15 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, null, parts);
          switch (reply.getType()) {
             case OK:
-               //say(parts[1] + ", you are logged in.\n");
-               ok();
                setUsername(parts[1]);
+               say(Saying.getLoginOk(username));
                setRid((String) reply.getContent());
                room.send(new Msg(MsgType.ENTER, self(), username, null));
                manager.send(new Msg(MsgType.LOGIN_OK, self(), username, null)); // sends its actoref to manager
                runChat();
                break;
             case INVALID:
-               ko();
-               //say("Login invalid. Check valid username or password.\n");
+               say(Saying.getLoginInvalid());
                break;
          }
       }
@@ -333,14 +328,6 @@ public class User extends BasicActor<Msg, Void> {
 
    private void say(String whatToSay) throws IOException, SuspendExecution {
       say(whatToSay.getBytes());
-   }
-
-   private void ok() throws IOException, SuspendExecution {
-      say(":ok");
-   }
-
-   private void ko() throws IOException, SuspendExecution {
-      say(":ko");
    }
 
    private void setRid(String rid) {

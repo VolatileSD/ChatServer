@@ -1,3 +1,5 @@
+package chatserver.rest.entity;
+
 /*
 package chatserver.rest.entities;
 

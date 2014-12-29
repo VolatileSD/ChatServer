@@ -3,9 +3,9 @@ package chatserver.db;
 import chatserver.db.entity.Message;
 import chatserver.db.entity.User;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import common.representations.MessageRepresentation;
-import common.representations.TalkRepresentation;
-import common.representations.UsersRepresentation;
+import common.representation.MessageRepresentation;
+import common.representation.TalkRepresentation;
+import common.representation.UsersRepresentation;
 import java.util.ArrayList;
 import java.util.List;
 

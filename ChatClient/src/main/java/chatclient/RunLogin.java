@@ -1,5 +1,6 @@
 package chatclient;
 
+import common.saying.Saying;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -9,7 +10,7 @@ import javax.swing.JOptionPane;
 public class RunLogin extends javax.swing.JFrame {
 
    private static SocketChannel socket;
-   private final ByteBuffer buf = ByteBuffer.allocate(10);
+   private final ByteBuffer buf = ByteBuffer.allocate(2048);
 
    /**
     * Creates new form ChatClientUI
@@ -133,17 +134,17 @@ public class RunLogin extends javax.swing.JFrame {
          sb.append(username).append(" ").append(password).append("\n");
          try {
             say(sb.toString());
-            switch (getReply()) {
-               case ":ok":
-                  setVisible(false);
-                  usernameTxt.setText("");
-                  passwordTxt.setText("");
-                  RunChat runChat = new RunChat(socket);
-                  runChat.setVisible(true);
-                  break;
-               case ":ko":
-                  replyTxt.setText("Login invalid!");
-                  break;
+            String reply = getReply();
+            if (reply.equals(Saying.getLoginOk(username))) {
+               setVisible(false);
+               usernameTxt.setText("");
+               passwordTxt.setText("");
+               RunChat runChat = new RunChat(socket);
+               runChat.setVisible(true);
+            } else if (reply.equals(Saying.getLoginInvalid())) {
+               replyTxt.setText("Login invalid!");
+            } else {
+               errorBox("Internal Error. Please try again.");
             }
          } catch (IOException e) {
             errorBox(e.getMessage());
@@ -159,13 +160,13 @@ public class RunLogin extends javax.swing.JFrame {
          sb.append(username).append(" ").append(password).append("\n");
          try {
             say(sb.toString());
-            switch (getReply()) {
-               case ":ok":
-                  replyTxt.setText("Create ok!");
-                  break;
-               case ":ko":
-                  replyTxt.setText("Create invalid!");
-                  break;
+            String reply = getReply();
+            if (reply.equals(Saying.getCreateOk(username))) {
+               replyTxt.setText("Create ok!");
+            } else if (reply.equals(Saying.getCreateInvalid())) {
+               replyTxt.setText("Create invalid!");
+            } else {
+               errorBox("Internal Error. Please try again.");
             }
          } catch (IOException e) {
             errorBox(e.getMessage());
@@ -181,13 +182,13 @@ public class RunLogin extends javax.swing.JFrame {
          sb.append(username).append(" ").append(password).append("\n");
          try {
             say(sb.toString());
-            switch (getReply()) {
-               case ":ok":
-                  replyTxt.setText("Remove ok!");
-                  break;
-               case ":ko":
-                  replyTxt.setText("Remove invalid!");
-                  break;
+            String reply = getReply();
+            if (reply.equals(Saying.getRemoveOk())) {
+               replyTxt.setText("Remove ok!");
+            } else if (reply.equals(Saying.getRemoveInvalid())) {
+               replyTxt.setText("Remove invalid!");
+            } else {
+               errorBox("Internal Error. Please try again.");
             }
          } catch (IOException e) {
             errorBox(e.getMessage());
