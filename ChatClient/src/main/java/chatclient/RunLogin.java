@@ -154,6 +154,7 @@ public class RunLogin extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(replyTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(passwordLbl)
@@ -170,10 +171,6 @@ public class RunLogin extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(195, 195, 195)
-                .addComponent(replyTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -294,14 +291,10 @@ public class RunLogin extends javax.swing.JFrame {
          try {
             say(sb.toString());
             String reply = getReply();
-            if (reply.equals(Saying.getLoginOk(username))) {
-              setVisible(false);
-               usernameTxt.setText("");
-               passwordTxt.setText("");
-               RunChat runChat = new RunChat(socket);
-               runChat.setVisible(true);
-            } else if (reply.equals(Saying.getLoginInvalid())) {
-               replyTxt.setText("Login invalid!");
+            if (reply.equals(Saying.getCreateOk(username))) {
+              replyTxt.setText("Create ok! Now log in to chat");
+            } else if (reply.equals(Saying.getCreateInvalid())) {
+               replyTxt.setText("Create invalid!");
             } else {
                errorBox("Internal Error. Please try again.");
             }
@@ -320,14 +313,10 @@ public class RunLogin extends javax.swing.JFrame {
          try {
             say(sb.toString());
             String reply = getReply();
-            if (reply.equals(Saying.getLoginOk(username))) {
-              setVisible(false);
-               usernameTxt.setText("");
-               passwordTxt.setText("");
-               RunChat runChat = new RunChat(socket);
-               runChat.setVisible(true);
-            } else if (reply.equals(Saying.getLoginInvalid())) {
-               replyTxt.setText("Login invalid!");
+            if (reply.equals(Saying.getRemoveOk())) {
+              replyTxt.setText("Remove ok!");
+            } else if (reply.equals(Saying.getRemoveInvalid())) {
+               replyTxt.setText("Remove invalid!");
             } else {
                errorBox("Internal Error. Please try again.");
             }
