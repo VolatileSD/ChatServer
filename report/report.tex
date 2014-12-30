@@ -35,6 +35,11 @@
 \usepackage{algorithmic}
 \usepackage{algorithm}
 \usepackage{listings}
+
+\usepackage{hyperref}
+\usepackage{cite}
+
+
 \lstset{
 captionpos=b, 
 frame=bt,
@@ -97,7 +102,7 @@ breaklines=true}
 
 
 
-\graphicspath{{texinputs/}}
+\graphicspath{{texinputs/imgs/}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -144,8 +149,7 @@ Awesome abstract
 %
 
 \section{Introduction}
-
-intro 
+\input{intro.tex}
 
 %
 % Dropwizard
@@ -163,13 +167,9 @@ intro
 
 \section{Implementation}
 \label{sec:impl}
-%
-% Telnet User
-\input{textprotocol.tex}
 
-%
-% Rooms
-\input{rooms.tex}
+\input{impl.tex}
+
 
 
 
@@ -184,25 +184,13 @@ intro
 
 
 
-%
-% Acknowledgements
-%
-
-\subsubsection*{Acknowledgements.}
-
 
 %
 % Bibliography
 %
 
-\cite{doe}
-%
-% Bibliography
-%
-
-\bibliographystyle{splncs}
-
-\bibliography{./texinputs/bib}
+\bibliography{texinputs/bib}{}
+\bibliographystyle{plain}
 
 
 %\appendix
