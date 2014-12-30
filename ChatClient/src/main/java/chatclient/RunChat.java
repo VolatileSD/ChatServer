@@ -61,9 +61,8 @@ public class RunChat extends JFrame {
         list = new javax.swing.JList();
         listRoomsBtn = new javax.swing.JButton();
         listUsersBtn = new javax.swing.JButton();
-        roomListUsersTxt = new javax.swing.JTextField();
-        listUsersRoomLbl = new javax.swing.JLabel();
         inboxBtn = new javax.swing.JButton();
+        logoutBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         chatTxt = new javax.swing.JTextArea();
@@ -82,11 +81,12 @@ public class RunChat extends JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Chat Conversation");
+        setBackground(new java.awt.Color(0, 153, 204));
         setFocusable(false);
         setMinimumSize(new java.awt.Dimension(600, 410));
-        setPreferredSize(new java.awt.Dimension(740, 450));
+        setPreferredSize(new java.awt.Dimension(900, 450));
 
-        jPanel1.setBackground(new java.awt.Color(153, 255, 153));
+        jPanel1.setBackground(new java.awt.Color(153, 204, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
 
         list.setEnabled(false);
@@ -110,14 +110,6 @@ public class RunChat extends JFrame {
             }
         });
 
-        roomListUsersTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                roomListUsersTxtActionPerformed(evt);
-            }
-        });
-
-        listUsersRoomLbl.setText("Obsolete");
-
         inboxBtn.setBackground(new java.awt.Color(0, 0, 0));
         inboxBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         inboxBtn.setForeground(new java.awt.Color(255, 255, 255));
@@ -128,27 +120,35 @@ public class RunChat extends JFrame {
             }
         });
 
+        logoutBtn.setBackground(new java.awt.Color(0, 0, 0));
+        logoutBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        logoutBtn.setForeground(new java.awt.Color(255, 255, 255));
+        logoutBtn.setText("Logout");
+        logoutBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logoutBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addComponent(listUsersBtn)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
-                .addComponent(listUsersRoomLbl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(logoutBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane3)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                                .addComponent(listUsersBtn)))))
+                .addGap(10, 10, 10))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,16 +159,14 @@ public class RunChat extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(listUsersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(48, 48, 48)
+                .addGap(55, 55, 55)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(listUsersRoomLbl)
-                    .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(32, 32, 32)
-                .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(68, Short.MAX_VALUE))
+                    .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(113, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(0, 204, 51));
+        jPanel2.setBackground(new java.awt.Color(0, 153, 153));
 
         chatTxt.setEditable(false);
         chatTxt.setColumns(20);
@@ -264,13 +262,13 @@ public class RunChat extends JFrame {
          } else {
             errorBox(new StringBuilder("Room ").append(roomName).append(" does not exist!").toString());
          }
-         roomListUsersTxt.setText("");
+      
       }
    }//GEN-LAST:event_listUsersBtnActionPerformed
 
-   private void roomListUsersTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roomListUsersTxtActionPerformed
-      listUsersBtnActionPerformed(evt);
-   }//GEN-LAST:event_roomListUsersTxtActionPerformed
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoutBtnActionPerformed
 
    private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
       this.inbox = new Inbox(socket);
@@ -400,8 +398,7 @@ public class RunChat extends JFrame {
     private javax.swing.JList list;
     private javax.swing.JButton listRoomsBtn;
     private javax.swing.JButton listUsersBtn;
-    private javax.swing.JLabel listUsersRoomLbl;
-    private javax.swing.JTextField roomListUsersTxt;
+    private javax.swing.JButton logoutBtn;
     private javax.swing.JTextField sendTxt;
     // End of variables declaration//GEN-END:variables
 }

@@ -60,10 +60,9 @@ public class Admin extends JFrame {
         list = new javax.swing.JList();
         listRoomsBtn = new javax.swing.JButton();
         listUsersBtn = new javax.swing.JButton();
-        roomListUsersTxt = new javax.swing.JTextField();
-        listUsersRoomLbl = new javax.swing.JLabel();
         inboxBtn = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        logoutBtn = new javax.swing.JButton();
+        adminOpt = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         chatTxt = new javax.swing.JTextArea();
@@ -81,6 +80,7 @@ public class Admin extends JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Chat Conversation");
         setFocusable(false);
         setMinimumSize(new java.awt.Dimension(600, 410));
 
@@ -108,14 +108,6 @@ public class Admin extends JFrame {
             }
         });
 
-        roomListUsersTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                roomListUsersTxtActionPerformed(evt);
-            }
-        });
-
-        listUsersRoomLbl.setText("Obsolete");
-
         inboxBtn.setBackground(new java.awt.Color(0, 0, 0));
         inboxBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         inboxBtn.setForeground(new java.awt.Color(255, 255, 255));
@@ -126,13 +118,23 @@ public class Admin extends JFrame {
             }
         });
 
-        jButton1.setBackground(new java.awt.Color(0, 0, 0));
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Admin Options");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        logoutBtn.setBackground(new java.awt.Color(0, 0, 0));
+        logoutBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        logoutBtn.setForeground(new java.awt.Color(255, 255, 255));
+        logoutBtn.setText("Logout");
+        logoutBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                logoutBtnActionPerformed(evt);
+            }
+        });
+
+        adminOpt.setBackground(new java.awt.Color(0, 0, 0));
+        adminOpt.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        adminOpt.setForeground(new java.awt.Color(255, 255, 255));
+        adminOpt.setText("Admin Options");
+        adminOpt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminOptActionPerformed(evt);
             }
         });
 
@@ -141,24 +143,21 @@ public class Admin extends JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-                        .addComponent(listUsersBtn)))
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                                .addComponent(listUsersBtn))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(logoutBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(adminOpt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(listUsersRoomLbl)
-                .addGap(37, 37, 37)
-                .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(inboxBtn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,15 +168,13 @@ public class Admin extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(listUsersBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(listRoomsBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(listUsersRoomLbl)
-                    .addComponent(roomListUsersTxt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addGap(48, 48, 48)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(66, 66, 66))
+                    .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(adminOpt, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(0, 204, 51));
@@ -276,18 +273,21 @@ public class Admin extends JFrame {
            } else {
                errorBox(new StringBuilder("Room ").append(roomName).append(" does not exist!").toString());
            }
-           roomListUsersTxt.setText("");
        }
    }//GEN-LAST:event_listUsersBtnActionPerformed
 
-   private void roomListUsersTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_roomListUsersTxtActionPerformed
-       listUsersBtnActionPerformed(evt);
-   }//GEN-LAST:event_roomListUsersTxtActionPerformed
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_logoutBtnActionPerformed
+
+    private void adminOptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminOptActionPerformed
         AdminSettings ad = new AdminSettings();
         ad.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_adminOptActionPerformed
 
     private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
         this.inbox = new Inbox(socket);
@@ -406,9 +406,9 @@ public class Admin extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton adminOpt;
     private javax.swing.JTextArea chatTxt;
     private javax.swing.JButton inboxBtn;
-    private javax.swing.JButton jButton1;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -418,8 +418,7 @@ public class Admin extends JFrame {
     private javax.swing.JList list;
     private javax.swing.JButton listRoomsBtn;
     private javax.swing.JButton listUsersBtn;
-    private javax.swing.JLabel listUsersRoomLbl;
-    private javax.swing.JTextField roomListUsersTxt;
+    private javax.swing.JButton logoutBtn;
     private javax.swing.JTextField sendTxt;
     // End of variables declaration//GEN-END:variables
 }
