@@ -8,7 +8,9 @@ import java.nio.channels.SocketChannel;
 import javax.swing.JOptionPane;
 
 public class RunLogin extends javax.swing.JFrame {
-
+   // BUGS TO BE SOLVED:
+    // logout and login writing directly in the socket connects the user to the room he was connected before logout
+    // if the user writes directly in the socket :private a ola nullpointerexception
    private static SocketChannel socket;
    private final ByteBuffer buf = ByteBuffer.allocate(2048);
 
