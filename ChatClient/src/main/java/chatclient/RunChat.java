@@ -19,6 +19,7 @@ import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.text.DefaultCaret;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -44,6 +45,7 @@ public class RunChat extends JFrame {
      */
     public RunChat(SocketChannel socket) {
         initComponents();
+        alwaysScrollDown();
         this.socket = socket;
         this.inbox = null;
         this.usernames = new HashMap();
@@ -418,6 +420,11 @@ public class RunChat extends JFrame {
         public String toString() {
             return String.format("{%s,%s,%s}", r, g, b);
         }
+    }
+    
+    private void alwaysScrollDown() {
+        DefaultCaret caret = (DefaultCaret) chatTxt.getCaret();
+        caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
     }
 
     private static void errorBox(String errorMessage) {
