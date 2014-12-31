@@ -359,9 +359,9 @@ public class RunChat extends JFrame {
                             out.get(ba);
                             out.clear();
                             String text = new String(ba);
-                            if (text.startsWith(":iu:")) {
+                            if (text.startsWith(":iu:") && inbox != null) {
                                 inbox.updateUsers(text.substring(4));
-                            } else if (text.startsWith(":tk:")) {
+                            } else if (text.startsWith(":tk:") && inbox != null) {
                                 inbox.updateTalk(text.substring(4));
                             } else {
                                 parseMessage(new String(ba));

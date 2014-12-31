@@ -24,15 +24,16 @@ public class User extends BasicActor<Msg, Void> {
    private static final int MAXLEN = 1024;
    private static final Logger logger = Logger.getLogger(User.class.getName());
 
-   private ActorRef room;
+   private ActorRef room;   
+   private ActorRef mainRoom;
    private final ActorRef roomManager;
    private final ActorRef manager;
    private String rid;
    private String username;
    private final FiberSocketChannel socket;
 
-   public User(ActorRef room, ActorRef roomManager, ActorRef manager, FiberSocketChannel socket) {
-      this.room = room;
+   public User(ActorRef mainRoom, ActorRef roomManager, ActorRef manager, FiberSocketChannel socket) {
+      this.mainRoom = mainRoom;
       this.roomManager = roomManager;
       this.manager = manager;
       this.socket = socket;
@@ -216,6 +217,7 @@ public class User extends BasicActor<Msg, Void> {
                setUsername(parts[1]);
                say(Saying.getLoginOk(username));
                setRid((String) reply.getContent());
+               room = mainRoom;
                room.send(new Msg(MsgType.ENTER, self(), username, null));
                manager.send(new Msg(MsgType.LOGIN_OK, self(), username, null)); // sends its actoref to manager
                runChat();

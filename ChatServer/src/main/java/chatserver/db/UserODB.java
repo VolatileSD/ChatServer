@@ -154,6 +154,7 @@ public class UserODB {
    public UsersRepresentation getInboxUsers(String rid) {
       StringBuilder sb = new StringBuilder("SELECT distinct(from) AS username FROM (SELECT expand(in('PrivateMessages')) FROM ");
       sb.append(rid).append(")");
+      //SELECT distinct(to) AS username FROM (SELECT expand(out('PrivateMessages')) FROM #13:0)
       // try to order by last message sent
       UsersRepresentation users = new UsersRepresentation();
 
