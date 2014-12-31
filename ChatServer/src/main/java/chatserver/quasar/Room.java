@@ -45,7 +45,7 @@ public class Room extends BasicActor<Msg, Void> {
                }
 
                users.put(fromUsername, newUser);
-               //notificationManager.send(new Msg(MsgType.ENTER, null, fromUsername, topic));
+               notificationManager.send(new Msg(MsgType.ENTER, null, fromUsername, topic));
                return true;
             case LEAVE:
                fromUsername = msg.getFromUsername();
@@ -55,7 +55,7 @@ public class Room extends BasicActor<Msg, Void> {
                for (ActorRef u : users.values()) {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
                }
-               //notificationManager.send(new Msg(MsgType.LEAVE, null, fromUsername, topic));
+               notificationManager.send(new Msg(MsgType.LEAVE, null, fromUsername, topic));
                return true;
             case LINE:
                fromUsername = msg.getFromUsername();

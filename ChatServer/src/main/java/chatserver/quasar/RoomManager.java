@@ -60,7 +60,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                            msg.getFrom().send(new Msg(MsgType.OK));
                            ActorRef newRoomRef = new Room(roomName, (String) reply.getContent(), manager, notificationManager).spawn();
                            rooms.put(roomName, newRoomRef);
-                           //notificationManager.send(msg);
+                           notificationManager.send(msg);
                            logger.log(Level.INFO, "Room Successfully created in DB");
                            break;
                         case INVALID:
@@ -78,7 +78,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                      Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.DELETE_ROOM);
                      if (reply.getType().equals(MsgType.OK)) {
                         rooms.remove(roomName);
-                        //notificationManager.send(msg);
+                        notificationManager.send(msg);
                         manager.send(new Msg(MsgType.DELETE_ROOM, null, null, reply.getContent()));
                      }
                      msg.getFrom().send(reply);
