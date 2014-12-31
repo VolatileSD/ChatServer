@@ -38,6 +38,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                      ActorRef roomRef = new Room(s, activeRooms.get(s), manager, notificationManager).spawn();
                      rooms.put(s, roomRef);
                   }
+                  msg.getFrom().send(new Msg(MsgType.RESTORE, null, null, rooms));
                   return true;
                case ROOM_INFO:
                   roomName = (String) msg.getContent();

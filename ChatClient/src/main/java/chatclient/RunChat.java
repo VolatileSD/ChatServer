@@ -227,7 +227,12 @@ public class RunChat extends JFrame {
 
    private void sendTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendTxtActionPerformed
        try {
-           say(sendTxt.getText() + "\n");
+           String text = sendTxt.getText();
+           if (text.startsWith(":inbox")) {
+               infoBox("There's a button called inbox. Try to press it!");
+           } else {
+               say(new StringBuilder(text).append("\n").toString());
+           }
            sendTxt.setText("");
        } catch (IOException ex) {
            errorBox(ex.getMessage());
@@ -415,8 +420,12 @@ public class RunChat extends JFrame {
         }
     }
 
-    private static void errorBox(String infoMessage) {
-        JOptionPane.showMessageDialog(null, infoMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
+    private static void errorBox(String errorMessage) {
+        JOptionPane.showMessageDialog(null, errorMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private static void infoBox(String infoMessage) {
+        JOptionPane.showMessageDialog(null, infoMessage, "Something Went Wrong", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void say(byte[] whatToSay) throws IOException {

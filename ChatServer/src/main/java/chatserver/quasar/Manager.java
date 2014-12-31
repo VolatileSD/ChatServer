@@ -31,6 +31,7 @@ public class Manager extends BasicActor<Msg, Void> {
          switch (msg.getType()) {
             case RESTORE:
                userODB.logoutEveryone();
+               // map<roomName, roomRid>
                Map<String, String> rooms = roomODB.getActiveRooms();
                Msg restoreMsg = new Msg(MsgType.RESTORE, null, null, rooms);
                msg.getFrom().send(restoreMsg);
