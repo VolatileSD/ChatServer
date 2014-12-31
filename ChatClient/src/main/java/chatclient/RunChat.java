@@ -7,13 +7,15 @@ package chatclient;
 
 import common.representation.RoomRepresentation;
 import common.representation.RoomsRepresentation;
-import common.saying.Saying;
 import com.google.gson.Gson;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -34,6 +36,8 @@ public class RunChat extends JFrame {
     private final int MAXLEN = 2048; // problem when receiving json with more than 2048 char
     private SocketChannel socket;
     private Inbox inbox;
+    private Map<String, Color> usernames;
+    private Random random;
 
     /**
      * Creates new form RunChat
@@ -42,6 +46,8 @@ public class RunChat extends JFrame {
         initComponents();
         this.socket = socket;
         this.inbox = null;
+        this.usernames = new HashMap();
+        this.random = new Random();
         new LineReader().start();
     }
 
@@ -381,12 +387,32 @@ public class RunChat extends JFrame {
             int index = message.indexOf(":");
             String username = message.substring(1, index);
             String text = message.substring(index + 2);
-            chatTxt.append("username -> " + username + "\n");            
+            if (!usernames.containsKey(username)) {
+                usernames.put(username, new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+            }
+            chatTxt.append("username:" + usernames.get(username).toString() + " -> " + username + "\n");
             chatTxt.append("message  -> " + text);
+
         } else {
             chatTxt.append(message);
         }
 
+    }
+
+    private class Color {
+
+        private int r, g, b;
+
+        public Color(int r, int g, int b) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("{%s,%s,%s}", r, g, b);
+        }
     }
 
     private static void errorBox(String infoMessage) {
