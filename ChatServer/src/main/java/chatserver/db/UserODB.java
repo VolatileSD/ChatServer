@@ -50,13 +50,13 @@ public class UserODB {
       return user != null && user.getPassword().equals(password) ? user : null;
    }
 
-   public User create(String username, String password) {
+   public User create(String username, String password, boolean isAdmin) {
       User user = findByUsername(username);
       if (user == null) {
          StringBuilder sb = new StringBuilder("INSERT INTO User SET username = '");
          sb.append(username).append("', password = '");
          sb.append(password).append("', registrationDate = sysdate(), loggedIn = false,");
-         sb.append(" active = true RETURN @this");
+         sb.append(" isAdmin = ").append(isAdmin).append(", active = true RETURN @this");
 
          try {
             ODocument document = (ODocument) db.execute(sb.toString());

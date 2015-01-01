@@ -13,6 +13,7 @@ CREATE PROPERTY User.password string
 CREATE PROPERTY User.registrationDate datetime
 CREATE PROPERTY User.loggedIn boolean
 CREATE PROPERTY User.active boolean
+CREATE PROPERTY User.isAdmin boolean
 CREATE INDEX User.username unique
  
 #
