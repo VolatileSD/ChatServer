@@ -128,6 +128,9 @@ public class User extends BasicActor<Msg, Void> {
                         case INBOX:
                            readInbox(parts); // this will only be used by telnet/nc client
                            break;
+                        case ALL_USERS:
+                           allUsers(); // this is supposed to be used only by ChatClient
+                           break;
                         case INBOX_USERS:
                            inboxUsers(); // this is supposed to be used only by ChatClient
                            break;
