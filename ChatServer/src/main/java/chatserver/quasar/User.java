@@ -25,7 +25,7 @@ public class User extends BasicActor<Msg, Void> {
    private static final Logger logger = Logger.getLogger(User.class.getName());
 
    private ActorRef room;   
-   private ActorRef mainRoom;
+   private final ActorRef mainRoom;
    private final ActorRef roomManager;
    private final ActorRef manager;
    private String rid;

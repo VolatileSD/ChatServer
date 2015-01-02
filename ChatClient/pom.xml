@@ -72,8 +72,8 @@
                         </manifestEntries>
                     </archive>
                     <descriptors>
-                        <descriptor>src/main/assembly/capsule-fat.xml</descriptor>
-                        <descriptor>src/main/assembly/capsule.xml</descriptor>
+                        <descriptor>../Common/src/main/assembly/capsule-fat.xml</descriptor>
+                        <descriptor>../Common/src/main/assembly/capsule.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
