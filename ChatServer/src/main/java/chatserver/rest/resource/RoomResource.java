@@ -16,73 +16,99 @@ import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
 import common.representation.RoomRepresentation;
 import chatserver.rest.entity.Rooms;
+import co.paralleluniverse.fibers.SuspendExecution;
 import com.google.gson.Gson;
+import common.representation.UserRepresentation;
+import java.util.concurrent.ExecutionException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
 
 @Path("/room/{name}")
 @Produces(MediaType.APPLICATION_JSON)
 public class RoomResource {
 
+   private final ActorRef manager;
    private final ActorRef roomManager;
    private final Rooms rooms;
 
-   public RoomResource(Rooms rooms, ActorRef roomManager) {
+   public RoomResource(ActorRef manager, ActorRef roomManager, Rooms rooms) {
+      this.manager = manager;
       this.rooms = rooms;
       this.roomManager = roomManager;
    }
 
    @GET
-   public Response getRoomInfo(@PathParam("name") String roomName) throws Exception {
-      // REMOVE THROWS EXCEPTION
+   public Response getRoomInfo(@PathParam("name") String roomName) throws Exception{
+      ResponseBuilder response;
       if (rooms.has(roomName)) {
          Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, null, roomName);
          switch (msg.getType()) {
             case OK:
                RoomRepresentation rr = new RoomRepresentation(roomName, (Collection<String>) msg.getContent());
-               //RoomRepresentation rr = new RoomRepresentation();
-               //rr.setName(roomName);
-               //rr.setUsers((Collection<String>) msg.getContent());
-               //return Response.ok(new ObjectMapper().writeValueAsString(rr)).build();
-               return Response.ok(new Gson().toJson(rr)).build();
+               response = Response.ok(new Gson().toJson(rr));
+               break;
             default:
-               return Response.status(500).build();
+               response = Response.status(Status.INTERNAL_SERVER_ERROR);
+               break;
          }
       } else {
-         return Response.status(409).build();
+         response = Response.status(Status.CONFLICT);
       }
+
+      return response.build();
    }
 
    @PUT
-   public Response createRoom(@PathParam("name") String roomName) throws Exception {
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response createRoom(@PathParam("name") String roomName, UserRepresentation user) throws Exception {
+      ResponseBuilder response;
       if (!rooms.has(roomName)) {
-         Msg msg = new Pigeon(roomManager).carry(MsgType.CREATE_ROOM, null, roomName);
+         Msg msg = new Pigeon(roomManager).carry(MsgType.CREATE_ROOM, null, new String[]{roomName, user.getUsername(), user.getPassword()});
          switch (msg.getType()) {
             case OK:
                rooms.addRoom(roomName);
-               return Response.status(201).build();
+               response = Response.status(Status.CREATED);
+               break;
+            case UNAUTHORIZED:
+               throw new WebApplicationException(Status.UNAUTHORIZED);
             default:
-               return Response.status(500).build();
+               response = Response.status(Status.INTERNAL_SERVER_ERROR);
+               break;
          }
       } else {
-         return Response.status(409).build();
+         response = Response.status(Status.CONFLICT);
       }
+      return response.build();
    }
 
    @DELETE
-   public Response deleteRoom(@PathParam("name") String roomName) throws Exception {
-      if (rooms.has(roomName)) {
-         Msg msg = new Pigeon(roomManager).carry(MsgType.DELETE_ROOM, null, roomName);
+   @Consumes(MediaType.APPLICATION_JSON)
+   public Response deleteRoom(@PathParam("name") String roomName, UserRepresentation user) throws Exception {
+      ResponseBuilder response;
+      if (!roomName.equals("Main") && rooms.has(roomName)) { // main room cannot be removed
+         Msg msg = new Pigeon(roomManager).carry(MsgType.DELETE_ROOM, null, new String[]{roomName, user.getUsername(), user.getPassword()});
          switch (msg.getType()) {
             case OK:
                rooms.removeRoom(roomName);
                // should we return room representation here?
-               return Response.status(200).build();
+               response = Response.ok();
+               break;
             case INVALID:
-               return Response.status(409).build();
+               response = Response.status(Status.CONFLICT);
+               break;
+            case UNAUTHORIZED:
+               throw new WebApplicationException(Status.UNAUTHORIZED);
             default:
-               return Response.status(500).build();
+               response = Response.status(Status.INTERNAL_SERVER_ERROR);
+               break;
          }
       } else {
-         return Response.status(409).build();
+         response = Response.status(Status.CONFLICT);
       }
+
+      return response.build();
    }
+
 }

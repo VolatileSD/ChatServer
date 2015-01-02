@@ -15,16 +15,16 @@ public class Message extends AbstractEntity {
       this.text = message.field("text");
       this.date = message.field("date");
    }
-   
-   public String getFrom(){
+
+   public String getFrom() {
       return from;
    }
-   
-   public String getText(){
+
+   public String getText() {
       return text;
    }
-   
-   public Date getDate(){
+
+   public Date getDate() {
       return date;
    }
 

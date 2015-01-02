@@ -151,6 +151,24 @@ public class UserODB {
       return inbox;
    }
 
+   public UsersRepresentation getAllUsers(){
+      UsersRepresentation users = new UsersRepresentation();
+      
+      try{
+         List<ODocument> resultList = db.executeSynchQuery("SELECT username FROM User");
+         ArrayList<String> usernames = new ArrayList();
+         for(ODocument d : resultList){
+            usernames.add(d.field("username"));
+         }
+         
+         users = new UsersRepresentation(usernames);
+      } finally{
+         db.close();
+      }
+      
+      return users;
+   }
+   
    public UsersRepresentation getInboxUsers(String rid) {
       StringBuilder sb = new StringBuilder("SELECT distinct(from) AS username FROM (SELECT expand(in('PrivateMessages')) FROM ");
       sb.append(rid).append(")");
@@ -191,6 +209,11 @@ public class UserODB {
       }
 
       return talk;
+   }
+
+   public boolean isAdmin(String username, String password) {
+      User user = findByUsernameAndPassword(username, password);
+      return user != null && user.isAdmin();
    }
 
 }

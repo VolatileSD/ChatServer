@@ -24,7 +24,7 @@ public class User extends BasicActor<Msg, Void> {
    private static final int MAXLEN = 1024;
    private static final Logger logger = Logger.getLogger(User.class.getName());
 
-   private ActorRef room;   
+   private ActorRef room;
    private final ActorRef mainRoom;
    private final ActorRef roomManager;
    private final ActorRef manager;
@@ -310,6 +310,11 @@ public class User extends BasicActor<Msg, Void> {
                break;
          }
       }
+   }
+
+   private void allUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
+      Msg reply = new Pigeon(manager).carry(MsgType.ALL_USERS);
+      say(new StringBuilder(":allu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
    }
 
    private void inboxUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {

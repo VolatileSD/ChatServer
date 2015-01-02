@@ -37,8 +37,6 @@ public class Pigeon {
             return reply; // study timeout
          }
       };
-      //pigeon.spawn();
-      //res = pigeon.get();
       return pigeon.run();
    }
 

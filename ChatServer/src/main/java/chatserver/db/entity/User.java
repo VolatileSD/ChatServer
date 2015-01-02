@@ -10,6 +10,7 @@ public class User extends AbstractEntity {
    private final Date registrationDate;
    private final boolean loggedIn;
    private final boolean active;
+   private final boolean admin;
 
    public User(ODocument user) {
       super(user.getIdentity().toString());
@@ -18,6 +19,7 @@ public class User extends AbstractEntity {
       this.registrationDate = user.field("registrationDate");
       this.loggedIn = user.field("loggedIn");
       this.active = user.field("active");
+      this.admin = user.field("isAdmin");
    }
 
    public String getUsername() {
@@ -35,8 +37,12 @@ public class User extends AbstractEntity {
    public boolean isLoggedIn() {
       return loggedIn;
    }
-   
-   public boolean isActive(){
+
+   public boolean isActive() {
       return active;
+   }
+
+   public boolean isAdmin() {
+      return admin;
    }
 }

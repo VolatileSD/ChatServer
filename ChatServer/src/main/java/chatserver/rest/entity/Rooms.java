@@ -39,7 +39,8 @@ public class Rooms {
 
    /**
     * Removes a room
-    */
+    * @param roomName name of the room
+    */ 
    public synchronized void removeRoom(String roomName) {
       rooms.remove(roomName);
    }

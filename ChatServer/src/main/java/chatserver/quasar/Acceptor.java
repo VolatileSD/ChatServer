@@ -1,46 +1,21 @@
 package chatserver.quasar;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import co.paralleluniverse.actors.*;
-import co.paralleluniverse.fibers.SuspendExecution;
-import co.paralleluniverse.fibers.io.*;
-
-import chatserver.util.Msg;
-import chatserver.util.MsgType;
-import java.util.logging.Level;
+import co.paralleluniverse.actors.ActorRef;
+import co.paralleluniverse.actors.BasicActor;
 import java.util.logging.Logger;
 
-public class Acceptor extends BasicActor {
+public abstract class Acceptor extends BasicActor {
 
-   private final int port;
-   private final ActorRef mainRoom;
-   private final ActorRef roomManager;
+   protected final int port;
+   protected final ActorRef mainRoom;
+   protected final ActorRef roomManager;
+   protected final ActorRef manager;
+   protected static final Logger logger = Logger.getLogger(Acceptor.class.getName());
 
-   public Acceptor(int port, ActorRef mainRoom, ActorRef roomManager) {
+   public Acceptor(int port, ActorRef mainRoom, ActorRef roomManager, ActorRef manager) {
       this.port = port;
       this.mainRoom = mainRoom;
       this.roomManager = roomManager;
-   }
-
-   @Override
-   protected Void doRun() throws InterruptedException, SuspendExecution {
-      ActorRef manager = new Manager().spawn();
-
-      //byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
-
-      try {
-         FiberServerSocketChannel ss = FiberServerSocketChannel.open();
-         ss.bind(new InetSocketAddress(port));
-         while (true) {
-            FiberSocketChannel socket = ss.accept();
-            Logger.getLogger(Acceptor.class.getName()).log(Level.INFO, "New connection!");
-            ActorRef user = new User(mainRoom, roomManager, manager, socket).spawn();
-            //user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
-         }
-      } catch (IOException e) {
-         System.out.println(e.getMessage());
-      }
-      return null;
+      this.manager = manager;
    }
 }

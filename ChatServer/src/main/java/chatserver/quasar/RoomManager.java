@@ -31,6 +31,8 @@ public class RoomManager extends BasicActor<Msg, Void> {
       while (receive(msg -> {
          try {
             String roomName;
+            Msg isAdmin;
+            String[] content;
             switch (msg.getType()) {
                case RESTORE:
                   Map<String, String> activeRooms = (Map) msg.getContent();
@@ -40,6 +42,15 @@ public class RoomManager extends BasicActor<Msg, Void> {
                   }
                   msg.getFrom().send(new Msg(MsgType.RESTORE, null, null, rooms));
                   return true;
+               case CHANGE_ROOM:
+                  roomName = (String) msg.getContent();
+                  if (rooms.containsKey(roomName)) {
+                     Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.CHANGE_ROOM);
+                     msg.getFrom().send(reply);
+                  } else {
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
+                  }
+                  return true;
                case ROOM_INFO:
                   roomName = (String) msg.getContent();
                   if (rooms.containsKey(roomName)) {
@@ -48,52 +59,61 @@ public class RoomManager extends BasicActor<Msg, Void> {
                      msg.getFrom().send(reply);
                   } else {
                      // so if it enters here there's a big problem
-                     logger.log(Level.SEVERE, "Error trying to show info about an existing room");
+                     logger.severe("Error trying to show info about an existing room");
                      msg.getFrom().send(new Msg(MsgType.INVALID));
                   }
                   return true;
                case CREATE_ROOM:
-                  roomName = (String) msg.getContent();
-                  if (!rooms.containsKey(roomName)) {
-                     Msg reply = new Pigeon(manager).carry(MsgType.CREATE_ROOM, null, new String[]{roomName});
-                     switch (reply.getType()) {
-                        case OK:
-                           msg.getFrom().send(new Msg(MsgType.OK));
-                           ActorRef newRoomRef = new Room(roomName, (String) reply.getContent(), manager, notificationManager).spawn();
-                           rooms.put(roomName, newRoomRef);
-                           notificationManager.send(msg);
-                           logger.log(Level.INFO, "Room Successfully created in DB");
-                           break;
-                        case INVALID:
+                  content = (String[]) msg.getContent();
+                  isAdmin = new Pigeon(manager).carry(MsgType.AUTH, null, content);
+                  switch (isAdmin.getType()) {
+                     case OK:
+                        roomName = content[0];
+                        if (!rooms.containsKey(roomName)) {
+                           Msg reply = new Pigeon(manager).carry(MsgType.CREATE_ROOM, null, new String[]{roomName});
+                           msg.getFrom().send(reply);
+                           switch (reply.getType()) {
+                              case OK:
+                                 ActorRef newRoomRef = new Room(roomName, (String) reply.getContent(), manager, notificationManager).spawn();
+                                 rooms.put(roomName, newRoomRef);
+                                 notificationManager.send(msg);
+                                 logger.info("Room Successfully created in DB");
+                                 break;
+                              case INVALID:
+                                 logger.severe("DB error trying to create a room");
+                                 break;
+                           }
+                        } else {
                            msg.getFrom().send(new Msg(MsgType.INVALID));
-                           logger.log(Level.SEVERE, "DB error trying to create a room");
-                           break;
-                     }
-                  } else {
-                     msg.getFrom().send(new Msg(MsgType.INVALID));
+                        }
+                        break;
+                     case INVALID:
+                        logger.info("admin wrong");
+                        msg.getFrom().send(new Msg(MsgType.UNAUTHORIZED));
+                        break;
                   }
                   return true;
                case DELETE_ROOM:
-                  roomName = (String) msg.getContent();
-                  if (rooms.containsKey(roomName)) {
-                     Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.DELETE_ROOM);
-                     if (reply.getType().equals(MsgType.OK)) {
-                        rooms.remove(roomName);
-                        notificationManager.send(msg);
-                        manager.send(new Msg(MsgType.DELETE_ROOM, null, null, reply.getContent()));
-                     }
-                     msg.getFrom().send(reply);
-                  } else {
-                     msg.getFrom().send(new Msg(MsgType.INVALID));
-                  }
-                  return true;
-               case CHANGE_ROOM:
-                  roomName = (String) msg.getContent();
-                  if (rooms.containsKey(roomName)) {
-                     Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.CHANGE_ROOM);
-                     msg.getFrom().send(reply);
-                  } else {
-                     msg.getFrom().send(new Msg(MsgType.INVALID));
+                  content = (String[]) msg.getContent();
+                  isAdmin = new Pigeon(manager).carry(MsgType.AUTH, null, content);
+                  switch (isAdmin.getType()) {
+                     case OK:
+                        roomName = content[0];
+                        if (rooms.containsKey(roomName)) {
+                           Msg reply = new Pigeon(rooms.get(roomName)).carry(MsgType.DELETE_ROOM);
+                           msg.getFrom().send(reply);
+                           if (reply.getType().equals(MsgType.OK)) {
+                              rooms.remove(roomName);
+                              notificationManager.send(msg);
+                              manager.send(new Msg(MsgType.DELETE_ROOM, null, null, reply.getContent()));
+                           }
+                        } else {
+                           msg.getFrom().send(new Msg(MsgType.INVALID));
+                        }
+                        break;
+                     case INVALID:
+                        msg.getFrom().send(new Msg(MsgType.UNAUTHORIZED));
+                        break;
                   }
                   return true;
             }

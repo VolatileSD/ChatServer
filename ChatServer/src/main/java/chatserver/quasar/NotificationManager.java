@@ -7,26 +7,27 @@ import java.util.logging.Logger;
 
 public class NotificationManager extends BasicActor<Msg, Void> {
 
-    /**
-     * Constructor of NotificationManager
-     *
-     * @param port Port where Notification Client will connect
-     */
-    public NotificationManager(int port) {
-    }
+   private static final Logger logger = Logger.getLogger(NotificationManager.class.getName());
 
-    @Override
-    @SuppressWarnings("empty-statement")
-    protected Void doRun() throws InterruptedException, SuspendExecution {
-        Logger l = Logger.getLogger(NotificationManager.class.getName());
+   /**
+    * Constructor of NotificationManager
+    *
+    * @param port Port where Notification Client will connect
+    */
+   public NotificationManager(int port) {
+   }
 
-        while (receive(msg -> {
-            l.info("I should be doing something");
-            return true;
-        }));
+   @Override
+   @SuppressWarnings("empty-statement")
+   protected Void doRun() throws InterruptedException, SuspendExecution {
 
-        return null;
-    }
+      while (receive(msg -> {
+         logger.info("I should be doing something");
+         return true;
+      }));
+
+      return null;
+   }
 }
 /*
  import org.zeromq.ZMQ;

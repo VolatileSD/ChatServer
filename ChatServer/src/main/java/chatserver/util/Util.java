@@ -22,7 +22,7 @@ public class Util {
             type = CommandType.LOGIN;
             break;
          case ":logout":
-            type = CommandType.LOGOUT; // TODO
+            type = CommandType.LOGOUT;
             break;
          case ":cr":
          case ":changeroom":

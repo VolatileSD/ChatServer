@@ -46,6 +46,7 @@ CREATE CLASS PrivateMessages EXTENDS E
  
 
 INSERT INTO Room set name = "Main", creationDate = sysdate(), active = true
- 
+INSERT INTO User set username = "admin", password = "admin", registrationDate = sysDate(), loggedIn = false, active = true, isAdmin = true
+
 return $e
 end

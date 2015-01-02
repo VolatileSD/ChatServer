@@ -50,7 +50,7 @@ public class Room extends BasicActor<Msg, Void> {
             case LEAVE:
                fromUsername = msg.getFromUsername();
                users.remove(fromUsername);
-               
+
                byte[] forAllUserLeave = new StringBuilder("#User @").append(fromUsername).append(" just left!\n").toString().getBytes();
                for (ActorRef u : users.values()) {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
