@@ -5,7 +5,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class MessageODB {
 
-   private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
+   private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "admin", "admin");
 
    public Message create(String from, String to, String text) {
       Message m = null;

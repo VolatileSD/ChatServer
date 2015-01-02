@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserODB {
 
-   private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
+   private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "admin", "admin");
 
    public User findByRid(String rid) {
       User user = null;

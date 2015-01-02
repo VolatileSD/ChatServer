@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class RoomODB {
 
-   private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "root", "root");
+   private final OrientDatabase db = new OrientDatabase("remote:localhost/ChatServer", "admin", "admin");
 
    public Room create(String name) {
       Room room = findByName(name);
