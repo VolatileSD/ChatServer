@@ -25,4 +25,12 @@ public class Saying {
    public static String getLoginInvalid() {
       return "Login invalid. Username or password incorrect.\n";
    }
+
+   public static String getLogoutOk() {
+      return "Successfully logged out.\n";
+   }
+
+   public static String getUnknownCommand() {
+      return "Unknown Command.\n";
+   }
 }

@@ -31,12 +31,14 @@ public class User extends BasicActor<Msg, Void> {
    private String rid;
    private String username;
    private final FiberSocketChannel socket;
+   private final boolean usingGUI;
 
-   public User(ActorRef mainRoom, ActorRef roomManager, ActorRef manager, FiberSocketChannel socket) {
+   public User(ActorRef mainRoom, ActorRef roomManager, ActorRef manager, FiberSocketChannel socket, boolean usingGUI) {
       this.mainRoom = mainRoom;
       this.roomManager = roomManager;
       this.manager = manager;
       this.socket = socket;
+      this.usingGUI = usingGUI;
    }
 
    @Override
@@ -234,19 +236,20 @@ public class User extends BasicActor<Msg, Void> {
 
    private void logout(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 1) {
-         say("Unknown Command.\n");
+         say(Saying.getUnknownCommand());
       } else {
          room.send(new Msg(MsgType.LEAVE, self(), username, null));
          manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
-         //ok();
-         //say("Successfully logged out.\n");
+         if (!usingGUI) {
+            say(Saying.getLogoutOk());
+         }
          runLogin();
       }
    }
 
    private void changeRoom(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 2) {
-         say("Uknown Command\n");
+         say(Saying.getUnknownCommand());
       } else {
          Msg reply = new Pigeon(roomManager).carry(MsgType.CHANGE_ROOM, username, parts[1]);
          switch (reply.getType()) {
@@ -265,7 +268,7 @@ public class User extends BasicActor<Msg, Void> {
 
    private void privateMessage(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length < 3) {
-         say("Unknown Command\n");
+         say(Saying.getUnknownCommand());
       } else {
          StringBuilder sb = new StringBuilder();
          // problem: two consecutive spaces will be one space now, e.g
@@ -288,7 +291,7 @@ public class User extends BasicActor<Msg, Void> {
 
    private void readInbox(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 1) {
-         say("Unknown Command\n");
+         say(Saying.getUnknownCommand());
       } else {
          Msg reply = new Pigeon(manager).carry(MsgType.INBOX, null, new String[]{rid});
          switch (reply.getType()) {
@@ -316,20 +319,30 @@ public class User extends BasicActor<Msg, Void> {
    }
 
    private void allUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      Msg reply = new Pigeon(manager).carry(MsgType.ALL_USERS);
-      say(new StringBuilder(":allu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
+      if (usingGUI) {
+         Msg reply = new Pigeon(manager).carry(MsgType.ALL_USERS);
+         say(new StringBuilder(":allu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
+      } else {
+         say(Saying.getUnknownCommand());
+      }
    }
 
    private void inboxUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      // no need to verify if is a good command 
-      // it will only be used by chatclient
-      Msg reply = new Pigeon(manager).carry(MsgType.INBOX_USERS, null, new String[]{rid});
-      say(new StringBuilder(":iu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
+      if (usingGUI) {
+         Msg reply = new Pigeon(manager).carry(MsgType.INBOX_USERS, null, new String[]{rid});
+         say(new StringBuilder(":iu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
+      } else {
+         say(Saying.getUnknownCommand());
+      }
    }
 
    private void talk(String withUsername) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      Msg reply = new Pigeon(manager).carry(MsgType.TALK, null, new String[]{rid, username, withUsername});
-      say(new StringBuilder(":tk:").append(new Gson().toJson((TalkRepresentation) reply.getContent())).append("\n").toString());
+      if (usingGUI) {
+         Msg reply = new Pigeon(manager).carry(MsgType.TALK, null, new String[]{rid, username, withUsername});
+         say(new StringBuilder(":tk:").append(new Gson().toJson((TalkRepresentation) reply.getContent())).append("\n").toString());
+      } else {
+         say(Saying.getUnknownCommand());
+      }
    }
 
    private void say(byte[] whatToSay) throws IOException, SuspendExecution {

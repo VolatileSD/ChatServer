@@ -1,8 +1,7 @@
 package chatserver.quasar.impl;
 
 import chatserver.quasar.Acceptor;
-import chatserver.util.Msg;
-import chatserver.util.MsgType;
+import chatserver.quasar.User;
 import co.paralleluniverse.actors.ActorRef;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.FiberServerSocketChannel;
@@ -25,7 +24,7 @@ public class AcceptorNonGUI extends Acceptor {
          ss.bind(new InetSocketAddress(port));
          while (true) {
             FiberSocketChannel socket = ss.accept();
-            ActorRef user = new UserNonGUI(mainRoom, roomManager, manager, socket).spawn();
+            ActorRef user = new User(mainRoom, roomManager, manager, socket, false).spawn();
             //user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
          }
       } catch (IOException e) {
