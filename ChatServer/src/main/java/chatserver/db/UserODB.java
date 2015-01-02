@@ -7,7 +7,9 @@ import common.representation.MessageRepresentation;
 import common.representation.TalkRepresentation;
 import common.representation.UsersRepresentation;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class UserODB {
 
@@ -169,18 +171,25 @@ public class UserODB {
    }
 
    public UsersRepresentation getInboxUsers(String rid) {
-      StringBuilder sb = new StringBuilder("SELECT distinct(from) AS username FROM (SELECT expand(in('PrivateMessages')) FROM ");
-      sb.append(rid).append(")");
-      //SELECT distinct(to) AS username FROM (SELECT expand(out('PrivateMessages')) FROM #13:0)
-      // try to order by last message sent
+      StringBuilder sb1 = new StringBuilder("SELECT distinct(from) AS username FROM (SELECT expand(in('PrivateMessages')) FROM ");
+      sb1.append(rid).append(")");
+      StringBuilder sb2 = new StringBuilder("SELECT distinct(to) AS username FROM (SELECT expand(out('PrivateMessages')) FROM ");
+      sb2.append(rid).append(")");
+      // try to order by last message sent and in one database call
       UsersRepresentation users = new UsersRepresentation();
 
       try {
-         List<ODocument> resultList = db.executeSynchQuery(sb.toString());
-         ArrayList<String> usernames = new ArrayList();
+         List<ODocument> resultList = db.executeSynchQuery(sb1.toString());
+         Set<String> usernames = new HashSet();
          for (ODocument d : resultList) {
             usernames.add(d.field("username"));
          }
+
+         resultList = db.executeSynchQuery(sb2.toString());
+         for (ODocument d : resultList) {
+            usernames.add(d.field("username"));
+         }
+
          users = new UsersRepresentation(usernames);
       } finally {
          db.close();
