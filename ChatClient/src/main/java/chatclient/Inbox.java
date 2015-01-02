@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import common.representation.MessageRepresentation;
 import common.representation.TalkRepresentation;
 import common.representation.UsersRepresentation;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -19,7 +20,12 @@ import java.nio.channels.SocketChannel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  *
@@ -31,10 +37,14 @@ public class Inbox extends JFrame {
     private SocketChannel socket;
     private String selectedUser;
 
+    private SimpleAttributeSet recipient = new SimpleAttributeSet();
+    private SimpleAttributeSet date = new SimpleAttributeSet();
+
     /**
      * Creates new form RunChat
      */
     public Inbox(SocketChannel socket) {
+
         initComponents();
         alwaysScrollDown();
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -49,9 +59,17 @@ public class Inbox extends JFrame {
         this.socket = socket;
         try {
             say(":iu\n");
+            //say(":allu\n");
         } catch (IOException ex) {
             errorBox(ex.getMessage());
         }
+        StyleConstants.setBold(recipient, true);
+        StyleConstants.setBold(date, true);
+        StyleConstants.setFontSize(date, 11);
+        StyleConstants.setFontSize(recipient, 13);
+        Color color = new Color(150, 150, 150);
+        StyleConstants.setForeground(date, color);
+
     }
 
     /**
@@ -68,11 +86,13 @@ public class Inbox extends JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         usersList = new javax.swing.JList();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        messageTxt = new javax.swing.JTextArea();
         privateTxt = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        messageTxt = new javax.swing.JTextPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        allUsersList = new javax.swing.JList();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -93,12 +113,16 @@ public class Inbox extends JFrame {
 
         jPanel1.setBackground(new java.awt.Color(0, 204, 153));
 
+        usersList.setBackground(new java.awt.Color(0, 0, 0));
+        usersList.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        usersList.setForeground(new java.awt.Color(255, 255, 255));
+        usersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        usersList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                usersListValueChanged(evt);
+            }
+        });
         jScrollPane1.setViewportView(usersList);
-
-        messageTxt.setEditable(false);
-        messageTxt.setColumns(20);
-        messageTxt.setRows(5);
-        jScrollPane2.setViewportView(messageTxt);
 
         privateTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,28 +138,38 @@ public class Inbox extends JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Conversation");
 
+        jScrollPane3.setViewportView(messageTxt);
+
+        allUsersList.setBackground(new java.awt.Color(0, 0, 0));
+        allUsersList.setForeground(new java.awt.Color(255, 255, 255));
+        allUsersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        allUsersList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                allUsersListMouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(allUsersList);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel1)))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(23, 23, 23)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 559, Short.MAX_VALUE)
-                            .addComponent(privateTxt)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(236, 236, 236)
-                        .addComponent(jLabel2)))
-                .addGap(0, 18, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(privateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 546, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(0, 22, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -145,13 +179,16 @@ public class Inbox extends JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(privateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(privateTxt))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(22, 22, 22))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -162,26 +199,36 @@ public class Inbox extends JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 142, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-   private void privateTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privateTxtActionPerformed
-       try {
-           String message = privateTxt.getText();
-           if (!"".equals(selectedUser) && !"".equals(message)) {
-               say(new StringBuilder(":private ").append(selectedUser).append(" ").append(message).append("\n").toString());
-               privateTxt.setText("");
-               say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
-               // do this more efficiently
-           }
-       } catch (IOException ex) {
-           errorBox(ex.getMessage());
-       }
-   }//GEN-LAST:event_privateTxtActionPerformed
+    private void privateTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privateTxtActionPerformed
+        try {
+            String message = privateTxt.getText();
+            if (!"".equals(selectedUser) && !"".equals(message)) {
+                say(new StringBuilder(":private ").append(selectedUser).append(" ").append(message).append("\n").toString());
+                privateTxt.setText("");
+                say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
+                // do this more efficiently
+            }
+        } catch (IOException ex) {
+            errorBox(ex.getMessage());
+        }
+    }//GEN-LAST:event_privateTxtActionPerformed
+
+    private void usersListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_usersListValueChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_usersListValueChanged
+
+    private void allUsersListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_allUsersListMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_allUsersListMouseClicked
 
     protected void updateUsers(String users) {
         UsersRepresentation rr = new Gson().fromJson(users, UsersRepresentation.class);
@@ -189,26 +236,46 @@ public class Inbox extends JFrame {
         for (String user : rr.getUsers()) {
             dlm.addElement(user);
         }
-        clearList();
+        allUsersList.setModel(dlm);
+
+        addAllUsersOneClickAction();
+    }
+
+    protected void updateInboxUsers(String users) {
+        UsersRepresentation rr = new Gson().fromJson(users, UsersRepresentation.class);
+        DefaultListModel dlm = new DefaultListModel();
+        for (String user : rr.getUsers()) {
+            dlm.addElement(user);
+        }
+        //usersList=new javax.swing.JList();
         usersList.setModel(dlm);
 
         addUsersOneClickAction();
     }
 
     protected void updateTalk(String talk) {
+        StyledDocument doc = messageTxt.getStyledDocument();
         TalkRepresentation tr = new Gson().fromJson(talk, TalkRepresentation.class);
         messageTxt.setText("");
-        for (MessageRepresentation m : tr.getMessages()) {
-            messageTxt.append(m.toString());
-        }
+        tr.getMessages().stream().forEach((m) -> {
+            try {
+                doc.insertString(doc.getLength(), m.getFrom() + "\n", recipient);
+                doc.insertString(doc.getLength(), m.getDate().toString() + "\n", date);
+                doc.insertString(doc.getLength(), m.getText() + "\n\n", null);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        });
     }
 
     private void addUsersOneClickAction() {
+      
         usersList.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
-                if (evt.getClickCount() == 2) {
+                if (evt.getClickCount() == 1) {
                     try {
+                        allUsersList.clearSelection();
                         selectedUser = (String) usersList.getSelectedValue();
                         say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
                     } catch (IOException ex) {
@@ -219,11 +286,18 @@ public class Inbox extends JFrame {
         });
     }
 
-    private void clearList() {
-        usersList = new javax.swing.JList();
-        jScrollPane1.setViewportView(usersList);
+    private void addAllUsersOneClickAction() {
+        
+        allUsersList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if (evt.getClickCount() == 1) {
+                    usersList.clearSelection();
+                    selectedUser = (String) allUsersList.getSelectedValue();
+                  }
+            }
+        });
     }
-
     private void alwaysScrollDown() {
         DefaultCaret caret = (DefaultCaret) messageTxt.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
@@ -242,6 +316,7 @@ public class Inbox extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JList allUsersList;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -249,7 +324,8 @@ public class Inbox extends JFrame {
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea messageTxt;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextPane messageTxt;
     private javax.swing.JTextField privateTxt;
     private javax.swing.JList usersList;
     // End of variables declaration//GEN-END:variables

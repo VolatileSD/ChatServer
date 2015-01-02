@@ -8,6 +8,7 @@ package chatclient;
 import common.representation.RoomRepresentation;
 import common.representation.RoomsRepresentation;
 import com.google.gson.Gson;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -20,6 +21,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.text.DefaultCaret;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -37,7 +41,7 @@ public class RunChat extends JFrame {
     private final int MAXLEN = 2048; // problem when receiving json with more than 2048 char
     private SocketChannel socket;
     private Inbox inbox;
-    private Map<String, Color> usernames;
+    private Map<String, SimpleAttributeSet> usernames;
     private Random random;
 
     /**
@@ -72,9 +76,9 @@ public class RunChat extends JFrame {
         inboxBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        chatTxt = new javax.swing.JTextArea();
         sendTxt = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        chatTxt = new javax.swing.JTextPane();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -92,7 +96,6 @@ public class RunChat extends JFrame {
         setBackground(new java.awt.Color(0, 153, 204));
         setFocusable(false);
         setMinimumSize(new java.awt.Dimension(600, 410));
-        setPreferredSize(new java.awt.Dimension(900, 450));
 
         jPanel1.setBackground(new java.awt.Color(153, 204, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
@@ -176,26 +179,24 @@ public class RunChat extends JFrame {
 
         jPanel2.setBackground(new java.awt.Color(0, 153, 153));
 
-        chatTxt.setEditable(false);
-        chatTxt.setColumns(20);
-        chatTxt.setRows(5);
-        jScrollPane1.setViewportView(chatTxt);
-
         sendTxt.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 sendTxtActionPerformed(evt);
             }
         });
 
+        jScrollPane1.setViewportView(chatTxt);
+        chatTxt.setEditable(false);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE)
-                    .addComponent(sendTxt))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(sendTxt, javax.swing.GroupLayout.DEFAULT_SIZE, 492, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -203,7 +204,7 @@ public class RunChat extends JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1)
-                .addGap(27, 27, 27)
+                .addGap(18, 18, 18)
                 .addComponent(sendTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27))
         );
@@ -367,9 +368,13 @@ public class RunChat extends JFrame {
                             out.clear();
                             String text = new String(ba);
                             if (text.startsWith(":iu:") && inbox != null) {
+                                inbox.updateInboxUsers(text.substring(4));
                                 inbox.updateUsers(text.substring(4));
+                                
                             } else if (text.startsWith(":tk:") && inbox != null) {
                                 inbox.updateTalk(text.substring(4));
+                            } else if (text.startsWith(":allu:") && inbox != null) {
+                                inbox.updateUsers(text.substring(4));
                             } else {
                                 parseMessage(new String(ba));
                             }
@@ -390,37 +395,54 @@ public class RunChat extends JFrame {
     public void parseMessage(String message) {
         // for this to be valid usernames can only contain :  [a-zA-Z_0-9]
         // or we change the regex
+        StyledDocument doc = chatTxt.getStyledDocument();
         if (message.matches("^@\\w+:.*\n")) {
             int index = message.indexOf(":");
             String username = message.substring(1, index);
             String text = message.substring(index + 2);
             if (!usernames.containsKey(username)) {
-                usernames.put(username, new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256)));
+                SimpleAttributeSet keyWord = new SimpleAttributeSet();
+                random= new Random();
+                Color color=new Color(random.nextInt(200), random.nextInt(200), random.nextInt(200));
+                StyleConstants.setForeground(keyWord, color);
+                StyleConstants.setBold(keyWord, true);
+                usernames.put(username, keyWord);
+            }            
+            try{          
+            doc.insertString(doc.getLength(),"@" + username + ": ",usernames.get(username));
+            doc.insertString(doc.getLength(),text, null);    
             }
-            chatTxt.append("username:" + usernames.get(username).toString() + " -> " + username + "\n");
-            chatTxt.append("message  -> " + text);
-
-        } else {
-            chatTxt.append(message);
+            
+            catch(Exception e) { System.out.println(e); }
+        } 
+        else if(message.startsWith("#User")) {
+            SimpleAttributeSet att = new SimpleAttributeSet();
+            StyleConstants.setBold(att, true);
+            try{
+            doc.insertString(doc.getLength(),message.substring(6,message.length()),att);}
+            catch(Exception e) { System.out.println(e); }
+            
+        }
+        else if(message.startsWith("----")) {
+            SimpleAttributeSet att = new SimpleAttributeSet();
+            StyleConstants.setBold(att, true);
+            StyleConstants.setFontSize(att, 14);
+            try{
+            doc.insertString(doc.getLength(),"\t"+message.substring(7,message.length()-7)+"\n",att);}
+            catch(Exception e) { System.out.println(e); }
+            
+        }
+        
+        else {
+            try{
+            doc.insertString(doc.getLength(),message,null);}
+            catch(Exception e) { System.out.println(e); }
+            
         }
 
     }
 
-    private class Color {
-
-        private int r, g, b;
-
-        public Color(int r, int g, int b) {
-            this.r = r;
-            this.g = g;
-            this.b = b;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("{%s,%s,%s}", r, g, b);
-        }
-    }
+    
     
     private void alwaysScrollDown() {
         DefaultCaret caret = (DefaultCaret) chatTxt.getCaret();
@@ -444,7 +466,7 @@ public class RunChat extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextArea chatTxt;
+    private javax.swing.JTextPane chatTxt;
     private javax.swing.JButton inboxBtn;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JPanel jPanel1;
