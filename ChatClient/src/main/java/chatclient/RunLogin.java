@@ -360,7 +360,7 @@ public class RunLogin extends javax.swing.JFrame {
       //</editor-fold>
       try {
          socket = SocketChannel.open();
-         socket.connect(new InetSocketAddress("localhost", 1111));
+         socket.connect(new InetSocketAddress("localhost", 1112));
       } catch (IOException e) {
          errorBox(e.getMessage());
          return;

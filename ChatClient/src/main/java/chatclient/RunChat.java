@@ -38,7 +38,7 @@ import org.apache.http.client.ResponseHandler;
  */
 public class RunChat extends JFrame {
 
-    private final int MAXLEN = 2048; // problem when receiving json with more than 2048 char
+    private final int MAXLEN = 20048; // problem when receiving json with more than 2048 char
     private SocketChannel socket;
     private Inbox inbox;
     private Map<String, SimpleAttributeSet> usernames;
@@ -98,7 +98,7 @@ public class RunChat extends JFrame {
         setMinimumSize(new java.awt.Dimension(600, 410));
 
         jPanel1.setBackground(new java.awt.Color(153, 204, 255));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Settings"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Settings", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 12))); // NOI18N
 
         list.setEnabled(false);
         jScrollPane3.setViewportView(list);
@@ -174,7 +174,7 @@ public class RunChat extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(113, Short.MAX_VALUE))
+                .addContainerGap(112, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(0, 153, 153));
@@ -185,6 +185,7 @@ public class RunChat extends JFrame {
             }
         });
 
+        chatTxt.setEditable(false);
         jScrollPane1.setViewportView(chatTxt);
         chatTxt.setEditable(false);
 
@@ -281,7 +282,7 @@ public class RunChat extends JFrame {
    }//GEN-LAST:event_listUsersBtnActionPerformed
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
@@ -367,14 +368,13 @@ public class RunChat extends JFrame {
                             out.get(ba);
                             out.clear();
                             String text = new String(ba);
+                            System.out.print(text);
                             if (text.startsWith(":iu:") && inbox != null) {
                                 inbox.updateInboxUsers(text.substring(4));
-                                inbox.updateUsers(text.substring(4));
-                                
                             } else if (text.startsWith(":tk:") && inbox != null) {
                                 inbox.updateTalk(text.substring(4));
                             } else if (text.startsWith(":allu:") && inbox != null) {
-                                inbox.updateUsers(text.substring(4));
+                                inbox.updateAllUsers(text.substring(6));
                             } else {
                                 parseMessage(new String(ba));
                             }
@@ -402,48 +402,48 @@ public class RunChat extends JFrame {
             String text = message.substring(index + 2);
             if (!usernames.containsKey(username)) {
                 SimpleAttributeSet keyWord = new SimpleAttributeSet();
-                random= new Random();
-                Color color=new Color(random.nextInt(200), random.nextInt(200), random.nextInt(200));
+                random = new Random();
+                Color color = new Color(random.nextInt(200), random.nextInt(200), random.nextInt(200));
                 StyleConstants.setForeground(keyWord, color);
                 StyleConstants.setBold(keyWord, true);
                 usernames.put(username, keyWord);
-            }            
-            try{          
-            doc.insertString(doc.getLength(),"@" + username + ": ",usernames.get(username));
-            doc.insertString(doc.getLength(),text, null);    
             }
-            
-            catch(Exception e) { System.out.println(e); }
-        } 
-        else if(message.startsWith("#User")) {
+            try {
+                doc.insertString(doc.getLength(), "@" + username + ": ", usernames.get(username));
+                doc.insertString(doc.getLength(), text, null);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        } else if (message.startsWith("#User")) {
             SimpleAttributeSet att = new SimpleAttributeSet();
             StyleConstants.setBold(att, true);
-            try{
-            doc.insertString(doc.getLength(),message.substring(6,message.length()),att);}
-            catch(Exception e) { System.out.println(e); }
-            
-        }
-        else if(message.startsWith("----")) {
+            try {
+                doc.insertString(doc.getLength(), message.substring(6, message.length()), att);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+        } else if (message.startsWith("----")) {
             SimpleAttributeSet att = new SimpleAttributeSet();
             StyleConstants.setBold(att, true);
             StyleConstants.setFontSize(att, 14);
-            try{
-            doc.insertString(doc.getLength(),"\t"+message.substring(7,message.length()-7)+"\n",att);}
-            catch(Exception e) { System.out.println(e); }
-            
-        }
-        
-        else {
-            try{
-            doc.insertString(doc.getLength(),message,null);}
-            catch(Exception e) { System.out.println(e); }
-            
+            try {
+                doc.insertString(doc.getLength(), "\t" + message.substring(7, message.length() - 7) + "\n", att);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
+        } else {
+            try {
+                doc.insertString(doc.getLength(), message, null);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+
         }
 
     }
 
-    
-    
     private void alwaysScrollDown() {
         DefaultCaret caret = (DefaultCaret) chatTxt.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);

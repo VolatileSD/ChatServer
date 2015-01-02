@@ -373,7 +373,7 @@ public class Admin extends JFrame {
                             out.clear();
                             String text = new String(ba);
                             if (text.startsWith(":iu:")) {
-                                inbox.updateUsers(text.substring(4));
+                                //inbox.updateUsers(text.substring(4));
                             } else if (text.startsWith(":tk:")) {
                                 inbox.updateTalk(text.substring(4));
                             } else {
