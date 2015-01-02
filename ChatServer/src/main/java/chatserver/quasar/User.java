@@ -144,7 +144,7 @@ public class User extends BasicActor<Msg, Void> {
                            //Help command: returns a list of all available commands
                            break;
                         case UNKNOWN:
-                           say("Unknown Command.\n");
+                           say(Saying.getUnknownCommand());
                            break;
                      }
                   } else {
@@ -177,7 +177,7 @@ public class User extends BasicActor<Msg, Void> {
 
    private void create(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
-         say("Unknown Command.\n");
+         say(Saying.getUnknownCommand());
       } else {
          Msg reply = new Pigeon(manager).carry(MsgType.CREATE, null, parts);
          switch (reply.getType()) {
@@ -193,7 +193,7 @@ public class User extends BasicActor<Msg, Void> {
 
    private void remove(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
-         say("Unknown Command.\n");
+         say(Saying.getUnknownCommand());
       } else {
          Msg reply = new Pigeon(manager).carry(MsgType.REMOVE, null, parts);
          switch (reply.getType()) {
@@ -214,7 +214,7 @@ public class User extends BasicActor<Msg, Void> {
 
    private void login(String[] parts) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (parts.length != 3) {
-         say("Unknown Command.\n");
+         say(Saying.getUnknownCommand());
       } else {
          Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, null, parts);
          switch (reply.getType()) {
