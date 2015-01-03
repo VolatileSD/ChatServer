@@ -23,7 +23,6 @@ import javax.swing.text.StyledDocument;
 
 public class Inbox extends JFrame {
 
-   private final int MAXLEN = 1024;
    private SocketChannel socket;
    private String selectedUser;
 
@@ -91,6 +90,7 @@ public class Inbox extends JFrame {
       inboxUsersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
       jScrollPane2.setViewportView(inboxUsersList);
 
+      messageTxt.setEditable(false);
       jScrollPane1.setViewportView(messageTxt);
 
       javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -178,16 +178,6 @@ public class Inbox extends JFrame {
       } catch (Exception e) {
          errorBox(e.getMessage());
       }
-
-      /*
-       tryTxt.setText("");
-       TalkRepresentation tr = new Gson().fromJson(talk, TalkRepresentation.class);
-       for (MessageRepresentation m : tr.getMessages()) {
-       tryTxt.append(m.getFrom() + "\n");
-       tryTxt.append(m.getDate().toString() + "\n");
-       tryTxt.append(m.getText() + "\n\n");
-       }
-       */
    }
 
    private void addInboxUsersOneClickAction() {
@@ -209,6 +199,7 @@ public class Inbox extends JFrame {
 
    private void clearMessageTxt() {
       messageTxt = new JTextPane();
+      messageTxt.setEditable(false);
       jScrollPane1.setViewportView(messageTxt);
    }
 

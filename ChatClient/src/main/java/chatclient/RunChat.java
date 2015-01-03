@@ -350,7 +350,7 @@ public class RunChat extends JFrame {
                      break;
                   }
                }
-               if (eof || b == '\n') { // send line
+               if (eof || b == '\n') {
                   out.flip();
                   if (out.remaining() > 0) {
                      byte[] ba = new byte[out.remaining()];
