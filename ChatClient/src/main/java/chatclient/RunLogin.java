@@ -8,9 +8,7 @@ import java.nio.channels.SocketChannel;
 import javax.swing.JOptionPane;
 
 public class RunLogin extends javax.swing.JFrame {
-   // BUGS TO BE SOLVED:
-    // logout and login writing directly in the socket connects the user to the room he was connected before logout
-    // if the user writes directly in the socket :private a ola nullpointerexception
+
    private static SocketChannel socket;
    private final ByteBuffer buf = ByteBuffer.allocate(2048);
 
@@ -19,6 +17,7 @@ public class RunLogin extends javax.swing.JFrame {
     */
    public RunLogin() {
       initComponents();
+      replyTxt.setText("");
    }
 
    /**
@@ -266,9 +265,9 @@ public class RunLogin extends javax.swing.JFrame {
          sb.append(username).append(" ").append(password).append("\n");
          try {
             say(sb.toString());
-           String reply = getReply();
+            String reply = getReply();
             if (reply.equals(Saying.getLoginOk(username))) {
-              setVisible(false);
+               setVisible(false);
                usernameTxt.setText("");
                passwordTxt.setText("");
                RunChat runChat = new RunChat(socket);
@@ -294,7 +293,7 @@ public class RunLogin extends javax.swing.JFrame {
             say(sb.toString());
             String reply = getReply();
             if (reply.equals(Saying.getCreateOk(username))) {
-              replyTxt.setText("Create ok! Now log in to chat");
+               replyTxt.setText("Create ok! Now log in to chat");
             } else if (reply.equals(Saying.getCreateInvalid())) {
                replyTxt.setText("Create invalid!");
             } else {
@@ -316,7 +315,7 @@ public class RunLogin extends javax.swing.JFrame {
             say(sb.toString());
             String reply = getReply();
             if (reply.equals(Saying.getRemoveOk())) {
-              replyTxt.setText("Remove ok!");
+               replyTxt.setText("Remove ok!");
             } else if (reply.equals(Saying.getRemoveInvalid())) {
                replyTxt.setText("Remove invalid!");
             } else {
@@ -329,7 +328,7 @@ public class RunLogin extends javax.swing.JFrame {
    }//GEN-LAST:event_removeBtnActionPerformed
 
     private void usernameTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameTxtActionPerformed
-        // TODO add your handling code here:
+       // TODO add your handling code here:
     }//GEN-LAST:event_usernameTxtActionPerformed
 
    /**
@@ -374,11 +373,15 @@ public class RunLogin extends javax.swing.JFrame {
       });
    }
 
-   private void say(byte[] whatToSay) throws IOException {
-      socket.write(ByteBuffer.wrap(whatToSay));
+   private void say(byte[] whatToSay) {
+      try {
+         socket.write(ByteBuffer.wrap(whatToSay));
+      } catch (IOException ex) {
+         errorBox(ex.getMessage());
+      }
    }
 
-   private void say(String whatToSay) throws IOException {
+   private void say(String whatToSay) {
       say(whatToSay.getBytes());
    }
 
