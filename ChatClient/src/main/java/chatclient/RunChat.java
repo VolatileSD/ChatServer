@@ -395,7 +395,7 @@ public class RunChat extends JFrame {
       } else if (message.startsWith("#User")) {
          doc.insertString(doc.getLength(), message.substring(6, message.length()), this.bold);
       } else if (message.startsWith("----")) {
-         doc.insertString(doc.getLength(), new StringBuilder("\n\t").append(message.substring(7, message.length() - 7)).append("\n\n").toString(), this.biggerBold);
+         doc.insertString(doc.getLength(), new StringBuilder("\t").append(message.substring(7, message.length() - 7)).append("\n\n").toString(), this.biggerBold);
       } else {
          doc.insertString(doc.getLength(), message, null);
       }
