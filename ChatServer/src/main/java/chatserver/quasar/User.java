@@ -73,7 +73,7 @@ public class User extends BasicActor<Msg, Void> {
                            login(parts);
                            return true;
                         case HELP:
-                           say("Available commands\n:create user pass\n:login user pass - if you already registered\n:remove user pass\n");
+                           say(Saying.getAllCommands());
                            return true;
                         default:
                            say("Login before anything else.\n");
@@ -140,7 +140,7 @@ public class User extends BasicActor<Msg, Void> {
                            talk(parts[1]); // this is supposed to be used only by ChatClient
                            break;
                         case HELP:
-                           say("Available commands.\n");
+                           say(Saying.getAllCommands());
                            //Help command: returns a list of all available commands
                            break;
                         case UNKNOWN:
@@ -285,10 +285,10 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString(), rid});
          switch (reply.getType()) {
             case OK:
-               say(new StringBuilder("Message successfully sent to @").append(parts[1]).append(".\n").toString());
+               say(Saying.getPrivateOk(parts[1]));
                break;
             case INVALID:
-               say(new StringBuilder("Unknown user @").append(parts[1]).append(".\n").toString());
+               say(Saying.getPrivateInvalid(parts[1]));
                break;
          }
       }
