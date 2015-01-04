@@ -37,10 +37,14 @@ public class Inbox extends JFrame {
       initStyle();
       alwaysScrollDown();
       onClose();
+
+      clearMessageTxt();
+      
       this.selectedUser = "";
       privateTxt.setText("");
       this.socket = socket;
       say(":iu\n");
+      
    }
 
    /**
@@ -180,7 +184,6 @@ public class Inbox extends JFrame {
 
     private void sendToTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendToTxtActionPerformed
         // TODO add your handling code here:
-        
     }//GEN-LAST:event_sendToTxtActionPerformed
 
     private void sendToTxtFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sendToTxtFocusGained
@@ -203,11 +206,13 @@ public class Inbox extends JFrame {
    }
 
    protected void updateTalk(String talk) {
-      clearMessageTxt();
+      //clearMessageTxt();
       StyledDocument doc = messageTxt.getStyledDocument();
 
       TalkRepresentation tr = new Gson().fromJson(talk, TalkRepresentation.class);
       try {
+         doc.remove(0, doc.getLength());
+         
          for (MessageRepresentation m : tr.getMessages()) {
             doc.insertString(doc.getLength(), m.getFrom() + "\n", recipient);
             doc.insertString(doc.getLength(), m.getDate().toString() + "\n", date);
