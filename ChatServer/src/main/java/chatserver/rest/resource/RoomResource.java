@@ -50,7 +50,7 @@ public class RoomResource {
                break;
          }
       } else {
-         response = Response.status(Status.CONFLICT);
+         response = Response.status(Status.NOT_FOUND);
       }
 
       return response.build();
