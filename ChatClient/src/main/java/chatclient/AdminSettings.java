@@ -17,8 +17,10 @@ import org.apache.http.util.EntityUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+import java.net.URI;
+import org.apache.http.annotation.NotThreadSafe;
 
 public class AdminSettings extends javax.swing.JFrame {
 
@@ -80,12 +82,29 @@ public class AdminSettings extends javax.swing.JFrame {
       }
 
    }
+   
+   @NotThreadSafe
+class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
+    public static final String METHOD_NAME = "DELETE";
+    public String getMethod() { return METHOD_NAME; }
+
+    public HttpDeleteWithBody(final String uri) {
+        super();
+        setURI(URI.create(uri));
+    }
+    public HttpDeleteWithBody(final URI uri) {
+        super();
+        setURI(uri);
+    }
+    public HttpDeleteWithBody() { super(); }
+}
 
    public void deleteRoomRequest(String roomname) throws Exception {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
-         HttpDelete httpput = new HttpDelete("http://localhost:8080/room/" + roomname);
-
+         HttpDeleteWithBody httpput = new HttpDeleteWithBody("http://localhost:8080/room/" + roomname);
+         httpput.setEntity(entity);
+         httpput.setHeader("Content-type", "application/json");
          System.out.println("Executing request " + httpput.getRequestLine());
 
          // Create a custom response handler
