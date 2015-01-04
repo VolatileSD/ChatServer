@@ -272,9 +272,18 @@ public class RunLogin extends javax.swing.JFrame {
                passwordTxt.setText("");
                RunChat runChat = new RunChat(socket);
                runChat.setVisible(true);
+               runChat.adminBtn.setVisible(false);
             } else if (reply.equals(Saying.getLoginInvalid())) {
                replyTxt.setText("Login invalid!");
-            } else {
+            } else if (reply.equals(Saying.getLoginAdminOk(username))) {
+               setVisible(false);
+               usernameTxt.setText("");
+               passwordTxt.setText("");
+               RunChat runChat = new RunChat(socket);
+               runChat.setVisible(true);
+               runChat.adminBtn.setVisible(true);
+            }
+            else {
                errorBox("Internal Error. Please try again.");
             }
          } catch (IOException e) {

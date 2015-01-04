@@ -70,6 +70,7 @@ public class RunChat extends JFrame {
         listUsersBtn = new javax.swing.JButton();
         inboxBtn = new javax.swing.JButton();
         logoutBtn = new javax.swing.JButton();
+        adminBtn = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         sendTxt = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -136,6 +137,16 @@ public class RunChat extends JFrame {
             }
         });
 
+        adminBtn.setBackground(new java.awt.Color(0, 0, 0));
+        adminBtn.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        adminBtn.setForeground(new java.awt.Color(255, 255, 255));
+        adminBtn.setText("Admin Settings");
+        adminBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                adminBtnActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -155,6 +166,10 @@ public class RunChat extends JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
                                 .addComponent(listUsersBtn)))))
                 .addGap(10, 10, 10))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(adminBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(84, 84, 84))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,7 +184,9 @@ public class RunChat extends JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(inboxBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(logoutBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(adminBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(0, 153, 153));
@@ -277,6 +294,11 @@ public class RunChat extends JFrame {
        this.dispose();
        new RunLogin().setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
+
+    private void adminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminBtnActionPerformed
+        AdminSettings ad = new AdminSettings();
+        ad.setVisible(true);
+    }//GEN-LAST:event_adminBtnActionPerformed
 
    private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
       this.inbox = new Inbox(socket);
@@ -452,6 +474,7 @@ public class RunChat extends JFrame {
    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton adminBtn;
     private javax.swing.JTextPane chatTxt;
     private javax.swing.JButton inboxBtn;
     private javax.swing.JDialog jDialog1;
