@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -22,6 +23,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpDelete;
+
 
 /**
  *
@@ -55,11 +57,25 @@ public class AdminSettings extends javax.swing.JFrame {
             public String handleResponse(
                     final HttpResponse response) throws ClientProtocolException, IOException {
                int status = response.getStatusLine().getStatusCode();
-               if (status >= 200 && status < 300) {
+               if (status == 201) {
                   HttpEntity entity = response.getEntity();
+                  infoBox("Room successfully created.");
                   return entity != null ? EntityUtils.toString(entity) : null;
-               } else {
+               } 
+               else if (status == 409) {
+                  HttpEntity entity = response.getEntity();
+                  infoBox("Room name is already in use.");
+                  return entity != null ? EntityUtils.toString(entity) : null;
+               }
+               else if (status == 401) {
+                  HttpEntity entity = response.getEntity();
+                  infoBox("Wrong password.");
+                  return entity != null ? EntityUtils.toString(entity) : null;
+               }
+               else {
+                  errorBox("Unexpected response status: " + status);
                   throw new ClientProtocolException("Unexpected response status: " + status);
+                  
                }
             }
          };
@@ -85,8 +101,10 @@ public class AdminSettings extends javax.swing.JFrame {
                int status = response.getStatusLine().getStatusCode();
                if (status >= 200 && status < 300) {
                   HttpEntity entity = response.getEntity();
+                  infoBox("Room successfully deleted.");
                   return entity != null ? EntityUtils.toString(entity) : null;
                } else {
+                   errorBox("Unexpected response status: " + status);
                   throw new ClientProtocolException("Unexpected response status: " + status);
                }
             }
@@ -224,18 +242,27 @@ public class AdminSettings extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addRoomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRoomBtnActionPerformed
+        if(addRoomName.getText().matches("^[^\\d\\s]+$")){
         try {
             addRoomRequest(addRoomName.getText());
         } catch (Exception ex) {
             Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
+        }}
+        else{
+            errorBox("No spaces or numbers allowed");
         }
     }//GEN-LAST:event_addRoomBtnActionPerformed
 
     private void deleteRoomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRoomBtnActionPerformed
+        if(deleteRoomName.getText().matches("^[^\\d\\s]+$")){
         try {
             deleteRoomRequest(deleteRoomName.getText());
         } catch (Exception ex) {
             Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+        else{
+            errorBox("No spaces or numbers allowed");
         }
     }//GEN-LAST:event_deleteRoomBtnActionPerformed
 
@@ -274,6 +301,12 @@ public class AdminSettings extends javax.swing.JFrame {
             }
         });
     }
+    private static void errorBox(String errorMessage) {
+      JOptionPane.showMessageDialog(null, errorMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
+   }
+    private static void infoBox(String infoMessage) {
+      JOptionPane.showMessageDialog(null, infoMessage, "Some info for you", JOptionPane.INFORMATION_MESSAGE);
+   }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addRoomBtn;
