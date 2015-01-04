@@ -16,10 +16,8 @@ import chatserver.util.MsgType;
 import chatserver.util.Pigeon;
 import common.representation.RoomRepresentation;
 import chatserver.rest.entity.Rooms;
-import co.paralleluniverse.fibers.SuspendExecution;
 import com.google.gson.Gson;
 import common.representation.UserRepresentation;
-import java.util.concurrent.ExecutionException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -29,18 +27,16 @@ import javax.ws.rs.core.Response.Status;
 @Produces(MediaType.APPLICATION_JSON)
 public class RoomResource {
 
-   private final ActorRef manager;
    private final ActorRef roomManager;
    private final Rooms rooms;
 
-   public RoomResource(ActorRef manager, ActorRef roomManager, Rooms rooms) {
-      this.manager = manager;
+   public RoomResource(ActorRef roomManager, Rooms rooms) {
       this.rooms = rooms;
       this.roomManager = roomManager;
    }
 
    @GET
-   public Response getRoomInfo(@PathParam("name") String roomName) throws Exception{
+   public Response getRoomInfo(@PathParam("name") String roomName) throws Exception {
       ResponseBuilder response;
       if (rooms.has(roomName)) {
          Msg msg = new Pigeon(roomManager).carry(MsgType.ROOM_INFO, null, roomName);

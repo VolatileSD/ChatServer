@@ -219,8 +219,13 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.LOGIN, null, parts);
          switch (reply.getType()) {
             case OK:
+            case ADMIN_OK:
                setUsername(parts[1]);
-               say(Saying.getLoginOk(username));
+               if (reply.getType() == MsgType.OK) {
+                  say(Saying.getLoginOk(parts[1]));
+               } else {
+                  say(Saying.getLoginAdminOk(parts[1]));
+               }
                setRid((String) reply.getContent());
                room = mainRoom;
                room.send(new Msg(MsgType.ENTER, self(), username, null));

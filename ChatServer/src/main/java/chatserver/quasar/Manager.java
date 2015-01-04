@@ -63,7 +63,8 @@ public class Manager extends BasicActor<Msg, Void> {
             case LOGIN:
                user = userODB.login(parts[1], parts[2]);
                if (user != null) { // if username and password are correct and the user is not logged in
-                  msg.getFrom().send(new Msg(MsgType.OK, null, null, user.getRid()));
+                  MsgType isAdmin = user.isAdmin() ? MsgType.ADMIN_OK : MsgType.OK;
+                  msg.getFrom().send(new Msg(isAdmin, null, null, user.getRid()));
                   // send the rid to the user to speed future queries
                } else {
                   msg.getFrom().send(new Msg(MsgType.INVALID));

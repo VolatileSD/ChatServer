@@ -19,7 +19,11 @@ public class Saying {
    }
 
    public static String getLoginOk(String username) {
-      return username + ", you are logged in.\n";
+      return new StringBuilder("User ").append(username).append(", you are logged in.\n").toString();
+   }
+
+   public static String getLoginAdminOk(String username) {
+      return new StringBuilder("Admin ").append(username).append(", you are logged in.\n").toString();
    }
 
    public static String getLoginInvalid() {

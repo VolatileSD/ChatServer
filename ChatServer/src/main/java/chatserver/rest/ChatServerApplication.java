@@ -13,12 +13,10 @@ import java.util.Collection;
 
 public class ChatServerApplication extends Application<ChatServerConfiguration> {
 
-   private final ActorRef manager;
    private final ActorRef roomManager;
    private final Collection<String> roomsRestored;
 
-   public ChatServerApplication(ActorRef manager, ActorRef roomManager, Collection<String> roomsRestored) {
-      this.manager = manager;
+   public ChatServerApplication(ActorRef roomManager, Collection<String> roomsRestored) {
       this.roomManager = roomManager;
       this.roomsRestored = roomsRestored;
    }
@@ -37,7 +35,7 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
 
       Rooms rooms = new Rooms(roomsRestored);
       environment.jersey().register(new RoomsResource(rooms));
-      environment.jersey().register(new RoomResource(manager, roomManager, rooms));
+      environment.jersey().register(new RoomResource(roomManager, rooms));
       environment.healthChecks().register("ChatServer", new ChatServerHealthCheck());
    }
 }

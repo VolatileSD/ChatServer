@@ -2,6 +2,8 @@ package chatserver.quasar.impl;
 
 import chatserver.quasar.Acceptor;
 import chatserver.quasar.User;
+import chatserver.util.Msg;
+import chatserver.util.MsgType;
 import co.paralleluniverse.actors.ActorRef;
 import co.paralleluniverse.fibers.SuspendExecution;
 import co.paralleluniverse.fibers.io.FiberServerSocketChannel;
@@ -18,14 +20,14 @@ public class AcceptorNonGUI extends Acceptor {
    @Override
    protected Void doRun() throws InterruptedException, SuspendExecution {
 
-      //byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
+      byte[] welcomeMessage = "------ Welcome to an awesome chat service! ------\n #Please login to chat. Type :h for help.\n".getBytes();
       try {
          FiberServerSocketChannel ss = FiberServerSocketChannel.open();
          ss.bind(new InetSocketAddress(port));
          while (true) {
             FiberSocketChannel socket = ss.accept();
             ActorRef user = new User(mainRoom, roomManager, manager, socket, false).spawn();
-            //user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
+            user.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
          }
       } catch (IOException e) {
          logger.severe(e.getMessage());

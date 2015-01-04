@@ -42,7 +42,7 @@ public class ChatServer {
 
       Map<String, ActorRef> roomsRestored = (Map) msg.getContent();
       Collection<String> roomsNames = roomsRestored.keySet();
-      new ChatServerApplication(manager, roomManager, roomsNames).run(args); // starts rest
+      new ChatServerApplication(roomManager, roomsNames).run(args); // starts rest
 
       ActorRef mainRoom = roomsRestored.get("Main");
 
