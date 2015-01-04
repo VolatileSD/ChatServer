@@ -198,7 +198,7 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.REMOVE, null, parts);
          switch (reply.getType()) {
             case OK:
-               say(Saying.getRemoveOk());
+               say(Saying.getRemoveOk(parts[1]));
                room.send(new Msg(MsgType.LEAVE, self(), username, null));
                runLogin();
                break;
@@ -285,10 +285,10 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString(), rid});
          switch (reply.getType()) {
             case OK:
-               say(Saying.getPrivateOk(parts[1]));
+               say(Saying.getPrivateOk());
                break;
             case INVALID:
-               say(Saying.getPrivateInvalid(parts[1]));
+               say(Saying.getPrivateInvalid());
                break;
          }
       }
