@@ -396,7 +396,14 @@ public class RunChat extends JFrame {
          doc.insertString(doc.getLength(), message.substring(6, message.length()), this.bold);
       } else if (message.startsWith("----")) {
          doc.insertString(doc.getLength(), new StringBuilder("\t").append(message.substring(7, message.length() - 7)).append("\n\n").toString(), this.biggerBold);
-      } else {
+      }
+      else if (message.startsWith("Message successfully sent to @")) {
+          inbox.privateMsgSuccess();
+      }
+      else if (message.startsWith("Unknown user")) {
+          inbox.privateMsgNotSuccess();
+      }
+      else {
          doc.insertString(doc.getLength(), message, null);
       }
    }

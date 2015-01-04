@@ -66,6 +66,8 @@ public class Inbox extends JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         messageTxt = new javax.swing.JTextPane();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         javax.swing.GroupLayout jDialog1Layout = new javax.swing.GroupLayout(jDialog1.getContentPane());
         jDialog1.getContentPane().setLayout(jDialog1Layout);
@@ -92,64 +94,79 @@ public class Inbox extends JFrame {
             }
         });
 
-        inboxUsersList.setBackground(new java.awt.Color(0, 0, 0));
-        inboxUsersList.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Private message", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 12), java.awt.Color.white)); // NOI18N
-        inboxUsersList.setForeground(new java.awt.Color(255, 255, 255));
         inboxUsersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(inboxUsersList);
 
-        sendToTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                sendToTxtActionPerformed(evt);
-            }
-        });
         sendToTxt.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                sendToTxtFocusGained(evt);
-            }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 sendToTxtFocusLost(evt);
             }
         });
 
         messageTxt.setEditable(false);
-        messageTxt.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Conversation", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 12))); // NOI18N
         jScrollPane1.setViewportView(messageTxt);
 
+        jLabel1.setBackground(new java.awt.Color(0, 0, 0));
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel1.setText("new user name");
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Private Messages");
+
+        jLabel2.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("new user name");
+
+        jLabel3.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Conversation");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(sendToTxt))
-                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
-                    .addComponent(privateTxt))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                            .addComponent(sendToTxt)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(jLabel1)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
+                            .addComponent(privateTxt))
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(214, 214, 214)
+                        .addComponent(jLabel3)
+                        .addContainerGap(275, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
-                .addGap(16, 16, 16)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(14, 14, 14)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(privateTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(sendToTxt, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
@@ -173,24 +190,28 @@ public class Inbox extends JFrame {
 
     private void privateTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privateTxtActionPerformed
        String message = privateTxt.getText();
-       
        if (!"".equals(selectedUser) && !"".equals(message)) {
           say(new StringBuilder(":private ").append(selectedUser).append(" ").append(message).append("\n").toString());
-          privateTxt.setText("");
-          say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
+          
           // do this more efficiently
+       }
+       else{
+           errorBox("User or message empty");
+       
        }
     }//GEN-LAST:event_privateTxtActionPerformed
 
-    private void sendToTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendToTxtActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_sendToTxtActionPerformed
-
-    private void sendToTxtFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sendToTxtFocusGained
-    }//GEN-LAST:event_sendToTxtFocusGained
-
+    public void privateMsgSuccess(){
+        privateTxt.setText("");
+        say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
+    }
+    
+    public void privateMsgNotSuccess(){
+        errorBox(new StringBuilder("Unknown user @").append(selectedUser).append("\n").toString() );
+    
+    }
     private void sendToTxtFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sendToTxtFocusLost
-        // TODO add your handling code here:
+        selectedUser=sendToTxt.getText();
     }//GEN-LAST:event_sendToTxtFocusLost
 
    protected void updateInboxUsers(String users) {
@@ -218,6 +239,7 @@ public class Inbox extends JFrame {
             doc.insertString(doc.getLength(), m.getDate().toString() + "\n", date);
             doc.insertString(doc.getLength(), m.getText() + "\n\n", null);
          }
+         messageTxt.setCaretPosition(doc.getLength());
       } catch (Exception e) {
          errorBox(e.getMessage());
       }
@@ -257,7 +279,8 @@ public class Inbox extends JFrame {
       StyleConstants.setForeground(date, new Color(150, 150, 150));
    }
 
-   private void alwaysScrollDown() {
+   private void alwaysScrollDown() {      
+      
       DefaultCaret caret = (DefaultCaret) messageTxt.getCaret();
       caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
    }
@@ -292,6 +315,8 @@ public class Inbox extends JFrame {
     private javax.swing.JList inboxUsersList;
     private javax.swing.JDialog jDialog1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
