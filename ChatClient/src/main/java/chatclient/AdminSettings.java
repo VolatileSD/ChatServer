@@ -1,21 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package chatclient;
 
-
+import com.google.gson.Gson;
+import common.representation.UserRepresentation;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.util.EntityUtils;
@@ -23,19 +18,21 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.entity.StringEntity;
 
-
-/**
- *
- * @author Joana
- */
 public class AdminSettings extends javax.swing.JFrame {
 
-    /**
-     * Creates new form AdminSettings
-     */
-    public AdminSettings() {
-        initComponents();
+   private StringEntity entity;
+   /**
+    * Creates new form AdminSettings
+    */
+   public AdminSettings(UserRepresentation userCredentials) {
+      initComponents();
+      try {
+         this.entity = new StringEntity(new Gson().toJson(userCredentials));
+      } catch (UnsupportedEncodingException ex) {
+         errorBox(ex.getMessage());
+      }
       this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       this.addWindowListener(new WindowAdapter() {
          @Override
@@ -43,40 +40,36 @@ public class AdminSettings extends javax.swing.JFrame {
             dispose();
          }
       });
-    }
-    
-    public void addRoomRequest(String roomname) throws Exception {
+   }
+
+   public void addRoomRequest(String roomname) throws Exception {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
          HttpPut httpput = new HttpPut("http://localhost:8080/room/" + roomname);
-
+         httpput.setEntity(entity);
+         httpput.setHeader("Content-type", "application/json");
+         
          System.out.println("Executing request " + httpput.getRequestLine());
 
          // Create a custom response handler
-         ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-            public String handleResponse(
-                    final HttpResponse response) throws ClientProtocolException, IOException {
-               int status = response.getStatusLine().getStatusCode();
-               if (status == 201) {
-                  HttpEntity entity = response.getEntity();
-                  infoBox("Room successfully created.");
-                  return entity != null ? EntityUtils.toString(entity) : null;
-               } 
-               else if (status == 409) {
-                  HttpEntity entity = response.getEntity();
-                  infoBox("Room name is already in use.");
-                  return entity != null ? EntityUtils.toString(entity) : null;
-               }
-               else if (status == 401) {
-                  HttpEntity entity = response.getEntity();
-                  infoBox("Wrong password.");
-                  return entity != null ? EntityUtils.toString(entity) : null;
-               }
-               else {
-                  errorBox("Unexpected response status: " + status);
-                  throw new ClientProtocolException("Unexpected response status: " + status);
-                  
-               }
+         ResponseHandler<String> responseHandler = (final HttpResponse response) -> {
+            int status = response.getStatusLine().getStatusCode();
+            if (status == 201) {
+               HttpEntity entity = response.getEntity();
+               infoBox("Room successfully created.");
+               return entity != null ? EntityUtils.toString(entity) : null;
+            } else if (status == 409) {
+               HttpEntity entity = response.getEntity();
+               infoBox("Room name is already in use.");
+               return entity != null ? EntityUtils.toString(entity) : null;
+            } else if (status == 401) {
+               HttpEntity entity = response.getEntity();
+               infoBox("Wrong password.");
+               return entity != null ? EntityUtils.toString(entity) : null;
+            } else {
+               errorBox("Unexpected response status: " + status);
+               throw new ClientProtocolException("Unexpected response status: " + status);
+
             }
          };
          String responseBody = httpclient.execute(httpput, responseHandler);
@@ -87,7 +80,8 @@ public class AdminSettings extends javax.swing.JFrame {
       }
 
    }
-    public void deleteRoomRequest(String roomname) throws Exception {
+
+   public void deleteRoomRequest(String roomname) throws Exception {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
          HttpDelete httpput = new HttpDelete("http://localhost:8080/room/" + roomname);
@@ -95,18 +89,15 @@ public class AdminSettings extends javax.swing.JFrame {
          System.out.println("Executing request " + httpput.getRequestLine());
 
          // Create a custom response handler
-         ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
-            public String handleResponse(
-                    final HttpResponse response) throws ClientProtocolException, IOException {
-               int status = response.getStatusLine().getStatusCode();
-               if (status >= 200 && status < 300) {
-                  HttpEntity entity = response.getEntity();
-                  infoBox("Room successfully deleted.");
-                  return entity != null ? EntityUtils.toString(entity) : null;
-               } else {
-                   errorBox("Unexpected response status: " + status);
-                  throw new ClientProtocolException("Unexpected response status: " + status);
-               }
+         ResponseHandler<String> responseHandler = (final HttpResponse response) -> {
+            int status = response.getStatusLine().getStatusCode();
+            if (status >= 200 && status < 300) {
+               HttpEntity entity = response.getEntity();
+               infoBox("Room successfully deleted.");
+               return entity != null ? EntityUtils.toString(entity) : null;
+            } else {
+               errorBox("Unexpected response status: " + status);
+               throw new ClientProtocolException("Unexpected response status: " + status);
             }
          };
          String responseBody = httpclient.execute(httpput, responseHandler);
@@ -118,12 +109,12 @@ public class AdminSettings extends javax.swing.JFrame {
 
    }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+   /**
+    * This method is called from within the constructor to initialize the form.
+    * WARNING: Do NOT modify this code. The content of this method is always
+    * regenerated by the Form Editor.
+    */
+   @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -242,69 +233,34 @@ public class AdminSettings extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void addRoomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRoomBtnActionPerformed
-        if(addRoomName.getText().matches("^[^\\d\\s]+$")){
-        try {
-            addRoomRequest(addRoomName.getText());
-        } catch (Exception ex) {
-            Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
-        }}
-        else{
-            errorBox("No spaces or numbers allowed");
-        }
+       if (addRoomName.getText().matches("^[^\\d\\s]+$")) {
+          try {
+             addRoomRequest(addRoomName.getText());
+          } catch (Exception ex) {
+             Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
+          }
+       } else {
+          errorBox("No spaces or numbers allowed");
+       }
     }//GEN-LAST:event_addRoomBtnActionPerformed
 
     private void deleteRoomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRoomBtnActionPerformed
-        if(deleteRoomName.getText().matches("^[^\\d\\s]+$")){
-        try {
-            deleteRoomRequest(deleteRoomName.getText());
-        } catch (Exception ex) {
-            Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        }
-        else{
-            errorBox("No spaces or numbers allowed");
-        }
+       if (deleteRoomName.getText().matches("^[^\\d\\s]+$")) {
+          try {
+             deleteRoomRequest(deleteRoomName.getText());
+          } catch (Exception ex) {
+             Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
+          }
+       } else {
+          errorBox("No spaces or numbers allowed");
+       }
     }//GEN-LAST:event_deleteRoomBtnActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AdminSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AdminSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AdminSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AdminSettings.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new AdminSettings().setVisible(true);
-            }
-        });
-    }
-    private static void errorBox(String errorMessage) {
+   private static void errorBox(String errorMessage) {
       JOptionPane.showMessageDialog(null, errorMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
    }
-    private static void infoBox(String infoMessage) {
+
+   private static void infoBox(String infoMessage) {
       JOptionPane.showMessageDialog(null, infoMessage, "Some info for you", JOptionPane.INFORMATION_MESSAGE);
    }
 

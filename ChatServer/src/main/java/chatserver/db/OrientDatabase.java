@@ -59,8 +59,7 @@ public class OrientDatabase {
 
    public Object execute(String command) {
       logger.log(Level.INFO, command);
-      OCommandSQL oCommand = new OCommandSQL(command);
-      return getDB().command(oCommand).execute();
+      return getDB().command(new OCommandSQL(command)).execute();
    }
 
    public List<ODocument> executeSynchQuery(String query) {

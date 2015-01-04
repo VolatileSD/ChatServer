@@ -6,7 +6,6 @@ import chatserver.rest.ChatServerApplication;
 import chatserver.quasar.Acceptor;
 import chatserver.quasar.Manager;
 import chatserver.quasar.NotificationManager;
-import chatserver.quasar.Room;
 import chatserver.quasar.RoomManager;
 import chatserver.quasar.impl.AcceptorGUI;
 import chatserver.quasar.impl.AcceptorNonGUI;

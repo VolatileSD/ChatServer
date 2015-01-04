@@ -1,5 +1,6 @@
 package chatclient;
 
+import common.representation.UserRepresentation;
 import common.saying.Saying;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -254,24 +255,20 @@ public class RunLogin extends javax.swing.JFrame {
          try {
             say(sb.toString());
             String reply = getReply();
-            if (reply.equals(Saying.getLoginOk(username))) {
+            if (reply.equals(Saying.getLoginOk(username)) || reply.equals(Saying.getLoginAdminOk(username))) {
                setVisible(false);
                usernameTxt.setText("");
                passwordTxt.setText("");
                RunChat runChat = new RunChat(socket);
                runChat.setVisible(true);
-               runChat.adminBtn.setVisible(false);
+               if (reply.equals(Saying.getLoginOk(username))) {
+                  runChat.setCredentials(null);
+               } else {
+                  runChat.setCredentials(new UserRepresentation(username, password));
+               }
             } else if (reply.equals(Saying.getLoginInvalid())) {
                errorBox(Saying.getLoginInvalid());
-            } else if (reply.equals(Saying.getLoginAdminOk(username))) {
-               setVisible(false);
-               usernameTxt.setText("");
-               passwordTxt.setText("");
-               RunChat runChat = new RunChat(socket);
-               runChat.setVisible(true);
-               runChat.adminBtn.setVisible(true);
-            }
-            else {
+            } else {
                errorBox("Internal Error. Please try again.");
             }
          } catch (IOException e) {
@@ -290,7 +287,7 @@ public class RunLogin extends javax.swing.JFrame {
             say(sb.toString());
             String reply = getReply();
             if (reply.equals(Saying.getCreateOk(username))) {
-               infoBox(Saying.getCreateOk(username)+"Now login to chat.");
+               infoBox(Saying.getCreateOk(username) + "Now login to chat.");
             } else if (reply.equals(Saying.getCreateInvalid())) {
                errorBox(Saying.getCreateInvalid());
             } else {
@@ -393,6 +390,7 @@ public class RunLogin extends javax.swing.JFrame {
    private static void errorBox(String infoMessage) {
       JOptionPane.showMessageDialog(null, infoMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
    }
+
    private static void infoBox(String infoMessage) {
       JOptionPane.showMessageDialog(null, infoMessage, "Some info for you", JOptionPane.INFORMATION_MESSAGE);
    }

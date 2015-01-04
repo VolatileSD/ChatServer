@@ -3,6 +3,7 @@ package chatclient;
 import common.representation.RoomRepresentation;
 import common.representation.RoomsRepresentation;
 import com.google.gson.Gson;
+import common.representation.UserRepresentation;
 import common.saying.Saying;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
@@ -38,7 +39,8 @@ public class RunChat extends JFrame {
    private Random random;
    private SimpleAttributeSet bold;
    private SimpleAttributeSet biggerBold;
-
+   private UserRepresentation userCredentials;
+   
    /**
     * Creates new form RunChat
     */
@@ -297,7 +299,7 @@ public class RunChat extends JFrame {
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     private void adminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminBtnActionPerformed
-        AdminSettings ad = new AdminSettings();
+        AdminSettings ad = new AdminSettings(userCredentials);
         ad.setVisible(true);
     }//GEN-LAST:event_adminBtnActionPerformed
 
@@ -349,6 +351,17 @@ public class RunChat extends JFrame {
             }
          }
       });
+   }
+
+   void setCredentials(UserRepresentation userCredentials) {
+      if(userCredentials == null){
+         // this button can be private now
+         adminBtn.setVisible(false);
+      } else {
+         adminBtn.setVisible(true);
+         this.userCredentials = userCredentials;
+      }
+   
    }
 
    private class LineReader extends Thread {

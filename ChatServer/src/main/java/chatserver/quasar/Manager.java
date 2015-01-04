@@ -33,8 +33,7 @@ public class Manager extends BasicActor<Msg, Void> {
                userODB.logoutEveryone();
                // map<roomName, roomRid>
                Map<String, String> rooms = roomODB.getActiveRooms();
-               Msg restoreMsg = new Msg(MsgType.RESTORE, null, null, rooms);
-               msg.getFrom().send(restoreMsg);
+               msg.getFrom().send(new Msg(MsgType.RESTORE, null, null, rooms));
                return true;
             case CREATE:
                user = userODB.create(parts[1], parts[2], false);
@@ -76,6 +75,7 @@ public class Manager extends BasicActor<Msg, Void> {
                return true;
             case LOGOUT:
                userODB.logout(parts[0]);
+               //BUG
                return true;
             case AUTH:
                // parts = [roomName, username, password]
@@ -123,8 +123,8 @@ public class Manager extends BasicActor<Msg, Void> {
                msg.getFrom().send(new Msg(MsgType.OK, null, null, allUsers));
                return true;
             case INBOX_USERS:
-               UsersRepresentation users = userODB.getInboxUsers(parts[0]);
-               msg.getFrom().send(new Msg(MsgType.OK, null, null, users));
+               UsersRepresentation inboxUsers = userODB.getInboxUsers(parts[0]);
+               msg.getFrom().send(new Msg(MsgType.OK, null, null, inboxUsers));
                return true;
             case TALK:
                TalkRepresentation talk = userODB.getTalk(parts[0], parts[1], parts[2]);

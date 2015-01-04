@@ -30,12 +30,6 @@ public class RoomODB {
 
    }
 
-   private void delete(String name) {
-      Room room = findByName(name);
-      setActive(room.getRid(), false);
-
-   }
-
    public Room findByName(String name) {
       Room room = null;
       StringBuilder sb = new StringBuilder("SELECT FROM Room WHERE name = '");
@@ -64,10 +58,6 @@ public class RoomODB {
    }
 
    public void addMessage(String roomRid, Message m) {
-      if (roomRid == null) { // because of main
-         // main room is very problematic
-         return;
-      }
       try {
          db.createEdge("Messages", roomRid, m.getRid());
       } finally {

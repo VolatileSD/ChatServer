@@ -74,8 +74,7 @@ public class RoomManager extends BasicActor<Msg, Void> {
                            msg.getFrom().send(reply);
                            switch (reply.getType()) {
                               case OK:
-                                 ActorRef newRoomRef = new Room(roomName, (String) reply.getContent(), manager, notificationManager).spawn();
-                                 rooms.put(roomName, newRoomRef);
+                                 rooms.put(roomName, new Room(roomName, (String) reply.getContent(), manager, notificationManager).spawn());
                                  notificationManager.send(msg);
                                  logger.info("Room Successfully created in DB");
                                  break;
