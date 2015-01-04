@@ -17,7 +17,6 @@ public class RunLogin extends javax.swing.JFrame {
     */
    public RunLogin() {
       initComponents();
-      replyTxt.setText("");
    }
 
    /**
@@ -40,7 +39,6 @@ public class RunLogin extends javax.swing.JFrame {
         jPanel4 = new javax.swing.JPanel();
         removeBtn = new javax.swing.JButton();
         usernameLbl = new javax.swing.JLabel();
-        replyTxt = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -142,12 +140,6 @@ public class RunLogin extends javax.swing.JFrame {
         usernameLbl.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         usernameLbl.setText("Enter your username");
 
-        replyTxt.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
-        replyTxt.setForeground(new java.awt.Color(255, 0, 0));
-        replyTxt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        replyTxt.setText("Login ok");
-        replyTxt.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -155,7 +147,6 @@ public class RunLogin extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(replyTxt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(passwordLbl)
@@ -189,9 +180,7 @@ public class RunLogin extends javax.swing.JFrame {
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(42, 42, 42)
-                .addComponent(replyTxt)
-                .addContainerGap(35, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         jPanel5.setBackground(new java.awt.Color(0, 0, 0));
@@ -249,8 +238,7 @@ public class RunLogin extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(5, 5, 5))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -274,7 +262,7 @@ public class RunLogin extends javax.swing.JFrame {
                runChat.setVisible(true);
                runChat.adminBtn.setVisible(false);
             } else if (reply.equals(Saying.getLoginInvalid())) {
-               replyTxt.setText("Login invalid!");
+               errorBox(Saying.getLoginInvalid());
             } else if (reply.equals(Saying.getLoginAdminOk(username))) {
                setVisible(false);
                usernameTxt.setText("");
@@ -302,9 +290,9 @@ public class RunLogin extends javax.swing.JFrame {
             say(sb.toString());
             String reply = getReply();
             if (reply.equals(Saying.getCreateOk(username))) {
-               replyTxt.setText("Create ok! Now log in to chat");
+               infoBox(Saying.getCreateOk(username)+"Now login to chat.");
             } else if (reply.equals(Saying.getCreateInvalid())) {
-               replyTxt.setText("Create invalid!");
+               errorBox(Saying.getCreateInvalid());
             } else {
                errorBox("Internal Error. Please try again.");
             }
@@ -323,10 +311,10 @@ public class RunLogin extends javax.swing.JFrame {
          try {
             say(sb.toString());
             String reply = getReply();
-            if (reply.equals(Saying.getRemoveOk())) {
-               replyTxt.setText("Remove ok!");
+            if (reply.equals(Saying.getRemoveOk(username))) {
+               infoBox(Saying.getRemoveOk(username));
             } else if (reply.equals(Saying.getRemoveInvalid())) {
-               replyTxt.setText("Remove invalid!");
+               errorBox(Saying.getRemoveInvalid());
             } else {
                errorBox("Internal Error. Please try again.");
             }
@@ -377,7 +365,6 @@ public class RunLogin extends javax.swing.JFrame {
       /* Create and display the form */
       java.awt.EventQueue.invokeLater(() -> {
          RunLogin chatClient = new RunLogin();
-         chatClient.replyTxt.setText("");
          chatClient.setVisible(true);
       });
    }
@@ -406,6 +393,9 @@ public class RunLogin extends javax.swing.JFrame {
    private static void errorBox(String infoMessage) {
       JOptionPane.showMessageDialog(null, infoMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
    }
+   private static void infoBox(String infoMessage) {
+      JOptionPane.showMessageDialog(null, infoMessage, "Some info for you", JOptionPane.INFORMATION_MESSAGE);
+   }
 
    /*
     Btn - button
@@ -427,7 +417,6 @@ public class RunLogin extends javax.swing.JFrame {
     private javax.swing.JPasswordField passwordTxt;
     private javax.swing.JButton registerBtn;
     private javax.swing.JButton removeBtn;
-    private javax.swing.JLabel replyTxt;
     private javax.swing.JLabel usernameLbl;
     private javax.swing.JTextField usernameTxt;
     // End of variables declaration//GEN-END:variables

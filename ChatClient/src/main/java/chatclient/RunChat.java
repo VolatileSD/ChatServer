@@ -3,6 +3,7 @@ package chatclient;
 import common.representation.RoomRepresentation;
 import common.representation.RoomsRepresentation;
 import com.google.gson.Gson;
+import common.saying.Saying;
 import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -419,10 +420,10 @@ public class RunChat extends JFrame {
       } else if (message.startsWith("----")) {
          doc.insertString(doc.getLength(), new StringBuilder("\t").append(message.substring(7, message.length() - 7)).append("\n\n").toString(), this.biggerBold);
       }
-      else if (message.startsWith("Message successfully sent to @")) {
+      else if (message.startsWith(Saying.getPrivateOk())) {
           inbox.privateMsgSuccess();
       }
-      else if (message.startsWith("Unknown user")) {
+      else if (message.startsWith(Saying.getPrivateInvalid())) {
           inbox.privateMsgNotSuccess();
       }
       else {
