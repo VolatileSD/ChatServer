@@ -18,7 +18,9 @@ import common.representation.RoomRepresentation;
 import chatserver.rest.entity.Rooms;
 import com.google.gson.Gson;
 import common.representation.UserRepresentation;
+import java.util.Base64;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
@@ -29,10 +31,14 @@ public class RoomResource {
 
    private final ActorRef roomManager;
    private final Rooms rooms;
+   private final Gson gson;
+   private final Base64.Decoder decoder;
 
    public RoomResource(ActorRef roomManager, Rooms rooms) {
       this.rooms = rooms;
       this.roomManager = roomManager;
+      this.gson = new Gson();
+      this.decoder = Base64.getDecoder();
    }
 
    @GET
@@ -43,7 +49,7 @@ public class RoomResource {
          switch (msg.getType()) {
             case OK:
                RoomRepresentation rr = new RoomRepresentation(roomName, (Collection<String>) msg.getContent());
-               response = Response.ok(new Gson().toJson(rr));
+               response = Response.ok(gson.toJson(rr));
                break;
             default:
                response = Response.status(Status.INTERNAL_SERVER_ERROR);
@@ -57,8 +63,13 @@ public class RoomResource {
    }
 
    @PUT
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response createRoom(@PathParam("name") String roomName, UserRepresentation user) throws Exception {
+   public Response createRoom(@HeaderParam("Volatile-ChatServer-Auth") String auth, @PathParam("name") String roomName) throws Exception {
+      if (auth == null) {
+         throw new WebApplicationException(Status.UNAUTHORIZED);
+      }
+      
+      String authJson = new String(decoder.decode(auth));
+      UserRepresentation user = gson.fromJson(authJson, UserRepresentation.class);
       ResponseBuilder response;
       if (!rooms.has(roomName)) {
          Msg msg = new Pigeon(roomManager).carry(MsgType.CREATE_ROOM, null, new String[]{roomName, user.getUsername(), user.getPassword()});
@@ -80,10 +91,17 @@ public class RoomResource {
    }
 
    @DELETE
-   @Consumes(MediaType.APPLICATION_JSON)
-   public Response deleteRoom(@PathParam("name") String roomName, UserRepresentation user) throws Exception {
+   public Response deleteRoom(@HeaderParam("Volatile-ChatServer-Auth") String auth, @PathParam("name") String roomName) throws Exception {
+      if (auth == null) {
+         throw new WebApplicationException(Status.UNAUTHORIZED);
+      }
+      
+      String authJson = new String(decoder.decode(auth));
+      UserRepresentation user = gson.fromJson(authJson, UserRepresentation.class);
       ResponseBuilder response;
-      if (!roomName.equals("Main") && rooms.has(roomName)) { // main room cannot be removed
+      if (roomName.equals("Main")) { // Main cannot be removed
+         response = Response.status(Status.PRECONDITION_FAILED);
+      } else if (rooms.has(roomName)) {
          Msg msg = new Pigeon(roomManager).carry(MsgType.DELETE_ROOM, null, new String[]{roomName, user.getUsername(), user.getPassword()});
          switch (msg.getType()) {
             case OK:
@@ -92,7 +110,7 @@ public class RoomResource {
                response = Response.ok();
                break;
             case INVALID:
-               response = Response.status(Status.CONFLICT);
+               response = Response.status(Status.PRECONDITION_FAILED);
                break;
             case UNAUTHORIZED:
                throw new WebApplicationException(Status.UNAUTHORIZED);

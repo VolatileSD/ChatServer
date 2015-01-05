@@ -15,14 +15,16 @@ import com.google.gson.Gson;
 public class RoomsResource {
 
    private final Rooms rooms;
-
+   private final Gson gson;
+   
    public RoomsResource(Rooms rooms) {
       this.rooms = rooms;
+      this.gson = new Gson();
    }
 
    @GET
    public Response getRooms() throws Exception {
       RoomsRepresentation rr = new RoomsRepresentation(rooms.getRooms());
-      return Response.ok(new Gson().toJson(rr)).build();
+      return Response.ok(gson.toJson(rr)).build();
    }
 }
