@@ -18,6 +18,12 @@ public class RunLogin extends javax.swing.JFrame {
     */
    public RunLogin() {
       initComponents();
+      try {
+         socket = SocketChannel.open();
+         socket.connect(new InetSocketAddress("localhost", 1112));
+      } catch (IOException e) {
+         errorBox(e.getMessage());
+      }
    }
 
    /**
@@ -259,13 +265,14 @@ public class RunLogin extends javax.swing.JFrame {
                setVisible(false);
                usernameTxt.setText("");
                passwordTxt.setText("");
-               RunChat runChat = new RunChat(socket);
-               runChat.setVisible(true);
+               RunChat chat = new RunChat(socket);
+               chat.setVisible(true);
                if (reply.equals(Saying.getLoginOk(username))) {
-                  runChat.setCredentials(null);
+                  chat.setCredentials(null);
                } else {
-                  runChat.setCredentials(new UserRepresentation(username, password));
+                  chat.setCredentials(new UserRepresentation(username, password));
                }
+               this.dispose();
             } else if (reply.equals(Saying.getLoginInvalid())) {
                errorBox(Saying.getLoginInvalid());
             } else {
@@ -351,13 +358,6 @@ public class RunLogin extends javax.swing.JFrame {
          java.util.logging.Logger.getLogger(RunLogin.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
       }
       //</editor-fold>
-      try {
-         socket = SocketChannel.open();
-         socket.connect(new InetSocketAddress("localhost", 1112));
-      } catch (IOException e) {
-         errorBox(e.getMessage());
-         return;
-      }
 
       /* Create and display the form */
       java.awt.EventQueue.invokeLater(() -> {

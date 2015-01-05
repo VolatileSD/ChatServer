@@ -33,14 +33,15 @@ import org.apache.http.client.ResponseHandler;
 public class RunChat extends JFrame {
 
    private final int MAXLEN = 4096; // problem when receiving json with more than 4096 char
-   private SocketChannel socket;
+   private final SocketChannel socket;
    private Inbox inbox;
-   private Map<String, SimpleAttributeSet> usernames;
+   private final Map<String, SimpleAttributeSet> usernames;
    private Random random;
    private SimpleAttributeSet bold;
    private SimpleAttributeSet biggerBold;
    private UserRepresentation userCredentials;
-   
+   private final LineReader lineReader;
+
    /**
     * Creates new form RunChat
     */
@@ -52,7 +53,8 @@ public class RunChat extends JFrame {
       this.inbox = null;
       this.usernames = new HashMap();
       this.random = new Random();
-      new LineReader().start();
+      this.lineReader = new LineReader();
+      this.lineReader.start();
    }
 
    /**
@@ -294,13 +296,14 @@ public class RunChat extends JFrame {
 
     private void logoutBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logoutBtnActionPerformed
        say(":logout\n");
+       this.lineReader.kill();
        this.dispose();
        new RunLogin().setVisible(true);
     }//GEN-LAST:event_logoutBtnActionPerformed
 
     private void adminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_adminBtnActionPerformed
-        AdminSettings ad = new AdminSettings(userCredentials);
-        ad.setVisible(true);
+       AdminSettings ad = new AdminSettings(userCredentials);
+       ad.setVisible(true);
     }//GEN-LAST:event_adminBtnActionPerformed
 
    private void inboxBtnActionPerformed(java.awt.event.ActionEvent evt) {
@@ -354,27 +357,28 @@ public class RunChat extends JFrame {
    }
 
    void setCredentials(UserRepresentation userCredentials) {
-      if(userCredentials == null){
+      if (userCredentials == null) {
          // this button can be private now
          adminBtn.setVisible(false);
       } else {
          adminBtn.setVisible(true);
          this.userCredentials = userCredentials;
       }
-   
+
    }
 
    private class LineReader extends Thread {
 
       private final ByteBuffer in = ByteBuffer.allocate(MAXLEN);
       private final ByteBuffer out = ByteBuffer.allocate(MAXLEN);
+      private volatile boolean running = true;
 
       @Override
       public void run() {
          boolean eof = false;
          byte b = 0;
          try {
-            for (;;) {
+            while (running) {
                if (socket.read(in) <= 0) {
                   eof = true;
                }
@@ -412,6 +416,10 @@ public class RunChat extends JFrame {
             errorBox(e.getMessage());
          }
       }
+      
+      public void kill(){
+         running = false;
+      }
    }
 
    public void parseMessage(String message) throws BadLocationException {
@@ -432,14 +440,11 @@ public class RunChat extends JFrame {
          doc.insertString(doc.getLength(), message.substring(6, message.length()), this.bold);
       } else if (message.startsWith("----")) {
          doc.insertString(doc.getLength(), new StringBuilder("\t").append(message.substring(7, message.length() - 7)).append("\n\n").toString(), this.biggerBold);
-      }
-      else if (message.startsWith(Saying.getPrivateOk())) {
-          inbox.privateMsgSuccess();
-      }
-      else if (message.startsWith(Saying.getPrivateInvalid())) {
-          inbox.privateMsgNotSuccess();
-      }
-      else {
+      } else if (message.startsWith(Saying.getPrivateOk())) {
+         inbox.privateMsgSuccess();
+      } else if (message.startsWith(Saying.getPrivateInvalid())) {
+         inbox.privateMsgNotSuccess();
+      } else {
          doc.insertString(doc.getLength(), message, null);
       }
    }
