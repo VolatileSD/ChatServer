@@ -1,10 +1,10 @@
 package chatclient;
 
 import com.google.gson.Gson;
+import com.sun.xml.internal.ws.api.message.saaj.SAAJFactory;
 import common.representation.UserRepresentation;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.UnsupportedEncodingException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -12,29 +12,25 @@ import javax.swing.JOptionPane;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.util.EntityUtils;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
-import java.net.URI;
-import org.apache.http.annotation.NotThreadSafe;
+import java.util.Base64;
+import org.apache.http.client.methods.HttpDelete;
+import javax.ws.rs.core.Response.Status;
 
 public class AdminSettings extends javax.swing.JFrame {
 
-   private StringEntity entity;
+   private final String authEncoded;
+   private final String URL = "http://localhost:8080/";
+
    /**
     * Creates new form AdminSettings
     */
    public AdminSettings(UserRepresentation userCredentials) {
       initComponents();
-      try {
-         this.entity = new StringEntity(new Gson().toJson(userCredentials));
-      } catch (UnsupportedEncodingException ex) {
-         errorBox(ex.getMessage());
-      }
+      this.authEncoded = Base64.getEncoder().encodeToString(new Gson().toJson(userCredentials).getBytes());
       this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
       this.addWindowListener(new WindowAdapter() {
          @Override
@@ -44,84 +40,58 @@ public class AdminSettings extends javax.swing.JFrame {
       });
    }
 
-   public void addRoomRequest(String roomname) throws Exception {
+   public void addRoomRequest(String roomName) throws Exception {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
-         HttpPut httpput = new HttpPut("http://localhost:8080/room/" + roomname);
-         httpput.setEntity(entity);
-         httpput.setHeader("Content-type", "application/json");
-         
-         System.out.println("Executing request " + httpput.getRequestLine());
+         HttpPut httpPut = new HttpPut(new StringBuilder(URL).append("room/").append(roomName).toString());
+         httpPut.addHeader("Volatile-ChatServer-Auth", authEncoded);
 
-         // Create a custom response handler
-         ResponseHandler<String> responseHandler = (final HttpResponse response) -> {
+         ResponseHandler responseHandler = (final HttpResponse response) -> {
             int status = response.getStatusLine().getStatusCode();
-            if (status == 201) {
-               HttpEntity entity = response.getEntity();
+            if (status == Status.CREATED.getStatusCode()) {
                infoBox("Room successfully created.");
-               return entity != null ? EntityUtils.toString(entity) : null;
-            } else if (status == 409) {
-               HttpEntity entity = response.getEntity();
+            } else if (status == Status.UNAUTHORIZED.getStatusCode()) { // which won't happen
+               infoBox("Somehow you're not an administrator");
+            } else if (status == Status.CONFLICT.getStatusCode()) {
                infoBox("Room name is already in use.");
-               return entity != null ? EntityUtils.toString(entity) : null;
-            } else if (status == 401) {
-               HttpEntity entity = response.getEntity();
-               infoBox("Wrong password.");
-               return entity != null ? EntityUtils.toString(entity) : null;
             } else {
                errorBox("Unexpected response status: " + status);
-               throw new ClientProtocolException("Unexpected response status: " + status);
-
             }
+            
+            return status;
          };
-         String responseBody = httpclient.execute(httpput, responseHandler);
-         System.out.println("----------------------------------------");
-         System.out.println(responseBody);
+
+         httpclient.execute(httpPut, responseHandler);
       } finally {
          httpclient.close();
       }
 
    }
-   
-   @NotThreadSafe
-class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
-    public static final String METHOD_NAME = "DELETE";
-    public String getMethod() { return METHOD_NAME; }
 
-    public HttpDeleteWithBody(final String uri) {
-        super();
-        setURI(URI.create(uri));
-    }
-    public HttpDeleteWithBody(final URI uri) {
-        super();
-        setURI(uri);
-    }
-    public HttpDeleteWithBody() { super(); }
-}
-
-   public void deleteRoomRequest(String roomname) throws Exception {
+   public void deleteRoomRequest(String roomName) throws Exception {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
-         HttpDeleteWithBody httpput = new HttpDeleteWithBody("http://localhost:8080/room/" + roomname);
-         httpput.setEntity(entity);
-         httpput.setHeader("Content-type", "application/json");
-         System.out.println("Executing request " + httpput.getRequestLine());
+         HttpDelete httpDelete = new HttpDelete(new StringBuilder(URL).append("room/").append(roomName).toString());
+         httpDelete.addHeader("Volatile-ChatServer-Auth", authEncoded);
 
-         // Create a custom response handler
-         ResponseHandler<String> responseHandler = (final HttpResponse response) -> {
+         ResponseHandler responseHandler = (final HttpResponse response) -> {
             int status = response.getStatusLine().getStatusCode();
-            if (status >= 200 && status < 300) {
-               HttpEntity entity = response.getEntity();
+            if (status == Status.OK.getStatusCode()) {
                infoBox("Room successfully deleted.");
-               return entity != null ? EntityUtils.toString(entity) : null;
+            } else if (status == Status.UNAUTHORIZED.getStatusCode()) { // which won't happen
+               infoBox("Somehow you're not an administrator");
+            } else if (status == Status.CONFLICT.getStatusCode()) {
+               infoBox("That room does not exist");
+            } else if (status == Status.PRECONDITION_FAILED.getStatusCode()) {
+               infoBox("That room still has users");
             } else {
                errorBox("Unexpected response status: " + status);
-               throw new ClientProtocolException("Unexpected response status: " + status);
             }
+            
+            return status;
          };
-         String responseBody = httpclient.execute(httpput, responseHandler);
-         System.out.println("----------------------------------------");
-         System.out.println(responseBody);
+
+         httpclient.execute(httpDelete, responseHandler);
       } finally {
          httpclient.close();
       }
@@ -255,8 +225,10 @@ class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
        if (addRoomName.getText().matches("^[^\\d\\s]+$")) {
           try {
              addRoomRequest(addRoomName.getText());
+
           } catch (Exception ex) {
-             Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(AdminSettings.class
+                     .getName()).log(Level.SEVERE, null, ex);
           }
        } else {
           errorBox("No spaces or numbers allowed");
@@ -267,8 +239,10 @@ class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
        if (deleteRoomName.getText().matches("^[^\\d\\s]+$")) {
           try {
              deleteRoomRequest(deleteRoomName.getText());
+
           } catch (Exception ex) {
-             Logger.getLogger(AdminSettings.class.getName()).log(Level.SEVERE, null, ex);
+             Logger.getLogger(AdminSettings.class
+                     .getName()).log(Level.SEVERE, null, ex);
           }
        } else {
           errorBox("No spaces or numbers allowed");
