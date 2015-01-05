@@ -74,8 +74,8 @@ public class Manager extends BasicActor<Msg, Void> {
                // we will use this actor ref to notify possible private messages
                return true;
             case LOGOUT:
+               users.remove(msg.getFromUsername());
                userODB.logout(parts[0]);
-               //BUG
                return true;
             case AUTH:
                // parts = [roomName, username, password]

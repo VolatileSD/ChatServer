@@ -244,7 +244,7 @@ public class User extends BasicActor<Msg, Void> {
          say(Saying.getUnknownCommand());
       } else {
          room.send(new Msg(MsgType.LEAVE, self(), username, null));
-         manager.send(new Msg(MsgType.LOGOUT, null, null, new String[]{rid}));
+         manager.send(new Msg(MsgType.LOGOUT, null, username, new String[]{rid}));
          if (!usingGUI) {
             say(Saying.getLogoutOk());
          }
