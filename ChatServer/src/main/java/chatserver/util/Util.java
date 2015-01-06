@@ -34,9 +34,6 @@ public class Util {
          case ":inbox":
             type = CommandType.INBOX;
             break;
-         case ":allu":
-            type = CommandType.ALL_USERS;
-            break;
          case ":iu":
             type = CommandType.INBOX_USERS;
             break;

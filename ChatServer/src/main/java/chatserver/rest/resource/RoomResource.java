@@ -19,7 +19,6 @@ import chatserver.rest.entity.Rooms;
 import com.google.gson.Gson;
 import common.representation.UserRepresentation;
 import java.util.Base64;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response.ResponseBuilder;

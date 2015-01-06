@@ -320,15 +320,6 @@ public class User extends BasicActor<Msg, Void> {
       }
    }
 
-   private void allUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
-      if (usingGUI) {
-         Msg reply = new Pigeon(manager).carry(MsgType.ALL_USERS);
-         say(new StringBuilder(":allu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
-      } else {
-         say(Saying.getUnknownCommand());
-      }
-   }
-
    private void inboxUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (usingGUI) {
          Msg reply = new Pigeon(manager).carry(MsgType.INBOX_USERS, null, new String[]{rid});

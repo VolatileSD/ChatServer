@@ -118,10 +118,6 @@ public class Manager extends BasicActor<Msg, Void> {
                List<Message> inbox = userODB.getInbox(parts[0]);
                msg.getFrom().send(new Msg(MsgType.OK, null, null, inbox));
                return true;
-            case ALL_USERS:
-               UsersRepresentation allUsers = userODB.getAllUsers();
-               msg.getFrom().send(new Msg(MsgType.OK, null, null, allUsers));
-               return true;
             case INBOX_USERS:
                UsersRepresentation inboxUsers = userODB.getInboxUsers(parts[0]);
                msg.getFrom().send(new Msg(MsgType.OK, null, null, inboxUsers));
