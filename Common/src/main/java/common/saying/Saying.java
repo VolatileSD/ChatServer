@@ -50,11 +50,11 @@ public class Saying {
       return "Unknown Command.\n";
    }
    
-   public static String getPrivateOk(){
-      return new StringBuilder("Message successfully sent to @").toString();
+   public static String getPrivateOk(String username){
+      return new StringBuilder("Message successfully sent to @").append(username).append("\n").toString();
    }
    
-   public static String getPrivateInvalid(){
-      return new StringBuilder("Unknown user @").toString();
+   public static String getPrivateInvalid(String username){
+      return new StringBuilder("Unknown user @").append(username).append("\n").toString();
    }
 }
