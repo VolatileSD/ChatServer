@@ -255,7 +255,7 @@ public class RunLogin extends javax.swing.JFrame {
    private void loginBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginBtnActionPerformed
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
-      if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
+      if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
          StringBuilder sb = new StringBuilder(":login ");
          sb.append(username).append(" ").append(password).append("\n");
          try {
@@ -287,7 +287,7 @@ public class RunLogin extends javax.swing.JFrame {
    private void registerBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerBtnActionPerformed
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
-      if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
+      if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
          StringBuilder sb = new StringBuilder(":create ");
          sb.append(username).append(" ").append(password).append("\n");
          try {
@@ -309,7 +309,7 @@ public class RunLogin extends javax.swing.JFrame {
    private void removeBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeBtnActionPerformed
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
-      if (username != null && password != null && !"".equals(username) && !"".equals(password)) {
+      if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
          StringBuilder sb = new StringBuilder(":remove ");
          sb.append(username).append(" ").append(password).append("\n");
          try {

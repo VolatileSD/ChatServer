@@ -6,7 +6,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
-    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="true"/>
   </SyntheticProperties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -72,36 +72,53 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="jPanel2" alignment="1" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-                  <Component id="addRoomName" min="-2" pref="103" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="addRoomBtn" min="-2" pref="62" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="addRoomLbl" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="addRoomNameTxt" min="-2" pref="120" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
+                          <Component id="addRoomBtn" min="-2" pref="90" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="makeAdminLbl" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="makeAdminTxt" min="-2" pref="120" max="-2" attributes="0"/>
+                          <EmptySpace pref="52" max="32767" attributes="0"/>
+                          <Component id="makeAdminBtn" min="-2" pref="90" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <EmptySpace min="35" pref="35" max="-2" attributes="0"/>
               </Group>
-              <Component id="jPanel2" alignment="1" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="43" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="addRoomName" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
-                      <Component id="addRoomBtn" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
-                      <Component id="jLabel3" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                      <Component id="addRoomNameTxt" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="addRoomLbl" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                      <Component id="addRoomBtn" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="163" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="makeAdminTxt" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
+                      <Component id="makeAdminLbl" alignment="3" min="-2" pref="21" max="-2" attributes="0"/>
+                      <Component id="makeAdminBtn" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace pref="125" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel3">
+        <Component class="javax.swing.JLabel" name="addRoomLbl">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Verdana" size="14" style="0"/>
@@ -109,18 +126,7 @@
             <Property name="text" type="java.lang.String" value="Add Room"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="addRoomName">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="room name"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="addRoomBtn">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Add"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addRoomBtnActionPerformed"/>
-          </Events>
+        <Component class="javax.swing.JTextField" name="addRoomNameTxt">
         </Component>
         <Container class="javax.swing.JPanel" name="jPanel2">
           <Properties>
@@ -137,25 +143,25 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                      <Component id="deleteRoomName" min="-2" pref="108" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
-                      <Component id="deleteRoomBtn" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="60" max="32767" attributes="0"/>
+                      <Component id="deleteRoomLbl" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="deleteRoomNameTxt" min="-2" pref="120" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="deleteRoomBtn" min="-2" pref="90" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="deleteRoomName" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
+                          <Component id="deleteRoomNameTxt" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Component id="deleteRoomLbl" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                           <Component id="deleteRoomBtn" alignment="3" min="-2" pref="34" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="48" max="32767" attributes="0"/>
+                      <EmptySpace pref="23" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -169,7 +175,7 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="deleteRoomBtnActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JLabel" name="jLabel2">
+            <Component class="javax.swing.JLabel" name="deleteRoomLbl">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="Verdana" size="14" style="0"/>
@@ -180,13 +186,36 @@
                 <Property name="text" type="java.lang.String" value="Delete Room"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="deleteRoomName">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="room name"/>
-              </Properties>
+            <Component class="javax.swing.JTextField" name="deleteRoomNameTxt">
             </Component>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="addRoomBtn">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Add"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addRoomBtnActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="makeAdminBtn">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Make"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="makeAdminBtnActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JTextField" name="makeAdminTxt">
+        </Component>
+        <Component class="javax.swing.JLabel" name="makeAdminLbl">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Verdana" size="14" style="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Make User Admin"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
   </SubComponents>
