@@ -130,9 +130,6 @@ public class User extends BasicActor<Msg, Void> {
                         case INBOX:
                            readInbox(parts); // this will only be used by telnet/nc client
                            break;
-                        case ALL_USERS:
-                           allUsers(); // this is supposed to be used only by ChatClient
-                           break;
                         case INBOX_USERS:
                            inboxUsers(); // this is supposed to be used only by ChatClient
                            break;
@@ -285,10 +282,10 @@ public class User extends BasicActor<Msg, Void> {
          Msg reply = new Pigeon(manager).carry(MsgType.PRIVATE, username, new String[]{parts[1], sb.toString(), rid});
          switch (reply.getType()) {
             case OK:
-               say(Saying.getPrivateOk());
+               say(Saying.getPrivateOk(parts[1]));
                break;
             case INVALID:
-               say(Saying.getPrivateInvalid());
+               say(Saying.getPrivateInvalid(parts[1]));
                break;
          }
       }
