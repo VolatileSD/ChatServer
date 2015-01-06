@@ -6,6 +6,8 @@ public class NotificationClient {
 
    private static final int port = 2222;
    private static final ZMQ.Context context = ZMQ.context(1);
+   private static final String events = "Events:\nrooms\nroom/roomName\n";
+   private static final String commands = "To subscribe events type:\n:sub eventName\nTo unsubscribe events type:\n:unsub eventName\n";
 
    public static void main(String[] args) {
       new ConsoleReader().start();
@@ -18,9 +20,8 @@ public class NotificationClient {
          ZMQ.Socket cr = NotificationClient.context.socket(ZMQ.PUB);
          cr.bind("inproc://cpubsub");
          new Subscriber().start();
-         System.console().writer().println("To subscribe events type:\n:sub eventName");
-         System.console().writer().println("To unsubscribe events type:\n:unsub eventName");
-
+         System.out.println(commands + events);
+         
          while (true) {
             String s = System.console().readLine(); // if it's not used in a console it's a problem
             if (s == null) {
@@ -32,7 +33,6 @@ public class NotificationClient {
                cr.sendMore(":unsub");
                cr.send(s.substring(7));
             }
-
          }
          cr.close();
          context.term();
@@ -55,13 +55,11 @@ public class NotificationClient {
             byte[] second = socket.recv();
 
             switch (firstS) {
-               case ":sub":                  
-                  System.out.println("!" + new String(second) + "!");
+               case ":sub":
                   socket.subscribe(second);
                   break;
                case ":unsub":
-                  System.out.println("!" + new String(second) + "!");
-                     socket.unsubscribe(second);
+                  socket.unsubscribe(second);
                   break;
                default:
                   System.out.println(new String(second));
