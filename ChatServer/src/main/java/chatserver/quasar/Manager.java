@@ -77,6 +77,29 @@ public class Manager extends BasicActor<Msg, Void> {
                users.remove(msg.getFromUsername());
                userODB.logout(parts[0]);
                return true;
+            case MAKE_ADMIN:
+               if (userODB.isAdmin(parts[1], parts[2])) {
+                  user = userODB.makeAdmin(parts[0]);
+                  if (user != null) {
+                     msg.getFrom().send(new Msg(MsgType.OK));
+                  } else {
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
+                  }
+               } else {
+                  msg.getFrom().send(new Msg(MsgType.UNAUTHORIZED));
+               }
+               return true;
+            case REMOVE_ADMIN:
+               if (userODB.isAdmin(parts[1], parts[2])) {
+                  user = userODB.removeAdmin(parts[0]);
+                  if(user != null){
+                     msg.getFrom().send(new Msg(MsgType.OK));
+                  } else {
+                     msg.getFrom().send(new Msg(MsgType.INVALID));
+                  }
+               } else {
+                  msg.getFrom().send(new Msg(MsgType.UNAUTHORIZED));
+               }
             case AUTH:
                // parts = [roomName, username, password]
                Msg isAdmin = userODB.isAdmin(parts[1], parts[2]) ? new Msg(MsgType.OK) : new Msg(MsgType.INVALID);

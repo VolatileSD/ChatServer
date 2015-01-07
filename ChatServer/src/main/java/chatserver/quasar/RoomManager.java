@@ -87,7 +87,6 @@ public class RoomManager extends BasicActor<Msg, Void> {
                         }
                         break;
                      case INVALID:
-                        logger.info("admin wrong");
                         msg.getFrom().send(new Msg(MsgType.UNAUTHORIZED));
                         break;
                   }

@@ -122,8 +122,7 @@ public class UserODB {
    }
 
    public void setActive(String rid, boolean active) {
-      StringBuilder sb = new StringBuilder("UPDATE ");
-      sb.append(rid).append(" SET active = ").append(active);
+      StringBuilder sb = new StringBuilder("UPDATE ").append(rid).append(" SET active = ").append(active);
       if (!active) {
          sb.append(", loggedIn = false");
       }
@@ -151,23 +150,6 @@ public class UserODB {
       }
 
       return inbox;
-   }
-
-   public UsersRepresentation getAllUsers() {
-      UsersRepresentation users = new UsersRepresentation();
-      try {
-         List<ODocument> resultList = db.executeSynchQuery("SELECT username FROM User");
-         ArrayList<String> usernames = new ArrayList();
-         for (ODocument d : resultList) {
-            usernames.add(d.field("username"));
-         }
-
-         users = new UsersRepresentation(usernames);
-      } finally {
-         db.close();
-      }
-
-      return users;
    }
 
    public UsersRepresentation getInboxUsers(String rid) {
@@ -222,6 +204,35 @@ public class UserODB {
    public boolean isAdmin(String username, String password) {
       User user = findByUsernameAndPassword(username, password);
       return user != null && user.isAdmin();
+   }
+
+   public User makeAdmin(String username) {
+      User user = findByUsername(username);
+      if (user != null) {
+         setIsAdmin(user.getRid(), true);
+      }
+
+      return user;
+   }
+
+   public User removeAdmin(String username) {
+      User user = findByUsername(username);
+      if (user != null && user.isAdmin()) {
+         setIsAdmin(user.getRid(), false);
+      } else{
+         user = null;
+      }
+
+      return user;
+   }
+
+   public void setIsAdmin(String rid, boolean isAdmin) {
+      StringBuilder sb = new StringBuilder("UPDATE ").append(rid).append(" SET isAdmin = ").append(isAdmin);
+      try {
+         db.execute(sb.toString());
+      } finally {
+         db.close();
+      }
    }
 
 }
