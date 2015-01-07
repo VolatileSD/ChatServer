@@ -9,14 +9,17 @@ import chatserver.rest.resource.RoomResource;
 import chatserver.rest.resource.RoomsResource;
 import chatserver.rest.health.ChatServerHealthCheck;
 import chatserver.rest.entity.Rooms;
+import chatserver.rest.resource.AdminsResource;
 import java.util.Collection;
 
 public class ChatServerApplication extends Application<ChatServerConfiguration> {
 
+   private final ActorRef manager;
    private final ActorRef roomManager;
    private final Collection<String> roomsRestored;
 
-   public ChatServerApplication(ActorRef roomManager, Collection<String> roomsRestored) {
+   public ChatServerApplication(ActorRef manager, ActorRef roomManager, Collection<String> roomsRestored) {
+      this.manager = manager;
       this.roomManager = roomManager;
       this.roomsRestored = roomsRestored;
    }
@@ -36,6 +39,7 @@ public class ChatServerApplication extends Application<ChatServerConfiguration> 
       Rooms rooms = new Rooms(roomsRestored);
       environment.jersey().register(new RoomsResource(rooms));
       environment.jersey().register(new RoomResource(roomManager, rooms));
+      environment.jersey().register(new AdminsResource(manager));
       environment.healthChecks().register("ChatServer", new ChatServerHealthCheck());
    }
 }
