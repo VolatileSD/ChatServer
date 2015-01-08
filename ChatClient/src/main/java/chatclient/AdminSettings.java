@@ -237,7 +237,7 @@ public class AdminSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_addRoomBtnActionPerformed
 
     private void deleteRoomBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteRoomBtnActionPerformed
-       String roomName = addRoomNameTxt.getText();
+       String roomName = deleteRoomNameTxt.getText();
        if (roomName.matches("^[^\\d\\s]+$")) {
           deleteRoomRequest(roomName);
        } else {
