@@ -267,7 +267,7 @@ public class AdminSettings extends javax.swing.JFrame {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
          try {
-            HttpPut httpPut = new HttpPut(new StringBuilder(URL).append("room/").append(roomName).toString());
+            HttpPut httpPut = new HttpPut(URL + "room/" + roomName);
             httpPut.addHeader("Volatile-ChatServer-Auth", authEncoded);
 
             ResponseHandler responseHandler = (final HttpResponse response) -> {
@@ -300,7 +300,7 @@ public class AdminSettings extends javax.swing.JFrame {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
          try {
-            HttpDelete httpDelete = new HttpDelete(new StringBuilder(URL).append("room/").append(roomName).toString());
+            HttpDelete httpDelete = new HttpDelete(URL + "room/" + roomName);
             httpDelete.addHeader("Volatile-ChatServer-Auth", authEncoded);
 
             ResponseHandler responseHandler = (final HttpResponse response) -> {
@@ -329,12 +329,12 @@ public class AdminSettings extends javax.swing.JFrame {
          errorBox(e.getMessage());
       }
    }
-   
+
    public void makeAdminRequest(String adminUsername) {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
          try {
-            HttpPut httpPut = new HttpPut(new StringBuilder(URL).append("admin/").append(adminUsername).toString());
+            HttpPut httpPut = new HttpPut(URL + "admin/" + adminUsername);
             httpPut.addHeader("Volatile-ChatServer-Auth", authEncoded);
 
             ResponseHandler responseHandler = (final HttpResponse response) -> {
@@ -367,7 +367,7 @@ public class AdminSettings extends javax.swing.JFrame {
       CloseableHttpClient httpclient = HttpClients.createDefault();
       try {
          try {
-            HttpDelete httpDelete = new HttpDelete(new StringBuilder(URL).append("admin/").append(adminUsername).toString());
+            HttpDelete httpDelete = new HttpDelete(URL + "admin/" + adminUsername);
             httpDelete.addHeader("Volatile-ChatServer-Auth", authEncoded);
 
             ResponseHandler responseHandler = (final HttpResponse response) -> {

@@ -254,7 +254,7 @@ public class RunChat extends JFrame {
       if (text.startsWith(":inbox")) {
          infoBox("There's a button called inbox. Try to use it!");
       } else {
-         say(new StringBuilder(text).append("\n").toString());
+         say(text + "\n");
       }
       sendTxt.setText("");
    }//GEN-LAST:event_sendTxtActionPerformed
@@ -291,7 +291,7 @@ public class RunChat extends JFrame {
             clearList();
             list.setModel(dlm);
          } else {
-            errorBox(new StringBuilder("Room ").append(roomName).append(" does not exist!").toString());
+            errorBox("Room " + roomName + " does not exist!");
          }
 
       }
@@ -353,7 +353,7 @@ public class RunChat extends JFrame {
          @Override
          public void mouseClicked(MouseEvent evt) {
             if (evt.getClickCount() == 2) {
-               say(new StringBuilder(":cr ").append(list.getSelectedValue()).append("\n").toString());
+               say(":cr " + list.getSelectedValue() + "\n");
             }
          }
       });
@@ -419,8 +419,8 @@ public class RunChat extends JFrame {
             errorBox(e.getMessage());
          }
       }
-      
-      public void kill(){
+
+      public void kill() {
          running = false;
       }
    }
@@ -437,12 +437,12 @@ public class RunChat extends JFrame {
             createNewColorForThisUser(username);
          }
          // could save @user: instead of user
-         doc.insertString(doc.getLength(), new StringBuilder("@").append(username).append(": ").toString(), usernames.get(username));
+         doc.insertString(doc.getLength(), "@" + username + ": ", usernames.get(username));
          doc.insertString(doc.getLength(), text, null);
       } else if (message.startsWith("#User")) {
          doc.insertString(doc.getLength(), message.substring(6, message.length()), this.bold);
       } else if (message.startsWith("----")) {
-         doc.insertString(doc.getLength(), new StringBuilder("\t").append(message.substring(7, message.length() - 7)).append("\n\n").toString(), this.biggerBold);
+         doc.insertString(doc.getLength(), "\t" + message.substring(7, message.length() - 7) + "\n\n", this.biggerBold);
       } else if (message.startsWith(Saying.getPrivateOk(privateMessageUsername))) {
          inbox.privateMessageSuccess();
       } else if (message.startsWith(Saying.getPrivateInvalid(privateMessageUsername))) {
@@ -475,10 +475,10 @@ public class RunChat extends JFrame {
       caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
    }
 
-   protected void updatePrivateMessageUsername(String u){
+   protected void updatePrivateMessageUsername(String u) {
       this.privateMessageUsername = u;
    }
-   
+
    private static void errorBox(String errorMessage) {
       JOptionPane.showMessageDialog(null, errorMessage, "Something Went Wrong", JOptionPane.ERROR_MESSAGE);
    }

@@ -58,12 +58,6 @@ public class RunLogin extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
-        usernameTxt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                usernameTxtActionPerformed(evt);
-            }
-        });
-
         passwordLbl.setFont(new java.awt.Font("Verdana", 1, 14)); // NOI18N
         passwordLbl.setText("Enter your password");
 
@@ -256,10 +250,8 @@ public class RunLogin extends javax.swing.JFrame {
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
       if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
-         StringBuilder sb = new StringBuilder(":login ");
-         sb.append(username).append(" ").append(password).append("\n");
          try {
-            say(sb.toString());
+            say(":login " + username + " " + password + "\n");
             String reply = getReply();
             if (reply.equals(Saying.getLoginOk(username)) || reply.equals(Saying.getLoginAdminOk(username))) {
                setVisible(false);
@@ -288,10 +280,8 @@ public class RunLogin extends javax.swing.JFrame {
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
       if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
-         StringBuilder sb = new StringBuilder(":create ");
-         sb.append(username).append(" ").append(password).append("\n");
          try {
-            say(sb.toString());
+            say(":create " + username + " " + password + "\n");
             String reply = getReply();
             if (reply.equals(Saying.getCreateOk(username))) {
                infoBox(Saying.getCreateOk(username) + "Now login to chat.");
@@ -310,10 +300,8 @@ public class RunLogin extends javax.swing.JFrame {
       String username = usernameTxt.getText();
       String password = passwordTxt.getText();
       if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
-         StringBuilder sb = new StringBuilder(":remove ");
-         sb.append(username).append(" ").append(password).append("\n");
          try {
-            say(sb.toString());
+            say(":remove " + username + " " + password + "\n");
             String reply = getReply();
             if (reply.equals(Saying.getRemoveOk(username))) {
                infoBox(Saying.getRemoveOk(username));
@@ -327,10 +315,6 @@ public class RunLogin extends javax.swing.JFrame {
          }
       }
    }//GEN-LAST:event_removeBtnActionPerformed
-
-    private void usernameTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameTxtActionPerformed
-       // TODO add your handling code here:
-    }//GEN-LAST:event_usernameTxtActionPerformed
 
    /**
     * @param args the command line arguments

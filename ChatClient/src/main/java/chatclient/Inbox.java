@@ -192,7 +192,7 @@ public class Inbox extends JFrame {
     private void privateTxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_privateTxtActionPerformed
        String message = privateTxt.getText();
        if (!selectedUser.isEmpty() && !message.isEmpty()) {
-          say(new StringBuilder(":private ").append(selectedUser).append(" ").append(message).append("\n").toString());
+          say(":private " + selectedUser + " " + message + "\n");
           chat.updatePrivateMessageUsername(selectedUser);
        } else {
           errorBox("User or message empty");
@@ -203,11 +203,11 @@ public class Inbox extends JFrame {
       privateTxt.setText("");
       sendToTxt.setText("");
       say(":iu\n");
-      say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
+      say(":talk " + selectedUser + "\n");
    }
 
    public void privateMessageNotSuccess() {
-      errorBox(new StringBuilder("Unknown user @").append(selectedUser).append("\n").toString());
+      errorBox("Unknown user @" + selectedUser + "\n");
 
    }
     private void sendToTxtFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_sendToTxtFocusLost
@@ -251,7 +251,7 @@ public class Inbox extends JFrame {
          public void mouseClicked(MouseEvent evt) {
             if (evt.getClickCount() == 1) {
                selectedUser = (String) inboxUsersList.getSelectedValue();
-               say(new StringBuilder(":talk ").append(selectedUser).append("\n").toString());
+               say(":talk " + selectedUser + "\n");
             }
          }
       });
