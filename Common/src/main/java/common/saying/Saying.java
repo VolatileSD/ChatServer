@@ -2,20 +2,20 @@ package common.saying;
 
 public class Saying {
 
-   public static String getAllCommands(){
-      StringBuilder sb = new StringBuilder(":create username password\n");
-      sb.append(":remove username password\n");
-      sb.append(":login username password\n");
-      sb.append(":logout\n");
-      sb.append(":changeroom|:cr roomName\n");
-      sb.append(":private username message\n");
-      sb.append(":inbox\n");
-      
-      return sb.toString();
+   public static String getAllCommands() {
+      String allCommands = ":create username password\n"
+              + ":remove username password\n"
+              + ":login username password\n"
+              + ":logout\n"
+              + ":changeroom|:cr roomName\n"
+              + ":private username message\n"
+              + ":inbox\n";
+
+      return allCommands;
    }
-   
+
    public static String getCreateOk(String username) {
-      return new StringBuilder("New user @").append(username).append(" created successfully.\n").toString();
+      return "New user @" + username + " created successfully.\n";
    }
 
    public static String getCreateInvalid() {
@@ -23,7 +23,7 @@ public class Saying {
    }
 
    public static String getRemoveOk(String username) {
-      return new StringBuilder("User ").append(username).append(" removed successfully.\n").toString();
+      return "User " + username + " removed successfully.\n";
    }
 
    public static String getRemoveInvalid() {
@@ -31,11 +31,11 @@ public class Saying {
    }
 
    public static String getLoginOk(String username) {
-      return new StringBuilder("User ").append(username).append(", you are logged in.\n").toString();
+      return "User " + username + ", you are logged in.\n";
    }
 
    public static String getLoginAdminOk(String username) {
-      return new StringBuilder("Admin ").append(username).append(", you are logged in.\n").toString();
+      return "Admin " + username + ", you are logged in.\n";
    }
 
    public static String getLoginInvalid() {
@@ -49,12 +49,12 @@ public class Saying {
    public static String getUnknownCommand() {
       return "Unknown Command.\n";
    }
-   
-   public static String getPrivateOk(String username){
-      return new StringBuilder("Message successfully sent to @").append(username).append("\n").toString();
+
+   public static String getPrivateOk(String username) {
+      return "Message successfully sent to @" + username + "\n";
    }
-   
-   public static String getPrivateInvalid(String username){
-      return new StringBuilder("Unknown user @").append(username).append("\n").toString();
+
+   public static String getPrivateInvalid(String username) {
+      return "Unknown user @" + username + "\n";
    }
 }

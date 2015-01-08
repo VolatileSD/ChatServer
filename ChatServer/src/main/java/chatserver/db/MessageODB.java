@@ -9,13 +9,12 @@ public class MessageODB {
 
    public Message create(String from, String to, String text) {
       Message m = null;
-      StringBuilder sb = new StringBuilder("INSERT INTO Message set from = '");
-      sb.append(from).append("', to = '");
-      sb.append(to).append("', text = '");
-      sb.append(text).append("', date = sysdate() RETURN @this");
-
+      String command = "INSERT INTO Message set from = '" + from
+              + "', to = '" + to + "', text = '" + text
+              + "', date = sysdate() RETURN @this";
+              
       try {
-         ODocument document = (ODocument) db.execute(sb.toString());
+         ODocument document = (ODocument) db.execute(command);
          m = new Message(document);
       } finally {
          db.close();

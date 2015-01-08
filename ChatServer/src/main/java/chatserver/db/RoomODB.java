@@ -14,10 +14,10 @@ public class RoomODB {
    public Room create(String name) {
       Room room = findByName(name);
       if (room == null) {
-         StringBuilder sb = new StringBuilder("INSERT INTO Room set name = '");
-         sb.append(name).append("', creationDate = sysdate(), active = true RETURN @this");
+         String command = "INSERT INTO Room set name = '" + name
+                 + "', creationDate = sysdate(), active = true RETURN @this";
          try {
-            ODocument document = (ODocument) db.execute(sb.toString());
+            ODocument document = (ODocument) db.execute(command);
             room = new Room(document);
          } finally {
             db.close();
@@ -32,11 +32,9 @@ public class RoomODB {
 
    public Room findByName(String name) {
       Room room = null;
-      StringBuilder sb = new StringBuilder("SELECT FROM Room WHERE name = '");
-      sb.append(name).append("'");
-
+      String query = "SELECT FROM Room WHERE name = '" + name + "'";
       try {
-         List<ODocument> resultList = db.executeSynchQuery(sb.toString());
+         List<ODocument> resultList = db.executeSynchQuery(query);
          if (!resultList.isEmpty()) {
             room = new Room(resultList.get(0));
          }
@@ -48,10 +46,9 @@ public class RoomODB {
    }
 
    public void setActive(String rid, boolean active) {
-      StringBuilder sb = new StringBuilder("UPDATE ");
-      sb.append(rid).append(" SET active = ").append(active);
+      String command = "UPDATE " + rid + " SET active = " + active;
       try {
-         db.execute(sb.toString());
+         db.execute(command);
       } finally {
          db.close();
       }

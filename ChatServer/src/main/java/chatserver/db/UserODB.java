@@ -32,11 +32,10 @@ public class UserODB {
 
    public User findByUsername(String username) {
       User user = null;
-      StringBuilder sb = new StringBuilder("SELECT FROM User WHERE username = '");
-      sb.append(username).append("'");
+      String query = "SELECT FROM User WHERE username = '" + username + "'";
 
       try {
-         List<ODocument> resultList = db.executeSynchQuery(sb.toString());
+         List<ODocument> resultList = db.executeSynchQuery(query);
          if (!resultList.isEmpty()) {
             user = new User(resultList.get(0));
          }
@@ -55,13 +54,13 @@ public class UserODB {
    public User create(String username, String password, boolean isAdmin) {
       User user = findByUsername(username);
       if (user == null) {
-         StringBuilder sb = new StringBuilder("INSERT INTO User SET username = '");
-         sb.append(username).append("', password = '");
-         sb.append(password).append("', registrationDate = sysdate(), loggedIn = false,");
-         sb.append(" isAdmin = ").append(isAdmin).append(", active = true RETURN @this");
+         String command = "INSERT INTO User SET username = '" + username
+                 + "', password = '" + password
+                 + "', registrationDate = sysdate(), loggedIn = false, isAdmin = "
+                 + isAdmin + ", active = true RETURN @this";
 
          try {
-            ODocument document = (ODocument) db.execute(sb.toString());
+            ODocument document = (ODocument) db.execute(command);
             user = new User(document);
          } finally {
             db.close();
@@ -104,10 +103,8 @@ public class UserODB {
    }
 
    public void setLoggedIn(String rid, boolean loggedIn) {
-      StringBuilder sb = new StringBuilder("UPDATE ");
-      sb.append(rid).append(" SET loggedIn = ").append(loggedIn);
       try {
-         db.execute(sb.toString());
+         db.execute("UPDATE " + rid + " SET loggedIn = " + loggedIn);
       } finally {
          db.close();
       }
@@ -153,21 +150,22 @@ public class UserODB {
    }
 
    public UsersRepresentation getInboxUsers(String rid) {
-      StringBuilder sb1 = new StringBuilder("SELECT distinct(from) AS username FROM (SELECT expand(in('PrivateMessages')) FROM ");
-      sb1.append(rid).append(")");
-      StringBuilder sb2 = new StringBuilder("SELECT distinct(to) AS username FROM (SELECT expand(out('PrivateMessages')) FROM ");
-      sb2.append(rid).append(")");
+      String query1 = "SELECT distinct(from) AS username FROM "
+              + "(SELECT expand(in('PrivateMessages')) FROM " + rid + ")";
+
+      String query2 = "SELECT distinct(to) AS username FROM "
+              + "(SELECT expand(out('PrivateMessages')) FROM " + rid + ")";
       // try to order by last message sent and in one database call
       UsersRepresentation users = new UsersRepresentation();
 
       try {
-         List<ODocument> resultList = db.executeSynchQuery(sb1.toString());
+         List<ODocument> resultList = db.executeSynchQuery(query1);
          Set<String> usernames = new HashSet();
          for (ODocument d : resultList) {
             usernames.add(d.field("username"));
          }
 
-         resultList = db.executeSynchQuery(sb2.toString());
+         resultList = db.executeSynchQuery(query2);
          for (ODocument d : resultList) {
             usernames.add(d.field("username"));
          }
@@ -181,14 +179,15 @@ public class UserODB {
    }
 
    public TalkRepresentation getTalk(String rid, String username, String withUsername) {
-      StringBuilder sb = new StringBuilder("SELECT FROM (SELECT expand(both('PrivateMessages')) FROM ");
-      sb.append(rid).append(") WHERE (from = '").append(username);
-      sb.append("' AND to = '").append(withUsername).append("') OR (from = '").append(withUsername);
-      sb.append("' AND to = '").append(username).append("') ORDER BY date ASC");
+      String query = "SELECT FROM (SELECT expand(both('PrivateMessages')) FROM "
+              + rid + ") WHERE (from = '" + username + "' AND to = '" + withUsername
+              + "') OR (from = '" + withUsername + "' AND to = '" + username 
+              + "') ORDER BY date ASC";
+      
       TalkRepresentation talk = new TalkRepresentation();
 
       try {
-         List<ODocument> resuList = db.executeSynchQuery(sb.toString());
+         List<ODocument> resuList = db.executeSynchQuery(query);
          ArrayList<MessageRepresentation> messages = new ArrayList();
          for (ODocument d : resuList) {
             messages.add(new MessageRepresentation(d.field("from"), d.field("text"), d.field("date")));
@@ -227,9 +226,8 @@ public class UserODB {
    }
 
    public void setIsAdmin(String rid, boolean isAdmin) {
-      StringBuilder sb = new StringBuilder("UPDATE ").append(rid).append(" SET isAdmin = ").append(isAdmin);
       try {
-         db.execute(sb.toString());
+         db.execute("UPDATE " + rid + " SET isAdmin = " + isAdmin);
       } finally {
          db.close();
       }

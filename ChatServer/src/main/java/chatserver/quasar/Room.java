@@ -39,7 +39,7 @@ public class Room extends BasicActor<Msg, Void> {
                ActorRef newUser = msg.getFrom();
                newUser.send(new Msg(MsgType.LINE, null, null, welcomeMessage));
 
-               byte[] forAllUserEnter = new StringBuilder("#User @").append(fromUsername).append(" just got in!\n").toString().getBytes();
+               byte[] forAllUserEnter = ("#User @" + fromUsername + " just got in!\n").getBytes();
                for (ActorRef u : users.values()) {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserEnter));
                }
@@ -51,7 +51,7 @@ public class Room extends BasicActor<Msg, Void> {
                fromUsername = msg.getFromUsername();
                users.remove(fromUsername);
 
-               byte[] forAllUserLeave = new StringBuilder("#User @").append(fromUsername).append(" just left!\n").toString().getBytes();
+               byte[] forAllUserLeave = ("#User @" + fromUsername + " just left!\n").getBytes();
                for (ActorRef u : users.values()) {
                   u.send(new Msg(MsgType.LINE, null, null, forAllUserLeave));
                }
@@ -59,7 +59,7 @@ public class Room extends BasicActor<Msg, Void> {
                return true;
             case LINE:
                fromUsername = msg.getFromUsername();
-               byte[] message = new StringBuilder("@").append(fromUsername).append(": ").append(msg.getContent()).toString().getBytes();
+               byte[] message = ("@" + fromUsername + ": " + msg.getContent()).getBytes();
                Msg line = new Msg(MsgType.LINE, null, null, message);
                for (ActorRef u : users.values()) {
                   u.send(line);

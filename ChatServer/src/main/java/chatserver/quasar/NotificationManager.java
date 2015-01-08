@@ -30,31 +30,22 @@ public class NotificationManager extends BasicActor<Msg, Void> {
       this.pub.connect("tcp://localhost:" + internalPort); // sure?
 
       while (receive(msg -> {
-         StringBuilder sb;
          switch (msg.getType()) {
             case CREATE_ROOM:
                pub.sendMore("rooms");
-               sb = new StringBuilder("Room ").append(((String[]) msg.getContent())[0]).append(" was created!");
-               System.out.println(sb.toString());
-               pub.send(sb.toString());
+               pub.send("Room " + ((String[]) msg.getContent())[0] + " was created!");
                return true;
             case DELETE_ROOM:
                pub.sendMore("rooms");
-               sb = new StringBuilder("Room ").append(((String[]) msg.getContent())[0]).append(" was deleted!");
-               System.out.println(sb.toString());
-               pub.send(sb.toString());
+               pub.send("Room " + ((String[]) msg.getContent())[0] + " was deleted!");
                return true;
             case ENTER:
                pub.sendMore("room/" + msg.getContent());
-               sb = new StringBuilder("User @").append(msg.getFromUsername());
-               sb.append(" entered the room ").append(msg.getContent());
-               pub.send(sb.toString());
+               pub.send("User @" + msg.getFromUsername() + " entered the room " + msg.getContent());
                return true;
             case LEAVE:
                pub.sendMore("room/" + msg.getContent());
-               sb = new StringBuilder("User @").append(msg.getFromUsername());
-               sb.append(" left the room ").append(msg.getContent());
-               pub.send(sb.toString());
+               pub.send("User @" + msg.getFromUsername() + " left the room " + msg.getContent());
                return true;
          }
          return false;

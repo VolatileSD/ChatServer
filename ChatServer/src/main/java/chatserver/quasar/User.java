@@ -152,7 +152,7 @@ public class User extends BasicActor<Msg, Void> {
                   say((byte[]) msg.getContent());
                   return true;
                case PRIVATE:
-                  say(new StringBuilder("You've got a message from @").append(msg.getFromUsername()).append(". Type :inbox to read it.\n").toString());
+                  say("You've got a message from @" + msg.getFromUsername() + ". Type :inbox to read it.\n");
                   return true;
                case EOF:
                case IOE:
@@ -262,7 +262,7 @@ public class User extends BasicActor<Msg, Void> {
                say("Room changed successfully.\n");
                break;
             case INVALID:
-               say(new StringBuilder("Room ").append(parts[1]).append(" does not exist\n").toString());
+               say("Room " + parts[1] + " does not exist\n");
                break;
          }
       }
@@ -323,7 +323,7 @@ public class User extends BasicActor<Msg, Void> {
    private void inboxUsers() throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (usingGUI) {
          Msg reply = new Pigeon(manager).carry(MsgType.INBOX_USERS, null, new String[]{rid});
-         say(new StringBuilder(":iu:").append(new Gson().toJson((UsersRepresentation) reply.getContent())).append("\n").toString());
+         say(":iu:" + new Gson().toJson((UsersRepresentation) reply.getContent()) + "\n");
       } else {
          say(Saying.getUnknownCommand());
       }
@@ -332,7 +332,7 @@ public class User extends BasicActor<Msg, Void> {
    private void talk(String withUsername) throws IOException, ExecutionException, InterruptedException, SuspendExecution {
       if (usingGUI) {
          Msg reply = new Pigeon(manager).carry(MsgType.TALK, null, new String[]{rid, username, withUsername});
-         say(new StringBuilder(":tk:").append(new Gson().toJson((TalkRepresentation) reply.getContent())).append("\n").toString());
+         say(":tk:" + new Gson().toJson((TalkRepresentation) reply.getContent()) + "\n");
       } else {
          say(Saying.getUnknownCommand());
       }

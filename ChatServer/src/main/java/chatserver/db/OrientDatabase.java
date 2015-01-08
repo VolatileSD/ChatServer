@@ -52,9 +52,7 @@ public class OrientDatabase {
    }
 
    private void createOrDeleteEdge(String whatToDo, String edgeClass, String from, String to) {
-      StringBuilder sb = new StringBuilder(whatToDo).append(" EDGE ").append(edgeClass);
-      sb.append(" FROM ").append(from).append(" TO ").append(to);
-      execute(sb.toString());
+      execute(whatToDo + " EDGE " + edgeClass + " FROM " + from + " TO " + to);
    }
 
    public Object execute(String command) {
