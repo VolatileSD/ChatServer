@@ -310,7 +310,7 @@ public class AdminSettings extends javax.swing.JFrame {
                   deleteRoomNameTxt.setText("");
                } else if (status == Status.UNAUTHORIZED.getStatusCode()) { // which won't happen
                   infoBox("Somehow you're not an administrator");
-               } else if (status == Status.CONFLICT.getStatusCode()) {
+               } else if (status == Status.NOT_FOUND.getStatusCode()) {
                   infoBox("That room does not exist");
                } else if (status == Status.PRECONDITION_FAILED.getStatusCode()) {
                   infoBox("That room still has users");

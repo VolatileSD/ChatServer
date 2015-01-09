@@ -19,13 +19,13 @@ import javax.ws.rs.core.Response;
 
 @Path("/admin/{username}")
 @Produces(MediaType.APPLICATION_JSON)
-public class AdminsResource {
+public class AdminResource {
 
    private final ActorRef manager;
    private final Gson gson;
    private final Base64.Decoder decoder;
 
-   public AdminsResource(ActorRef manager) {
+   public AdminResource(ActorRef manager) {
       this.manager = manager;
       this.gson = new Gson();
       this.decoder = Base64.getDecoder();
