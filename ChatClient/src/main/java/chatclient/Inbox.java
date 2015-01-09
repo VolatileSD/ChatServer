@@ -202,6 +202,7 @@ public class Inbox extends JFrame {
    public void privateMessageSuccess() {
       privateTxt.setText("");
       sendToTxt.setText("");
+      selectedUser = "";
       say(":iu\n");
       say(":talk " + selectedUser + "\n");
    }
