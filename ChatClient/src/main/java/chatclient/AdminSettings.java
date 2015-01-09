@@ -247,19 +247,19 @@ public class AdminSettings extends javax.swing.JFrame {
 
    private void makeAdminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_makeAdminBtnActionPerformed
       String adminUsername = makeAdminTxt.getText();
-      if (!adminUsername.isEmpty()) {
+      if (adminUsername.matches("^[^\\d\\s]+$")) {
          makeAdminRequest(adminUsername);
       } else {
-         errorBox("Insert the admin's username");
+         errorBox("No spaces or numbers allowed");
       }
    }//GEN-LAST:event_makeAdminBtnActionPerformed
 
    private void removeAdminBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAdminBtnActionPerformed
       String adminUsername = removeAdminTxt.getText();
-      if (!adminUsername.isEmpty()) {
+      if (adminUsername.matches("^[^\\d\\s]+$")) {
          removeAdminRequest(adminUsername);
       } else {
-         errorBox("Insert the admin's username");
+         errorBox("No spaces or numbers allowed");
       }
    }//GEN-LAST:event_removeAdminBtnActionPerformed
 
