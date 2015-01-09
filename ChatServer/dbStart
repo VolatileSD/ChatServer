@@ -1,0 +1,4 @@
+DIR=$pwd
+cd ../Database/orientdb-community-2.0-rc1/bin/
+server.sh
+cd $pwd
