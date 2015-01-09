@@ -1,0 +1,22 @@
+
+\subsection{Notification Client}
+This client uses our Notification API to subscribe relevant events. This API is very similar to REST API endpoints. 
+
+\begin{table}[!h]
+\centering
+\begin{tabular}{l|l}
+\hline
+\textbf{:sub rooms} & subscribes rooms creation and removal\\
+\hline
+\textbf{:unsub rooms} & unsubscribes\\
+\hline
+\textbf{:sub room/name} & subscribes entries and exists in the room with that name\\
+\hline
+\textbf{:unsub room/name} & unsubscribes\\
+\hline
+\end{tabular}
+\caption{Notification API}
+\end{table}
+
+If in the future our service grows, and we have more publishers notifying other events,
+this client demands no change. 

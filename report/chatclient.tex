@@ -1,0 +1,42 @@
+\subsection{Chat Client}
+\label{subsec:chatclient}
+The Chat Client was built for end users. A simple client (e.g. telnet) enjoys almost the same chat features as the GUI client using our text protocol \ref{tab:textprotocol}.
+Other features, as listing rooms, choosing a room
+and listing users from a room are only accessible using the GUI client. These are calls to our REST API. To achieve this, the simple client has to use a command line tool like curl or another http client. \\
+Another feature is the Inbox. Each client can send private messages to other chat users (even if they are offline) and load their inbox history.
+
+\subsubsection{Text-based protocol}
+\label{subsec:textprotocol}
+The text-based protocol allows that even simple clients as \textbf{telnet} and \textbf{nc} can enjoy our chat. All protocol components - commands -  start with \textbf{:}. The protocol is as simple as possible so that it would not become too unpleasant for the simple clients.
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{l|l}
+\textbf{Command} & \textbf{Description}\\
+\hline
+\hline
+ :h/:help & Lists all available commands \\
+ \hline
+ :create username password & Creates a new user\\
+ \hline
+ :remove username passsword & Removes an existing user \\
+ \hline
+ :login username password & Logs an existing user \\
+ \hline 
+ :logout & Logs the user out of the service \\
+ \hline
+ :cr/:changeroom newRoom & Changes the current room to newRoom  \\
+ \hline
+ :private username message & Sends a private message to a user by username   \\
+ \hline
+ :inbox & Displays the private messages received
+\end{tabular}
+
+\caption{Text protocol for a simple client.}
+\label{tab:textprotocol}
+\end{table}
+
+
+\subsubsection{Admin.}
+The Admin is a regular chat client with special permissions: it can create new rooms and delete existing ones. In the full version, Admin is an Apache HttpClient that can request to create or delete a room. Besides the request, this client also sends an admin token, preventing other clients to make these requests. The admin can also provide regular users with administrator privileges. The admin can be emulated by a command-line tool like \emph{curl}.

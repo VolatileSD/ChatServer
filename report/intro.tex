@@ -1,14 +1,16 @@
-A distributed system is a collection of independent computers that appears to its users as a single coherent system \cite{dsp2006}.  
+This project aims at building a \textbf{chat service (server and client)}. The server are the multiple components of the system that interact among each other while being hidden from the user. The client complies all the ways to access the services available by the server. In this case, the client is usually a chat user that comunicates with the server via a protocol (text-based).
 
+\subsubsection{Project Goals.}
+This project aims at building a distributed chat service with the following features:
 
-This project aims at building a \textbf{distributed chat service (server and client)}. The server are the multiple components of the system that interact among each other while being hidden from the user. ... 
-
-\subsubsection{Project Goals}
-This project aims at building a distributed chat service (server and client) that comprises the following features:
 \begin{itemize}
-\item x
-\item y
-\item z
+\item \textbf{User registration}, given name and password; registration removal; a user should be authenticated to use the service;
+\item \textbf{Choice of room} (from existing ones), to which text messages will be sent;
+\item Sending of \textbf{private messages} to other connected users;
+\item Have a simple \textbf{text-based protocol} to allow simple chat clients, being usable by telnet;
+\item Have a \textbf{REST API} for management and description: e.g., room creation/removal, list of rooms, list of users in room;
+\item Have a \textbf{notification API} to allow subscribing to relevant events: room creation/removal, user joining/leaving room;
 \end{itemize}
 
-Additionally, ..
+\subsubsection{Report structure.}
+Bearing this in mind, this report will fistly address the theory behind this work in section \ref{sec:paradigms}; It will then in \ref{sec:implementation} explain the system's architecture and implementation choices; In section \ref{sec:results} there will be some use cases and a description of some problems found; And, in section \ref{sec:conclusion} a final appreciation of the work will be made, together with some suggestions for improvement.

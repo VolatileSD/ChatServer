@@ -1,0 +1,32 @@
+\subsection{Message oriented programming}
+
+A message based system is composed by elements glued by messaging patterns. 
+...
+A very important message pattern is the publisher-subscriber. The publisher produces messages which behave like events and subscribers register interest in receiving certain events. So this can be interpreted like a event notification system.
+
+
+\subsubsection{ZeroMQ - 0MQ.}
+0MQ acts like an open-source concurrency framework that gives access to sockets that carry atomic messages across various transports. It allows to connect sockets N-to-N with patterns like fan-out, pub-sub, task distribution, and request-reply. Its asynchronous I/O model gives you scalable multicore applications, built as asynchronous message-processing tasks.
+In this project, 0MQ will me used to reproduce a event notification system for relevant events on the chat service using the publisher-subscriber pattern.
+
+\subsection{Actor model}
+
+Actors are essentially well encapsulated active objects, which can only communicate by sending one another immutable messages asynchronously. Whatever state an actor holds internally, it cannot be accessed from outside the actor except by sending a message to the actor and receiving its reply. An actor can choose the behaviour for processing the message received, including no reply.
+Considering the special case of a chat, an actor seems like a very intuitive concept to implement since the core of a chat service is sending and receiving messages. An actor is an abstract lightweight entity so it can be created in large numbers.
+
+\subsubsection{Quasar.} 
+The way this project implements actors is via Quasar. Quasar is a Java library that provides high-performance lightweight threads - called fibers -, Go-like channels, Erlang-like actors, and other asynchronous programming tools \cite{quasar}. There can be millions of fibers in an application. All actors extends the Actor class. A simple way to start an actor is by calling \emph{actor.spawn()} which assigns the actor to a newly created fiber and starts it. \textbf{Spawning an actor is a very cheap operation} in both computation and memory.
+
+
+
+
+\subsection{Representational State Transfer - REST}
+REST is an architectural style used as a set of guidelines for creating web services. REST provides a set of architectural constraints that, when applied as a whole, emphasizes scalability of component interactions, generality of interfaces, independent deployment of components, and intermediary components to reduce interaction latency, enforce security, and encapsulate legacy systems \cite{fielding}. Operations in REST manipulate resources through representations which in turn are manipulated through standardized media-types. Server state is only resource related (not client session related) leading to greater scalability and fault-tolerance.
+
+
+\subsubsection{Dropwizard.}
+Dropwizard straddles the line between being a library and a framework. It uses:
+\begin{itemize}
+\item Jetty HTTP library to embed an incredibly tuned HTTP server
+\item Jersey for RESTful web applications;
+\end{itemize}

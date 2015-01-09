@@ -1,0 +1,12 @@
+\subsubsection{REST API.}
+This project also has a layer that consists in RESTful API using JSON as a serialization format. For detailed information, check the appendix \ref{app:rest}
+The choice of JSON instead of the standard XML results in an increase of performance in terms of serialization and deserialization because JSON is a much more lightweight format. For serialization and deserialization purposes, Gson was mainly used.
+
+When implementing this, we faced a problem. We needed to guarantee that some API calls were only made by admins. For that, this calls request an Header Parameter named \textbf{Volatile-ChatServer-Auth}. This acts as an authentication token. To create this token, we encode a JSON with two properties, username and password, using Base64 encode algorithm. If the username belongs to an admin, and the password is correct, it's a valid token. This mechanism provides no confidentiality protection for the transmitted credentials. They are merely encoded with Base64, but not encrypted or hashed in any way. Therefore, is typically used over HTTPS, which we're not doing.
+
+
+This difficults the use of this calls using a simple client as curl, so we recommend the use of our Chat Client.
+
+
+
+

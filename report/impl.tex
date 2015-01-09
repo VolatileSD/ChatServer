@@ -1,16 +1,51 @@
-\begin{figure}
+
+The project was developed using version control in \href{https://github.com/VolatileSD/ChatServer}{GitHub}. It is divided in four Main Projects:\\
+\begin{itemize}
+\item \textbf{ChatServer} - the core of the project: actors, notification API, REST API and database;
+\item \textbf{ChatClient} - the GUI Client and Admin;
+\item \textbf{NotificationClient} - ZeroMQ based project that allows the client to subscribe the most relevant events in the Chat;
+\item \textbf{Common} - utilities and common classes to projects.
+\end{itemize}
+
+\subsection{Chat Server}
+Most of this project is actor-based. When the server starts, several actors are spawned: two Acceptors, a Room Manager, a Main Room, a Notification Manager and an overall Manager.
+
+\subsubsection{Acceptors.} Each Acceptor is listening on a different port, one for clients that use our text protocol, the other one for the GUI client. This happens mainly because some of the best features are only available in the latter. Every time any of these actors accepts a new connection, an actor \textbf{User} is spawned.
+
+\subsubsection{User.} Each User has an actor named \textbf{LineReader} dedicated to read from his socket. When this actor sends a message (lines it reads from the socket) to the user, it checks if the line starts with the character \textbf{:}. If so, it  checks whether it is a valid command and acts upon that. If not, and when the user is connected to a room, it sends the line to that room.
+
+Every command sends a message to other actors, and most of them need an immediate answer. To achieve this, a special entity, \textbf{Pigeon}, was created. This Pigeon is an important tool in our tool set. It carries a message to any actor and always comes back with an answer.
+
+\subsubsection{Manager.} To better understand this, another essential actor, the \textbf{Manager}, is needed. This actor is in charge of user registration, authentication and removal and private messaging. When the user tries to create an account, this is accomplished with a Pigeon that carries a message to the Manager and retrieves the reply to the User, allowing or preventing the action. After the log in, also achieved with this technique, the user is automatically connected to the Main Room. This room exists by default and it cannot be deleted by any administrator. At this point, the user might try to change to another room. We do this creating another Pigeon but the recipient will be the \textbf{Room Manager}.
+
+\subsubsection{Room Manager.} The Room Manager, besides controlling room changes, is also responsible for room creation and removal. Such requests are made using the \textbf{REST API}, which will be describe further in the document. 
+%remove manager from rest aplication
+%return false in room when deleting room
+When the Room Manager receives a message soliciting a room change, if the rooms exists, it contacts the \textbf{Room} actor, notifying that a user will connect soon. The Room actor counts how many users will connect soon. This will be very important for the REST API. The Room Manager and each Room actor have another important task: send a message to the \textbf{Notification Manager} every time a user enters or leaves a room and every time a room is created or removed.
+
+\subsubsection{Notification Manager.} Every time this actor receives messages, it fowards them to possible connected Notification Clients that subscribed the event that message represents. This is accomplished using 0MQ pub-sub pattern.
+
+\begin{figure}[H]
 \centering
-\includegraphics[width=1\textwidth]{seqdiag.png}
-\caption{Sequence Diagram of Chat Usage}
-\label{fig:seq_diag}
+\includegraphics[width=0.6\textwidth]{img/zeromq.png}
+\caption{Pub sub}
+\label{fig:zmq}
 \end{figure}
 
 
+As we can see in Figure \ref{fig:zmq}, we only have one publisher but we are prepared to add new publishers in the future very easily. The subscribers use our \textbf{Notification API} which we'll discuss further. 
 
-%
-% Telnet User
-\input{textprotocol.tex}
+\input{rest-api.tex}
 
-%
-% Rooms
-\input{rooms.tex}
+\subsubsection{OrientDB} We're using OrientBD \cite{odb} as database. OrientDB is an Open Source NoSQL DBMS with the features of both Document and Graph DBMSs. Our system use it as a Graph Database.
+
+
+\subsubsection{Capsule} To deploy our service as a standalone application we use Capsule \cite{capsule}. This allows to package our application into a single JAR and deliver it to anyone who wants to use it. This happens to the Chat Server, Chat Client and Notification Client projects.
+
+
+\input{chatclient.tex}
+
+\input{notificationclient.tex}
+
+
+

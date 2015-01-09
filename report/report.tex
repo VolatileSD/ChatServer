@@ -1,6 +1,8 @@
 \documentclass[runningheads]{llncs}
 
 %%%%%%%%%%%%%%%%%%%% Non standard in llncs %%%%%%%%%%%%%
+\usepackage[top=1.5in, bottom=1.5in, left=1.5in, right=1.5in]{geometry}
+
 
 %\usepackage{appendix}
 \usepackage{chngpage}
@@ -38,6 +40,8 @@
 
 \usepackage{hyperref}
 \usepackage{cite}
+\usepackage{enumitem}
+\setlist{nosep}
 
 
 \lstset{
@@ -74,7 +78,7 @@ breaklines=true}
 \def\quotes#1{``#1''}
 % -- to dos
 \newcount\td \td=0 %  to-do counter
-\long\def\Todo#1{\vskip 1ex\noindent\fbox{
+\long\def\Todo#1{\vskip 1ex\noindent\fcolorbox{red!60}{white!20}{
 \global\advance\td by 1
 \textbf{To-do (\number\td):}\\~
 \begin{minipage}{.75\textwidth}
@@ -110,14 +114,15 @@ breaklines=true}
 %
 
 \title{Chat Server}
-\subtitle{PSD --- Paradigms... \\
+\subtitle{Paradigms of Distributed Systems, MEI/UM \\
+\today
         }
 
 %
 % Authors
 %
 
-\authorrunning{Ana Carvalho \and Vítor Duarte}
+\authorrunning{Ana Carvalho \and Vitor Duarte}
 \author{Ana Paula Carvalho\inst{1}
        \and
         Vítor Enes Duarte\inst{2}
@@ -127,7 +132,7 @@ breaklines=true}
            \email{pg25335@alunos.uminho.pt}
 		   \and
 		   Minho University, Portugal\\
-		   \email{pg19643@alunos.uminho.pt}}
+		   \email{pg27754@alunos.uminho.pt}}
 
 
 
@@ -139,8 +144,13 @@ breaklines=true}
 %
 
 \begin{abstract}
-Awesome abstract 
+This project aimed at building a chat server (server and client).
 
+The server was built using relevant paradigms for the several components, namely
+actors, message-oriented and resource-oriented. This made the project easily scalable.
+The client uses a text protocol to interact with the other users. There is also administrators who run the available chat rooms. It is also possible to observe the system by subscribing relevant chosen events.
+
+All the required features were implemented and some other as database support, private messages history and GUI client were added.
 
 \end{abstract}
 
@@ -158,6 +168,8 @@ Awesome abstract
 \section{Paradigms and Tools}
 \label{sec:paradigms}
 
+\input{paradigms.tex}
+
 
 
 
@@ -166,10 +178,18 @@ Awesome abstract
 %
 
 \section{Implementation}
-\label{sec:impl}
+\label{sec:implementation}
+
+
 
 \input{impl.tex}
 
+
+\section{Results}
+\label{sec:results}
+\input{results.tex}
+
+Ex of a use situation and what happens when crashes and stuff
 
 
 
@@ -180,7 +200,8 @@ Awesome abstract
 
 
 \section{Conclusions and Future Work}
-\label{sec:concl}
+\label{sec:conclusion}
+\input{future.tex}
 
 
 
@@ -193,15 +214,11 @@ Awesome abstract
 \bibliographystyle{plain}
 
 
-%\appendix
+\appendix
 
-%\section{Curve over $\mathbb{F}_{23}$}
-%\input{anexops.tex}
-%\label{table}
+\pagebreak
 
-%\section{Tests}
-%\input{tests.tex}
-%\label{tests}
+\input{anexos.tex}
 
 
 \end{document}
