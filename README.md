@@ -29,13 +29,14 @@ To use telnet type "telnet localhost 1111"
 All commands start with the ":" character for an easiest parsing.
 
 ##### List of commands
-* __:h/:help__  outputs a list of all available commands and the current status (room, log state);
-* __:login *user* *passwd*__ logs the user to the chat creating a new user if it is the first time;
-* __:listrooms__ lists all available rooms;
-*  __:cr/:changeroom *newroom*__ transfers the user from his current room to *newroom*;
-* __:listusers__ lists all users from the current room;
-* __:logout__ The user is logged out, having to log in again to chat;
-* __:inbox__ Access private conversation history and send private messages.
+* :create username password
+* :remove username password
+* :login username password
+* :logout
+* :cr/:changeroom roomName
+* :private user <message>
+* :inbox
+* :h/:help
 
 
 ### Features
