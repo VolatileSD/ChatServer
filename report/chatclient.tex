@@ -2,7 +2,7 @@
 \label{subsec:chatclient}
 The Chat Client was built for end users. A simple client (e.g. telnet) enjoys almost the same chat features as the GUI client using our text protocol \ref{tab:textprotocol}.
 Other features, as listing rooms, choosing a room
-and listing users from a room are only accessible using the GUI client. These are calls to our REST API. To achieve this, the simple client has to use a command line tool like curl or another http client. \\
+and listing users from a room are only accessible using the GUI client. These are calls to our REST API. To also achieve this, the simple client has to use a command line tool like curl or another http client. \\
 Another feature is the Inbox. Each client can send private messages to other chat users (even if they are offline) and load their inbox history.
 
 \subsubsection{Text-based protocol}
@@ -39,4 +39,13 @@ The text-based protocol allows that even simple clients as \textbf{telnet} and \
 
 
 \subsubsection{Admin.}
-The Admin is a regular chat client with special permissions: it can create new rooms and delete existing ones. In the full version, Admin is an Apache HttpClient that can request to create or delete a room. Besides the request, this client also sends an admin token, preventing other clients to make these requests. The admin can also provide regular users with administrator privileges. The admin can be emulated by a command-line tool like \emph{curl}.
+The Admin is a regular chat client with special permissions: it can create new rooms, delete existing ones, promote users to admin and remove their privileges. In the full version, the Admin can easily achieve this because the work of encoding his credentials is done by the application. When using curl he has to use some Base64 encoder for that, which is very distasteful. If the username and password are admin, after encoding the JSON \{"username":"admin", "password":"admin"\} the curl command to create a room is
+
+\small\begin{verbatim}
+curl -X PUT -H 
+"Volatile-ChatServer-Auth : eyJ1c2VybmFtZSI6ImFkbWluIiwgInBhc3N3b3JkIjoiYWRtaW4ifQ==" 
+localhost:8080/room/ROOM
+\end{verbatim}
+
+
+\normalsize

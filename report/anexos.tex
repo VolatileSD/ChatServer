@@ -1,7 +1,6 @@
 \section{API REST}
 \label{app:rest}
 
-
 \begin{table}[H]
 \centering
 \begin{tabular}{l|l}
@@ -21,7 +20,6 @@
 \end{tabular}
 \caption{List rooms}
 \end{table}
-
 
 \begin{table}[H]
 \centering
@@ -113,9 +111,8 @@
  \begin{tabular}{l|l}
  201 & Created \\
  401 & Unauthorized \\
- 404 & If the user does not exist
+ 404 & If the user does not exist 
  \end{tabular}
- 
 \hline
 \end{tabular}
 \caption{Make admin}
@@ -151,7 +148,7 @@
 \label{app:orientdb}
 
 
-\subsubsection{Vertices}\\
+\subsubsection{Vertices}
 \begin{itemize}
 \item User: username, password, registrationDate, loggedIn, active;\\
 \item Room: name, creationDate, active;\\
@@ -159,10 +156,10 @@
 \end{itemize}
 
 
-\subsubsection{Edges}\\
+\subsubsection{Edges}
 \begin{itemize}
 \item Messages: from Room to Message: A room has all messages sent in that room linked with an edge; We're not linking the message to the user who sent it because there's no use for that now.\\
-\item PrivateMessages: from User who sends to Message and from Message to User who receives: incomings edges are messages receive; Outgoing edges are messages send.\\
+\item PrivateMessages: from User who sends to Message and from Message to User who receives: User's incomings edges are messages received; User's outgoing edges are messages sent.\\
 \end{itemize}
 
 

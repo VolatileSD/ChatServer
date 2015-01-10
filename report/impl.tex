@@ -1,5 +1,5 @@
 
-The project was developed using version control in \href{https://github.com/VolatileSD/ChatServer}{GitHub}. It is divided in four Main Projects:\\
+The project was developed using Git as a version control system. All code and issues reported can be found in \href{https://github.com/VolatileSD/ChatServer}{GitHub}. The project is divided in four Main Projects:\\
 \begin{itemize}
 \item \textbf{ChatServer} - the core of the project: actors, notification API, REST API and database;
 \item \textbf{ChatClient} - the GUI Client and Admin;
@@ -37,15 +37,13 @@ As we can see in Figure \ref{fig:zmq}, we only have one publisher but we are pre
 
 \input{rest-api.tex}
 
-\subsubsection{OrientDB} We're using OrientBD \cite{odb} as database. OrientDB is an Open Source NoSQL DBMS with the features of both Document and Graph DBMSs. Our system use it as a Graph Database.
-
+\subsubsection{OrientDB} We're using OrientBD \cite{odb} as database. OrientDB is an Open Source NoSQL DBMS with the features of both Document and Graph DBMSs. Our system use it as a Graph Database. Although we do not have a persistence layer, we believe it's a good feature because we can recover the server state if for some reason it crashes.
 
 \subsubsection{Capsule} To deploy our service as a standalone application we use Capsule \cite{capsule}. This allows to package our application into a single JAR and deliver it to anyone who wants to use it. This happens to the Chat Server, Chat Client and Notification Client projects.
-
 
 \input{chatclient.tex}
 
 \input{notificationclient.tex}
 
-
-
+\subsection{Common}
+In this project we have the common classes of the whole project. One particular class, Saying, has the replies to all user actions. Each Saying method returns a String, which are used both in Chat Server and Chat Client. It also has representations of important entities that serve as a way to exchange information between the several components.
