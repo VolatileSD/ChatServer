@@ -13,8 +13,7 @@ of notable events, and provide a REST interface for management and description.
 Prerequisite: This projects requires that you have [Java 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), [0MQ 3.2.5](http://zeromq.org/intro:get-the-software) and Maven installed.
 
 #### Download compiled jars
-1. Go to folder and download jars
-2. 
+Available soon.
 
 #### Compile the most recent version
 1. Download the package, go to the Common folder and compile with "mvn clean package";
